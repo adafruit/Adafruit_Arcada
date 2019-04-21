@@ -2,9 +2,16 @@
 
 static SdFat SD(&SD_SPI_PORT);
 
+
 Adafruit_Arcada::Adafruit_Arcada(void) {
 }
 
+/**************************************************************************/
+/*!
+    @brief  Initialize GPIO, display, sound system, etc.
+    @return True on success, False if something failed!
+*/
+/**************************************************************************/
 bool Adafruit_Arcada::begin(void) {
   pinMode(ARCADA_BUTTONPIN_START, INPUT_PULLUP);
   pinMode(ARCADA_BUTTONPIN_SELECT, INPUT_PULLUP);
@@ -25,7 +32,6 @@ bool Adafruit_Arcada::begin(void) {
     @return Signed 16 bits, from -512 to 511, 0 being 'center'
 */
 /**************************************************************************/
-
 int16_t Adafruit_Arcada::readJoystickX(uint8_t sampling) {
 
   float reading = 0;
@@ -118,35 +124,65 @@ bool Adafruit_Arcada::filesysBegin(void) {
 
 /**************************************************************************/
 /*!
-    @brief  Debugging helper, prints to Serial a list of files in a path
-    @param  path A string with the filename path, must start with / e.g. "/roms"
-    @return True if we were able to open the path to list files, false otherwise
+    @brief  Set working directory to a given path (makes file naming easier)
+    @return True if was able to find a directory at that path
 */
 /**************************************************************************/
-bool Adafruit_Arcada::filesysListFiles(char *path) {
+bool Adafruit_Arcada::filesysCWD(char *path) {
+  if (strlen(path) >= sizeof(_cwd_path)) {
+    // too long!
+    return false;
+  }
+  strcpy(_cwd_path, path);
+  File dir = SD.open(_cwd_path);
+  if (! dir) {
+    // couldnt open?
+    return false;
+  }
+
+  if (! dir.isDirectory()) {
+    // :(
+    return false;
+  }
+  // ok could open and is dir
+  dir.close();
+  return true;
+}
+
+
+/**************************************************************************/
+/*!
+    @brief  Debugging helper, prints to Serial a list of files in a path
+    @param  path A string with the filename path, must start with / e.g. "/roms"
+    @return -1 if was not able to open, or the number of files
+*/
+/**************************************************************************/
+int16_t Adafruit_Arcada::filesysListFiles(char *path) {
   File dir = SD.open(path);
   char filename[SD_MAX_FILENAME_SIZE];
-
+  int16_t num_files = 0;
+    
   if (!dir) 
-    return false;
+    return -1;
 
   while (1) {
     File entry =  dir.openNextFile();
     if (! entry) {
-      return true; // no more files
+      return num_files; // no more files
     }
     entry.getName(filename, SD_MAX_FILENAME_SIZE);
     Serial.print(filename);
     if (entry.isDirectory()) {
       Serial.println("/");
     } else {
+      num_files++;
       // files have sizes, directories do not
       Serial.print("\t\t");
       Serial.println(entry.size(), DEC);
     }
     entry.close();
   }
-  return false;
+  return -1;
 }
 
 

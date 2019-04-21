@@ -35,7 +35,8 @@ class Adafruit_Arcada {
 
   // Filesystem stuff!
   bool filesysBegin(void);
-  bool filesysListFiles(char *path);
+  int16_t filesysListFiles(char *path);
+  bool filesysCWD(char *path);
   File open(char *path);
   uint8_t *writeFileToFlash(char *filename, uint32_t address);
 
@@ -47,6 +48,7 @@ class Adafruit_Arcada {
   int16_t _joyx_center = 512;
   int16_t _joyy_center = 512;
 
+  char _cwd_path[255];
 };
 
 
