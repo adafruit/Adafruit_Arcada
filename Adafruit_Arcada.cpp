@@ -31,6 +31,39 @@ bool Adafruit_Arcada::begin(void) {
 
 /**************************************************************************/
 /*!
+    @brief printf wrapper to serial debug, handy for logging config, C inclusion
+    @param format The printf-compatible format and extra args
+*/
+/**************************************************************************/
+void Adafruit_Arcada::printf(const char *format, ...) {
+  va_list args;
+  va_start(args, format);
+  
+  Serial.printf(format, args);
+  
+  va_end(args);
+}
+
+
+void Adafruit_Arcada::print(const char *s) {
+   Serial.print(s);
+}
+
+void Adafruit_Arcada::println(const char *s) {
+   Serial.println(s);
+}
+
+
+void Adafruit_Arcada::print(int32_t d, uint8_t format) {
+  Serial.print(d, format);
+}
+
+void Adafruit_Arcada::println(int32_t d, uint8_t format) {
+  Serial.println(d, format);
+}
+
+/**************************************************************************/
+/*!
     @brief  Read X analog joystick
     @return Signed 16 bits, from -512 to 511, 0 being 'center'
 */
@@ -198,14 +231,14 @@ int16_t Adafruit_Arcada::filesysListFiles(char *path) {
     @return A File object, for whatever filesystem we're using
 */
 /**************************************************************************/
-File Adafruit_Arcada::open(char *path) {
+File Adafruit_Arcada::open(char *path, uint32_t flags) {
   if (!path) {    // Just the CWD then
     Serial.printf("Open CWD\n");
-    return SD.open(_cwd_path);
+    return SD.open(_cwd_path, flags);
   }
   if (path[0] == '/') { // absolute path
     Serial.printf("Open absolute path %s\n", path);
-    return SD.open(path);
+    return SD.open(path, flags);
   }
   // otherwise, merge CWD and path
   String cwd(_cwd_path);
@@ -214,7 +247,7 @@ File Adafruit_Arcada::open(char *path) {
   char totalpath[255];
   combined.toCharArray(totalpath, 255);
   Serial.printf("Open totalpath %s\n", totalpath);
-  return SD.open(totalpath);
+  return SD.open(totalpath, flags);
 }
 
 

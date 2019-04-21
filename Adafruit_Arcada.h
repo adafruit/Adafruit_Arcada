@@ -32,12 +32,17 @@ class Adafruit_Arcada {
  public:
   Adafruit_Arcada(void);
   bool begin(void);
+  void printf(const char *format, ...);
+  void print(const char *s);
+  void println(const char *s);
+  void print(int32_t d, uint8_t format=DEC);
+  void println(int32_t d, uint8_t format=DEC);
 
   // Filesystem stuff!
   bool filesysBegin(void);
   int16_t filesysListFiles(char *path=NULL);
   bool filesysCWD(char *path);
-  File open(char *path=NULL);
+  File open(char *path=NULL, uint32_t flags = O_READ);
   uint8_t *writeFileToFlash(char *filename, uint32_t address);
 
   int16_t readJoystickX(uint8_t oversampling=3);
