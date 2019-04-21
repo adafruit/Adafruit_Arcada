@@ -35,9 +35,9 @@ class Adafruit_Arcada {
 
   // Filesystem stuff!
   bool filesysBegin(void);
-  int16_t filesysListFiles(char *path);
+  int16_t filesysListFiles(char *path=NULL);
   bool filesysCWD(char *path);
-  File open(char *path);
+  File open(char *path=NULL);
   uint8_t *writeFileToFlash(char *filename, uint32_t address);
 
   int16_t readJoystickX(uint8_t oversampling=3);

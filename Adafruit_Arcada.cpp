@@ -13,6 +13,9 @@ Adafruit_Arcada::Adafruit_Arcada(void) {
 */
 /**************************************************************************/
 bool Adafruit_Arcada::begin(void) {
+  // current working dir is /
+  strcpy(_cwd_path, "/");
+
   pinMode(ARCADA_BUTTONPIN_START, INPUT_PULLUP);
   pinMode(ARCADA_BUTTONPIN_SELECT, INPUT_PULLUP);
   pinMode(ARCADA_BUTTONPIN_A, INPUT_PULLUP);
@@ -129,19 +132,16 @@ bool Adafruit_Arcada::filesysBegin(void) {
 */
 /**************************************************************************/
 bool Adafruit_Arcada::filesysCWD(char *path) {
-  if (strlen(path) >= sizeof(_cwd_path)) {
-    // too long!
+  if (strlen(path) >= sizeof(_cwd_path)) {    // too long!
     return false;
   }
   strcpy(_cwd_path, path);
   File dir = SD.open(_cwd_path);
-  if (! dir) {
-    // couldnt open?
+  if (! dir) {   // couldnt open?
     return false;
   }
 
-  if (! dir.isDirectory()) {
-    // :(
+  if (! dir.isDirectory()) {    // not a directory or something else :(
     return false;
   }
   // ok could open and is dir
@@ -153,11 +153,16 @@ bool Adafruit_Arcada::filesysCWD(char *path) {
 /**************************************************************************/
 /*!
     @brief  Debugging helper, prints to Serial a list of files in a path
-    @param  path A string with the filename path, must start with / e.g. "/roms"
+    @param  path A string with the filename path, must start with / e.g. "/roms".
+    If nothing is passed in, we use the CWD (default is "/")
     @return -1 if was not able to open, or the number of files
 */
 /**************************************************************************/
 int16_t Adafruit_Arcada::filesysListFiles(char *path) {
+  if (! path) {   // use CWD!
+    path = _cwd_path;
+  }
+
   File dir = SD.open(path);
   char filename[SD_MAX_FILENAME_SIZE];
   int16_t num_files = 0;
@@ -194,7 +199,22 @@ int16_t Adafruit_Arcada::filesysListFiles(char *path) {
 */
 /**************************************************************************/
 File Adafruit_Arcada::open(char *path) {
-  return SD.open(path);
+  if (!path) {    // Just the CWD then
+    Serial.printf("Open CWD\n");
+    return SD.open(_cwd_path);
+  }
+  if (path[0] == '/') { // absolute path
+    Serial.printf("Open absolute path %s\n", path);
+    return SD.open(path);
+  }
+  // otherwise, merge CWD and path
+  String cwd(_cwd_path);
+  String subpath(path);
+  String combined = cwd + String("/") + subpath;
+  char totalpath[255];
+  combined.toCharArray(totalpath, 255);
+  Serial.printf("Open totalpath %s\n", totalpath);
+  return SD.open(totalpath);
 }
 
 
