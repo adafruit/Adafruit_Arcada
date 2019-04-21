@@ -19,6 +19,13 @@ bool Adafruit_Arcada::begin(void) {
   return true;
 }
 
+/**************************************************************************/
+/*!
+    @brief  Read X analog joystick
+    @return Signed 16 bits, from -512 to 511, 0 being 'center'
+*/
+/**************************************************************************/
+
 int16_t Adafruit_Arcada::readJoystickX(uint8_t sampling) {
 
   float reading = 0;
@@ -32,7 +39,12 @@ int16_t Adafruit_Arcada::readJoystickX(uint8_t sampling) {
   return reading;
 }
 
-
+/**************************************************************************/
+/*!
+    @brief  Read Y analog joystick
+    @return Signed 16 bits, from -512 to 511, 0 being 'center'
+*/
+/**************************************************************************/
 int16_t Adafruit_Arcada::readJoystickY(uint8_t sampling) {
 
   float reading = 0;
@@ -46,7 +58,14 @@ int16_t Adafruit_Arcada::readJoystickY(uint8_t sampling) {
   return reading;
 }
 
-// (MSB) R L D U St Se B A (LSB)
+/**************************************************************************/
+/*!
+    @brief  Read all buttons/joystick and return a bitmask of which buttons are
+            pressed, check ARCADA_BUTTONMASK_* for valid bitmasks to check again.
+            If there's an analog joystick, it will 'simulate' the button presses.
+    @return Bit array with up to 32 buttons, 1 for pressed, 0 for not.
+*/
+/**************************************************************************/
 uint32_t Adafruit_Arcada::readButtons(void) {
   uint32_t buttons = 0;
 
