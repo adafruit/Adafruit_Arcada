@@ -6,6 +6,7 @@
 #include "Adafruit_Arcada_Def.h"
 #include <SdFat.h>
 
+
 #define SD_MAX_FILENAME_SIZE 80
 
 #if defined(ARDUINO_GRAND_CENTRAL_M4) // w/TFT Shield
@@ -43,7 +44,7 @@ class Adafruit_Arcada {
   int16_t filesysListFiles(char *path=NULL);
   bool filesysCWD(char *path);
   File open(char *path=NULL, uint32_t flags = O_READ);
-  uint8_t *writeFileToFlash(char *filename, uint32_t address);
+  uint8_t *writeFileToFlash(char *filename, uint32_t address = 262144);
 
   int16_t readJoystickX(uint8_t oversampling=3);
   int16_t readJoystickY(uint8_t oversampling=3);
@@ -55,6 +56,11 @@ class Adafruit_Arcada {
 
   char _cwd_path[255];
 };
+
+static inline void wait_ready(void);
+static void flash_write_row(uint32_t *dst, uint32_t *src);
+static void flash_erase_block(uint32_t *dst);
+static void flash_write_words(uint32_t *dst, uint32_t *src, uint32_t n_words);
 
 
 #endif
