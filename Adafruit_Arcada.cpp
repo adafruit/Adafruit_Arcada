@@ -1,32 +1,85 @@
 #include <Adafruit_Arcada.h>
 
-static SdFat SD(&SD_SPI_PORT);
+#if defined(SD_CS) && defined(USE_SD_FS)
+  static SdFat FileSys(&SD_SPI_PORT);
+#elif defined(USE_QSPI_FS)
+  static Adafruit_SPIFlash flash(PIN_QSPI_SCK, PIN_QSPI_IO1, PIN_QSPI_IO0, PIN_QSPI_CS);
+  static Adafruit_M0_Express_CircuitPython FileSys(flash);
+#endif
 
+Adafruit_ST7735 tft = Adafruit_ST7735(&TFT_SPI, TFT_CS,  TFT_DC, TFT_RST);
 
 Adafruit_Arcada::Adafruit_Arcada(void) {
 }
 
 /**************************************************************************/
 /*!
-    @brief  Initialize GPIO, display, sound system, etc.
+    @brief  Initialize GPIO, display, NeoPixels, TFT, sound system, etc.
     @return True on success, False if something failed!
 */
 /**************************************************************************/
 bool Adafruit_Arcada::begin(void) {
+  setBacklight(0);
+
   // current working dir is /
   strcpy(_cwd_path, "/");
 
+  pixels.updateLength(NEOPIXEL_NUM);
+  pixels.setPin(NEOPIXEL_PIN);
+  pixels.begin();
+  pixels.setBrightness(20);
+  pixels.show();  // turn off
+
+#ifdef ARCADA_BUTTONPIN_START
   pinMode(ARCADA_BUTTONPIN_START, INPUT_PULLUP);
+#endif
+
+#ifdef ARCADA_BUTTONPIN_SELECT
   pinMode(ARCADA_BUTTONPIN_SELECT, INPUT_PULLUP);
+#endif
+
+#ifdef ARCADA_BUTTONPIN_A
   pinMode(ARCADA_BUTTONPIN_A, INPUT_PULLUP);
+#endif
+
+#ifdef ARCADA_BUTTONPIN_B
   pinMode(ARCADA_BUTTONPIN_B, INPUT_PULLUP);
+#endif
+
 #ifdef ARCADA_BUTTONPIN_UP  // gpio for buttons
   pinMode(ARCADA_BUTTONPIN_UP, INPUT_PULLUP);
   pinMode(ARCADA_BUTTONPIN_DOWN, INPUT_PULLUP);
   pinMode(ARCADA_BUTTONPIN_LEFT, INPUT_PULLUP);
   pinMode(ARCADA_BUTTONPIN_RIGHT, INPUT_PULLUP);
 #endif
+
+#ifdef BUTTON_CLOCK
+  pinMode(BUTTON_CLOCK, OUTPUT);
+  digitalWrite(BUTTON_CLOCK, HIGH);
+  pinMode(BUTTON_LATCH, OUTPUT);
+  digitalWrite(BUTTON_LATCH, HIGH);
+  pinMode(BUTTON_DATA, INPUT);
+#endif
+
+  
+  TFT_INIT;
+  tft.fillScreen(TFT_DEFAULTFILL);
+  tft.setRotation(TFT_ROTATION);
+  setBacklight(255);
+  _first_frame = true;
+  _framebuffer = NULL;
+
   return true;
+}
+
+void Adafruit_Arcada::setBacklight(uint8_t brightness) {
+  pinMode(TFT_LITE, OUTPUT);
+  analogWrite(TFT_LITE, brightness);
+}
+
+void Adafruit_Arcada::enableSpeaker(bool on) {
+  pinMode(SPEAKER_ENABLE, OUTPUT);
+  digitalWrite(SPEAKER_ENABLE, on);
 }
 
 /**************************************************************************/
@@ -71,6 +124,7 @@ void Adafruit_Arcada::println(int32_t d, uint8_t format) {
 int16_t Adafruit_Arcada::readJoystickX(uint8_t sampling) {
 
   float reading = 0;
+#ifdef ARCADA_JOYSTICK_X
   for (int i=0; i<sampling; i++) {
     reading += analogRead(ARCADA_JOYSTICK_X);
   }
@@ -78,6 +132,7 @@ int16_t Adafruit_Arcada::readJoystickX(uint8_t sampling) {
 
   // adjust range from 0->1024 to -512 to 511;
   reading -= _joyx_center;
+#endif
   return reading;
 }
 
@@ -90,6 +145,7 @@ int16_t Adafruit_Arcada::readJoystickX(uint8_t sampling) {
 int16_t Adafruit_Arcada::readJoystickY(uint8_t sampling) {
 
   float reading = 0;
+#ifdef ARCADA_JOYSTICK_Y
   for (int i=0; i<sampling; i++) {
     reading += analogRead(ARCADA_JOYSTICK_Y);
   }
@@ -97,6 +153,7 @@ int16_t Adafruit_Arcada::readJoystickY(uint8_t sampling) {
 
   // adjust range from 0->1024 to -512 to 511;
   reading -= _joyy_center;
+#endif
   return reading;
 }
 
@@ -111,14 +168,61 @@ int16_t Adafruit_Arcada::readJoystickY(uint8_t sampling) {
 uint32_t Adafruit_Arcada::readButtons(void) {
   uint32_t buttons = 0;
 
+
+#ifdef BUTTON_CLOCK
+  // Use a latch to read 8 bits
+  uint8_t shift_buttons = 0;
+  digitalWrite(BUTTON_LATCH, LOW);
+  delayMicroseconds(1);
+  digitalWrite(BUTTON_LATCH, HIGH);
+  delayMicroseconds(1);
+  
+  for(int i = 0; i < 8; i++) {
+    shift_buttons <<= 1;
+    shift_buttons |= digitalRead(BUTTON_DATA);
+    digitalWrite(BUTTON_CLOCK, HIGH);
+    delayMicroseconds(1);
+    digitalWrite(BUTTON_CLOCK, LOW);
+    delayMicroseconds(1);
+  }
+  if (shift_buttons & BUTTON_SHIFTMASK_B)
+    buttons |= ARCADA_BUTTONMASK_B;
+  if (shift_buttons & BUTTON_SHIFTMASK_A)
+    buttons |= ARCADA_BUTTONMASK_A;
+  if (shift_buttons & BUTTON_SHIFTMASK_SELECT)
+    buttons |= ARCADA_BUTTONMASK_SELECT;
+  if (shift_buttons & BUTTON_SHIFTMASK_START)
+    buttons |= ARCADA_BUTTONMASK_START;
+  if (shift_buttons & BUTTON_SHIFTMASK_UP)
+    buttons |= ARCADA_BUTTONMASK_UP;
+  if (shift_buttons & BUTTON_SHIFTMASK_DOWN)
+    buttons |= ARCADA_BUTTONMASK_DOWN;
+  if (shift_buttons & BUTTON_SHIFTMASK_LEFT)
+    buttons |= ARCADA_BUTTONMASK_LEFT;
+  if (shift_buttons & BUTTON_SHIFTMASK_RIGHT)
+    buttons |= ARCADA_BUTTONMASK_RIGHT;
+
+#endif
+
+#ifdef ARCADA_BUTTONPIN_START
   if (!digitalRead(ARCADA_BUTTONPIN_START)) 
     buttons |= ARCADA_BUTTONMASK_START;
+#endif
+
+#ifdef ARCADA_BUTTONPIN_SELECT
   if (!digitalRead(ARCADA_BUTTONPIN_SELECT)) 
     buttons |= ARCADA_BUTTONMASK_SELECT;
+#endif
+
+#ifdef ARCADA_BUTTONPIN_A
   if (!digitalRead(ARCADA_BUTTONPIN_A)) 
     buttons |= ARCADA_BUTTONMASK_A;
+#endif
+
+#ifdef ARCADA_BUTTONPIN_B
   if (!digitalRead(ARCADA_BUTTONPIN_B)) 
     buttons |= ARCADA_BUTTONMASK_B;
+#endif
 
 #ifdef BUTTONPIN_UP  // gpio for buttons
   if (!digitalRead(ARCADA_BUTTONPIN_UP)) 
@@ -155,7 +259,27 @@ uint32_t Adafruit_Arcada::readButtons(void) {
 */
 /**************************************************************************/
 bool Adafruit_Arcada::filesysBegin(void) {
-  return SD.begin(SD_CS);
+#if defined(USE_SD_FS)
+  return FileSys.begin(SD_CS);
+#elif defined(USE_QSPI_FS)
+  if (!flash.begin(SPIFLASHTYPE_W25Q16BV)) {
+    Serial.println("Error, failed to initialize filesys!");
+    return false;
+  }
+  Serial.print("Flash chip JEDEC ID: 0x"); Serial.println(flash.GetJEDECID(), HEX);
+
+  // First call begin to mount the filesystem.  Check that it returns true
+  // to make sure the filesystem was mounted.
+  if (!FileSys.begin()) {
+    Serial.println("Failed to mount filesystem!");
+    Serial.println("Was CircuitPython loaded on the board first to create the filesystem?");
+    return false;
+  }
+  Serial.println("Mounted filesystem!");
+  return true;
+#else
+  return false;
+#endif
 }
 
 /**************************************************************************/
@@ -164,12 +288,12 @@ bool Adafruit_Arcada::filesysBegin(void) {
     @return True if was able to find a directory at that path
 */
 /**************************************************************************/
-bool Adafruit_Arcada::filesysCWD(char *path) {
+bool Adafruit_Arcada::filesysCWD(const char *path) {
   if (strlen(path) >= sizeof(_cwd_path)) {    // too long!
     return false;
   }
   strcpy(_cwd_path, path);
-  File dir = SD.open(_cwd_path);
+  File dir = FileSys.open(_cwd_path);
   if (! dir) {   // couldnt open?
     return false;
   }
@@ -191,12 +315,12 @@ bool Adafruit_Arcada::filesysCWD(char *path) {
     @return -1 if was not able to open, or the number of files
 */
 /**************************************************************************/
-int16_t Adafruit_Arcada::filesysListFiles(char *path) {
+int16_t Adafruit_Arcada::filesysListFiles(const char *path) {
   if (! path) {   // use CWD!
     path = _cwd_path;
   }
 
-  File dir = SD.open(path);
+  File dir = FileSys.open(path);
   char filename[SD_MAX_FILENAME_SIZE];
   int16_t num_files = 0;
     
@@ -208,7 +332,11 @@ int16_t Adafruit_Arcada::filesysListFiles(char *path) {
     if (! entry) {
       return num_files; // no more files
     }
+#if defined(USE_QSPI_FS)
+    strncpy(filename, entry.name(), SD_MAX_FILENAME_SIZE);
+#else
     entry.getName(filename, SD_MAX_FILENAME_SIZE);
+#endif
     Serial.print(filename);
     if (entry.isDirectory()) {
       Serial.println("/");
@@ -226,19 +354,33 @@ int16_t Adafruit_Arcada::filesysListFiles(char *path) {
 
 /**************************************************************************/
 /*!
+    @brief  Tests if a file exists
+    @param  path A string with the filename path
+    @return true or false if we can open the file
+*/
+/**************************************************************************/
+bool Adafruit_Arcada::exists(const char *path) {
+  File f = open(path);
+  if (!f) return false;
+  f.close();
+  return true;
+}
+
+/**************************************************************************/
+/*!
     @brief  Opens a file and returns the object, a wrapper for our filesystem
     @param  path A string with the filename path, must start with / e.g. "/roms"
     @return A File object, for whatever filesystem we're using
 */
 /**************************************************************************/
-File Adafruit_Arcada::open(char *path, uint32_t flags) {
+File Adafruit_Arcada::open(const char *path, uint32_t flags) {
   if (!path) {    // Just the CWD then
     Serial.printf("Open CWD\n");
-    return SD.open(_cwd_path, flags);
+    return FileSys.open(_cwd_path, flags);
   }
   if (path[0] == '/') { // absolute path
     Serial.printf("Open absolute path %s\n", path);
-    return SD.open(path, flags);
+    return FileSys.open(path, flags);
   }
   // otherwise, merge CWD and path
   String cwd(_cwd_path);
@@ -247,11 +389,12 @@ File Adafruit_Arcada::open(char *path, uint32_t flags) {
   char totalpath[255];
   combined.toCharArray(totalpath, 255);
   Serial.printf("Open totalpath %s\n", totalpath);
-  return SD.open(totalpath, flags);
+  return FileSys.open(totalpath, flags);
 }
 
 
-uint8_t * Adafruit_Arcada::writeFileToFlash(char *filename, uint32_t address) {
+/*
+uint8_t * Adafruit_Arcada::writeFileToFlash(const char *filename, uint32_t address) {
   File f = open(filename);
   if (!f) return NULL;
 
@@ -428,3 +571,56 @@ void flash_write_row(uint32_t *dst, uint32_t *src) {
     // a reset.
     wait_ready();
 }
+
+*/
+
+/**************************************************************************/
+/*!
+    @brief  Read the light sensor onboard if there is one
+    @return 0 (darkest) to 1023 (brightest) or 0 if there is no sensor
+*/
+/**************************************************************************/
+uint16_t readLightSensor(void) {
+#if defined(LIGHT_SENSOR)
+  return analogRead(LIGHT_SENSOR);
+#else
+  return 0;
+#endif
+}
+
+
+void Adafruit_Arcada::fillScreen(uint16_t color) {
+  return tft.fillScreen(color);
+}
+
+void Adafruit_Arcada::invertDisplay(bool flag) {
+  return tft.invertDisplay(flag);
+}
+
+bool Adafruit_Arcada::createFrameBuffer(uint16_t width, uint16_t height) {
+  _framebuffer = (uint16_t *)malloc(width * height * 2);
+  if (!_framebuffer) return false;
+  _framebuf_width = width;
+  _framebuf_height = height;
+  return true;
+}
+
+uint16_t * Adafruit_Arcada::getFrameBuffer(void) {
+  return _framebuffer;
+}
+
+bool Adafruit_Arcada::blitFrameBuffer(uint16_t x, uint16_t y, bool blocking) {
+  if (!_framebuffer) return false;
+
+  if (! _first_frame) {
+    tft.endWrite(); // End transaction from any prior callback
+    _first_frame = false;
+  }
+
+  tft.startWrite(); // Start new display transaction
+  tft.setAddrWindow(x, y, _framebuf_width, _framebuf_height);
+  tft.writePixels(_framebuffer, _framebuf_width*_framebuf_height, blocking); // immediate return;
+  return true;
+}
+
+					
