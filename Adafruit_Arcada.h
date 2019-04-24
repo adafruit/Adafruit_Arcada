@@ -17,7 +17,7 @@
   #define TFT_CS          10
   #define TFT_RST         -1  // unused
   #define SD_SPI_PORT     SDCARD_SPI
-  #define SD_CS           SDCARD_SS_PIN
+  #define ARCADA_SD_CS    SDCARD_SS_PIN
   #define RIGHT_AUDIO_PIN A0
   #define LEFT_AUDIO_PIN  A1
 
@@ -29,50 +29,50 @@
   #define ARCADA_BUTTONPIN_B            A12
   #define ARCADA_BUTTONPIN_A            A13
 
-  #define USE_SD_FS
+  #define ARCADA_USE_SD_FS
 
 #elif defined(ADAFRUIT_PYBADGE_M4_EXPRESS)
 
-  #define TFT_SPI         SPI1
-  #define TFT_SERCOM      SERCOM7
-  #define TFT_CS          44       // Display CS Arduino pin number
-  #define TFT_DC          45       // Display D/C Arduino pin number
-  #define TFT_RST         46       // Display reset Arduino pin number
-  #define TFT_LITE        47
-  #define TFT_ROTATION     1
-  #define TFT_DEFAULTFILL  0x7BEF
-  #define TFT_INIT         tft.initR(INITR_BLACKTAB)
-  #define TFT_TYPE         ST7735
+  #define ARCADA_TFT_SPI         SPI1
+  #define ARCADA_TFT_SERCOM      SERCOM4
+  #define ARCADA_TFT_CS          44       // Display CS Arduino pin number
+  #define ARCADA_TFT_DC          45       // Display D/C Arduino pin number
+  #define ARCADA_TFT_RST         46       // Display reset Arduino pin number
+  #define ARCADA_TFT_LITE        47
+  #define ARCADA_TFT_ROTATION     1
+  #define ARCADA_TFT_DEFAULTFILL  0x7BEF
+  #define ARCADA_TFT_INIT         tft.initR(INITR_BLACKTAB)
+  #define ARCADA_TFT_TYPE         ST7735
 
-  #define SPEAKER_ENABLE  51
-  #define NEOPIXEL_PIN     8
-  #define NEOPIXEL_NUM     5
-  #define AUDIO_OUT       A0
-  #define BUTTON_CLOCK    48
-  #define BUTTON_DATA     49
-  #define BUTTON_LATCH    50
-  #define BUTTON_SHIFTMASK_B           0x80
-  #define BUTTON_SHIFTMASK_A           0x40
-  #define BUTTON_SHIFTMASK_START       0x20
-  #define BUTTON_SHIFTMASK_SELECT      0x10
-  #define BUTTON_SHIFTMASK_LEFT        0x01
-  #define BUTTON_SHIFTMASK_UP          0x02
-  #define BUTTON_SHIFTMASK_DOWN        0x04
-  #define BUTTON_SHIFTMASK_RIGHT       0x08
+  #define ARCADA_SPEAKER_ENABLE  51
+  #define ARCADA_NEOPIXEL_PIN     8
+  #define ARCADA_NEOPIXEL_NUM     5
+  #define ARCADA_AUDIO_OUT       A0
+  #define ARCADA_BUTTON_CLOCK    48
+  #define ARCADA_BUTTON_DATA     49
+  #define ARCADA_BUTTON_LATCH    50
+  #define ARCADA_BUTTON_SHIFTMASK_B           0x80
+  #define ARCADA_BUTTON_SHIFTMASK_A           0x40
+  #define ARCADA_BUTTON_SHIFTMASK_START       0x20
+  #define ARCADA_BUTTON_SHIFTMASK_SELECT      0x10
+  #define ARCADA_BUTTON_SHIFTMASK_LEFT        0x01
+  #define ARCADA_BUTTON_SHIFTMASK_UP          0x02
+  #define ARCADA_BUTTON_SHIFTMASK_DOWN        0x04
+  #define ARCADA_BUTTON_SHIFTMASK_RIGHT       0x08
 
-  #define LIGHT_SENSOR    A7
-  #define RIGHT_AUDIO_PIN A0
-  #define LEFT_AUDIO_PIN  A1
+  #define ARCADA_LIGHT_SENSOR    A7
+  #define ARCADA_RIGHT_AUDIO_PIN A0
+  #define ARCADA_LEFT_AUDIO_PIN  A1
 
-  #define USE_QSPI_FS
+  #define ARCADA_USE_QSPI_FS
 #endif
 
-#if defined(SD_CS) && defined(USE_SD_FS)
+#if defined(ARCADA_SD_CS) && defined(ARCADA_USE_SD_FS)
   #include <SdFat.h>
-#elif defined(USE_QSPI_FS)
+#elif defined(ARCADA_USE_QSPI_FS)
   #include <Adafruit_SPIFlash.h>
   #include <Adafruit_SPIFlash_FatFs.h>
-  #define FLASH_TYPE    SPIFLASHTYPE_W25Q16BV
+  #define ARCADA_FLASH_TYPE    SPIFLASHTYPE_W25Q16BV
 
   #define   O_READ    FILE_READ
   #define   O_WRITE   FILE_WRITE

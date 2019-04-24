@@ -1,13 +1,13 @@
 #include <Adafruit_Arcada.h>
 
-#if defined(SD_CS) && defined(USE_SD_FS)
+#if defined(SD_CS) && defined(ARCADA_USE_SD_FS)
   static SdFat FileSys(&SD_SPI_PORT);
-#elif defined(USE_QSPI_FS)
+#elif defined(ARCADA_USE_QSPI_FS)
   static Adafruit_SPIFlash flash(PIN_QSPI_SCK, PIN_QSPI_IO1, PIN_QSPI_IO0, PIN_QSPI_CS);
   static Adafruit_M0_Express_CircuitPython FileSys(flash);
 #endif
 
-Adafruit_ST7735 tft = Adafruit_ST7735(&TFT_SPI, TFT_CS,  TFT_DC, TFT_RST);
+Adafruit_ST7735 tft = Adafruit_ST7735(&ARCADA_TFT_SPI, ARCADA_TFT_CS, ARCADA_TFT_DC, ARCADA_TFT_RST);
 
 Adafruit_Arcada::Adafruit_Arcada(void) {
 }
@@ -24,8 +24,8 @@ bool Adafruit_Arcada::begin(void) {
   // current working dir is /
   strcpy(_cwd_path, "/");
 
-  pixels.updateLength(NEOPIXEL_NUM);
-  pixels.setPin(NEOPIXEL_PIN);
+  pixels.updateLength(ARCADA_NEOPIXEL_NUM);
+  pixels.setPin(ARCADA_NEOPIXEL_PIN);
   pixels.begin();
   pixels.setBrightness(20);
   pixels.show();  // turn off
@@ -53,18 +53,18 @@ bool Adafruit_Arcada::begin(void) {
   pinMode(ARCADA_BUTTONPIN_RIGHT, INPUT_PULLUP);
 #endif
 
-#ifdef BUTTON_CLOCK
-  pinMode(BUTTON_CLOCK, OUTPUT);
-  digitalWrite(BUTTON_CLOCK, HIGH);
-  pinMode(BUTTON_LATCH, OUTPUT);
-  digitalWrite(BUTTON_LATCH, HIGH);
-  pinMode(BUTTON_DATA, INPUT);
+#ifdef ARCADA_BUTTON_CLOCK
+  pinMode(ARCADA_BUTTON_CLOCK, OUTPUT);
+  digitalWrite(ARCADA_BUTTON_CLOCK, HIGH);
+  pinMode(ARCADA_BUTTON_LATCH, OUTPUT);
+  digitalWrite(ARCADA_BUTTON_LATCH, HIGH);
+  pinMode(ARCADA_BUTTON_DATA, INPUT);
 #endif
 
   
-  TFT_INIT;
-  tft.fillScreen(TFT_DEFAULTFILL);
-  tft.setRotation(TFT_ROTATION);
+  ARCADA_TFT_INIT;
+  tft.fillScreen(ARCADA_TFT_DEFAULTFILL);
+  tft.setRotation(ARCADA_TFT_ROTATION);
   setBacklight(255);
   _first_frame = true;
   _framebuffer = NULL;
@@ -73,13 +73,13 @@ bool Adafruit_Arcada::begin(void) {
 }
 
 void Adafruit_Arcada::setBacklight(uint8_t brightness) {
-  pinMode(TFT_LITE, OUTPUT);
-  analogWrite(TFT_LITE, brightness);
+  pinMode(ARCADA_TFT_LITE, OUTPUT);
+  analogWrite(ARCADA_TFT_LITE, brightness);
 }
 
 void Adafruit_Arcada::enableSpeaker(bool on) {
-  pinMode(SPEAKER_ENABLE, OUTPUT);
-  digitalWrite(SPEAKER_ENABLE, on);
+  pinMode(ARCADA_SPEAKER_ENABLE, OUTPUT);
+  digitalWrite(ARCADA_SPEAKER_ENABLE, on);
 }
 
 /**************************************************************************/
@@ -172,34 +172,34 @@ uint32_t Adafruit_Arcada::readButtons(void) {
 #ifdef BUTTON_CLOCK
   // Use a latch to read 8 bits
   uint8_t shift_buttons = 0;
-  digitalWrite(BUTTON_LATCH, LOW);
+  digitalWrite(ARCADA_BUTTON_LATCH, LOW);
   delayMicroseconds(1);
-  digitalWrite(BUTTON_LATCH, HIGH);
+  digitalWrite(ARCADA_BUTTON_LATCH, HIGH);
   delayMicroseconds(1);
   
   for(int i = 0; i < 8; i++) {
     shift_buttons <<= 1;
-    shift_buttons |= digitalRead(BUTTON_DATA);
-    digitalWrite(BUTTON_CLOCK, HIGH);
+    shift_buttons |= digitalRead(ARCADA_BUTTON_DATA);
+    digitalWrite(ARCADA_BUTTON_CLOCK, HIGH);
     delayMicroseconds(1);
-    digitalWrite(BUTTON_CLOCK, LOW);
+    digitalWrite(ARCADA_BUTTON_CLOCK, LOW);
     delayMicroseconds(1);
   }
-  if (shift_buttons & BUTTON_SHIFTMASK_B)
+  if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_B)
     buttons |= ARCADA_BUTTONMASK_B;
-  if (shift_buttons & BUTTON_SHIFTMASK_A)
+  if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_A)
     buttons |= ARCADA_BUTTONMASK_A;
-  if (shift_buttons & BUTTON_SHIFTMASK_SELECT)
+  if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_SELECT)
     buttons |= ARCADA_BUTTONMASK_SELECT;
-  if (shift_buttons & BUTTON_SHIFTMASK_START)
+  if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_START)
     buttons |= ARCADA_BUTTONMASK_START;
-  if (shift_buttons & BUTTON_SHIFTMASK_UP)
+  if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_UP)
     buttons |= ARCADA_BUTTONMASK_UP;
-  if (shift_buttons & BUTTON_SHIFTMASK_DOWN)
+  if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_DOWN)
     buttons |= ARCADA_BUTTONMASK_DOWN;
-  if (shift_buttons & BUTTON_SHIFTMASK_LEFT)
+  if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_LEFT)
     buttons |= ARCADA_BUTTONMASK_LEFT;
-  if (shift_buttons & BUTTON_SHIFTMASK_RIGHT)
+  if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_RIGHT)
     buttons |= ARCADA_BUTTONMASK_RIGHT;
 
 #endif
@@ -259,9 +259,9 @@ uint32_t Adafruit_Arcada::readButtons(void) {
 */
 /**************************************************************************/
 bool Adafruit_Arcada::filesysBegin(void) {
-#if defined(USE_SD_FS)
+#if defined(ARCADA_USE_SD_FS)
   return FileSys.begin(SD_CS);
-#elif defined(USE_QSPI_FS)
+#elif defined(ARCADA_USE_QSPI_FS)
   if (!flash.begin(SPIFLASHTYPE_W25Q16BV)) {
     Serial.println("Error, failed to initialize filesys!");
     return false;
@@ -332,7 +332,7 @@ int16_t Adafruit_Arcada::filesysListFiles(const char *path) {
     if (! entry) {
       return num_files; // no more files
     }
-#if defined(USE_QSPI_FS)
+#if defined(ARCADA_USE_QSPI_FS)
     strncpy(filename, entry.name(), SD_MAX_FILENAME_SIZE);
 #else
     entry.getName(filename, SD_MAX_FILENAME_SIZE);
@@ -581,8 +581,8 @@ void flash_write_row(uint32_t *dst, uint32_t *src) {
 */
 /**************************************************************************/
 uint16_t readLightSensor(void) {
-#if defined(LIGHT_SENSOR)
-  return analogRead(LIGHT_SENSOR);
+#if defined(ARCADA_LIGHT_SENSOR)
+  return analogRead(ARCADA_LIGHT_SENSOR);
 #else
   return 0;
 #endif
