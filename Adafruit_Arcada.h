@@ -11,15 +11,15 @@
 #define SD_MAX_FILENAME_SIZE 80
 
 #if defined(ARDUINO_GRAND_CENTRAL_M4) // w/TFT Shield
-  #define TFT_SPI         SPI
-  #define TFT_SERCOM      SERCOM7
-  #define TFT_DC          9
-  #define TFT_CS          10
-  #define TFT_RST         -1  // unused
-  #define SD_SPI_PORT     SDCARD_SPI
+  #define ARCADA_TFT_SPI         SPI
+  #define ARCADA_TFT_SERCOM      SERCOM7
+  #define ARCADA_TFT_DC          9
+  #define ARCADA_TFT_CS          10
+  #define ARCADA_TFT_RST         -1  // unused
+  #define ARCADA_SD_SPI_PORT     SDCARD_SPI
   #define ARCADA_SD_CS    SDCARD_SS_PIN
-  #define RIGHT_AUDIO_PIN A0
-  #define LEFT_AUDIO_PIN  A1
+  #define ARCADA_RIGHT_AUDIO_PIN A0
+  #define ARCADA_LEFT_AUDIO_PIN  A1
 
   // Analog joystick
   #define ARCADA_JOYSTICK_X    A8
@@ -65,9 +65,46 @@
   #define ARCADA_LEFT_AUDIO_PIN  A1
 
   #define ARCADA_USE_QSPI_FS
+
+#elif defined(ADAFRUIT_PYGAMER_M4_EXPRESS)
+
+  #define ARCADA_TFT_SPI         SPI1
+  #define ARCADA_TFT_SERCOM      SERCOM4
+  #define ARCADA_TFT_CS          45       // Display CS Arduino pin number
+  #define ARCADA_TFT_DC          46       // Display D/C Arduino pin number
+  #define ARCADA_TFT_RST         47       // Display reset Arduino pin number
+  #define ARCADA_TFT_LITE        48
+  #define ARCADA_TFT_ROTATION     1
+  #define ARCADA_TFT_DEFAULTFILL  0xFFFF
+  #define ARCADA_TFT_INIT         tft.initR(INITR_BLACKTAB)
+  #define ARCADA_TFT_TYPE         ST7735
+
+  #define ARCADA_SPEAKER_ENABLE  52
+  #define ARCADA_NEOPIXEL_PIN     8
+  #define ARCADA_NEOPIXEL_NUM     5
+  #define ARCADA_AUDIO_OUT       A0
+  #define ARCADA_BUTTON_CLOCK    49
+  #define ARCADA_BUTTON_DATA     50
+  #define ARCADA_BUTTON_LATCH    51
+  #define ARCADA_BUTTON_SHIFTMASK_B           0x80
+  #define ARCADA_BUTTON_SHIFTMASK_A           0x40
+  #define ARCADA_BUTTON_SHIFTMASK_START       0x20
+  #define ARCADA_BUTTON_SHIFTMASK_SELECT      0x10
+
+  #define ARCADA_JOYSTICK_X    A11
+  #define ARCADA_JOYSTICK_Y    A10
+
+  #define ARCADA_LIGHT_SENSOR             A7
+  #define ARCADA_RIGHT_AUDIO_PIN          A0
+  #define ARCADA_LEFT_AUDIO_PIN           A1
+
+  #define ARCADA_SD_SPI_PORT             SPI
+  #define ARCADA_SD_CS                     4
+
+  #define ARCADA_USE_SD_FS
 #endif
 
-#if defined(ARCADA_SD_CS) && defined(ARCADA_USE_SD_FS)
+#if defined(ARCADA_USE_SD_FS)
   #include <SdFat.h>
 #elif defined(ARCADA_USE_QSPI_FS)
   #include <Adafruit_SPIFlash.h>
@@ -100,7 +137,9 @@ class Adafruit_Arcada {
   int16_t readJoystickX(uint8_t oversampling=3);
   int16_t readJoystickY(uint8_t oversampling=3);
   uint32_t readButtons(void);
-  uint16_t  readLightSensor(void);
+  uint32_t justPressedButtons(void);
+  uint32_t justReleasedButtons(void);
+  uint16_t readLightSensor(void);
 
   void fillScreen(uint16_t color);
   void invertDisplay(bool flag);
@@ -122,6 +161,8 @@ class Adafruit_Arcada {
   bool _first_frame;
   uint16_t *_framebuffer;
   uint16_t _framebuf_width, _framebuf_height;
+
+  uint32_t last_buttons, curr_buttons, justpressed_buttons, justreleased_buttons;
 };
 
 static inline void wait_ready(void);

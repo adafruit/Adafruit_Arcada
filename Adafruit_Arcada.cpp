@@ -1,7 +1,7 @@
 #include <Adafruit_Arcada.h>
 
-#if defined(SD_CS) && defined(ARCADA_USE_SD_FS)
-  static SdFat FileSys(&SD_SPI_PORT);
+#if defined(ARCADA_USE_SD_FS)
+  static SdFat FileSys(&ARCADA_SD_SPI_PORT);
 #elif defined(ARCADA_USE_QSPI_FS)
   static Adafruit_SPIFlash flash(PIN_QSPI_SCK, PIN_QSPI_IO1, PIN_QSPI_IO0, PIN_QSPI_CS);
   static Adafruit_M0_Express_CircuitPython FileSys(flash);
@@ -61,7 +61,9 @@ bool Adafruit_Arcada::begin(void) {
   pinMode(ARCADA_BUTTON_DATA, INPUT);
 #endif
 
-  
+  // we can keep track of buttons for ya
+  last_buttons = curr_buttons = justpressed_buttons = justreleased_buttons = 0;
+
   ARCADA_TFT_INIT;
   tft.fillScreen(ARCADA_TFT_DEFAULTFILL);
   tft.setRotation(ARCADA_TFT_ROTATION);
@@ -169,7 +171,7 @@ uint32_t Adafruit_Arcada::readButtons(void) {
   uint32_t buttons = 0;
 
 
-#ifdef BUTTON_CLOCK
+#ifdef ARCADA_BUTTON_CLOCK
   // Use a latch to read 8 bits
   uint8_t shift_buttons = 0;
   digitalWrite(ARCADA_BUTTON_LATCH, LOW);
@@ -185,6 +187,7 @@ uint32_t Adafruit_Arcada::readButtons(void) {
     digitalWrite(ARCADA_BUTTON_CLOCK, LOW);
     delayMicroseconds(1);
   }
+
   if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_B)
     buttons |= ARCADA_BUTTONMASK_B;
   if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_A)
@@ -193,6 +196,7 @@ uint32_t Adafruit_Arcada::readButtons(void) {
     buttons |= ARCADA_BUTTONMASK_SELECT;
   if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_START)
     buttons |= ARCADA_BUTTONMASK_START;
+#ifdef ARCADA_BUTTON_SHIFTMASK_UP  // D Pad buttons
   if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_UP)
     buttons |= ARCADA_BUTTONMASK_UP;
   if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_DOWN)
@@ -201,7 +205,7 @@ uint32_t Adafruit_Arcada::readButtons(void) {
     buttons |= ARCADA_BUTTONMASK_LEFT;
   if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_RIGHT)
     buttons |= ARCADA_BUTTONMASK_RIGHT;
-
+#endif
 #endif
 
 #ifdef ARCADA_BUTTONPIN_START
@@ -246,8 +250,23 @@ uint32_t Adafruit_Arcada::readButtons(void) {
     buttons |= ARCADA_BUTTONMASK_UP;
 #endif
 
+  last_buttons = curr_buttons;
+  curr_buttons = buttons;
+  justpressed_buttons = (last_buttons ^ curr_buttons) & curr_buttons;
+  justreleased_buttons = (last_buttons ^ curr_buttons) & last_buttons;
+  
   return buttons;
 }
+
+uint32_t Adafruit_Arcada::justPressedButtons(void) {  
+  return justpressed_buttons;
+}
+
+uint32_t Adafruit_Arcada::justReleasedButtons(void) {  
+  return justreleased_buttons;
+}
+
+  
 
 /************************************* Filesystem stuff *******************/
 
@@ -260,7 +279,7 @@ uint32_t Adafruit_Arcada::readButtons(void) {
 /**************************************************************************/
 bool Adafruit_Arcada::filesysBegin(void) {
 #if defined(ARCADA_USE_SD_FS)
-  return FileSys.begin(SD_CS);
+  return FileSys.begin(ARCADA_SD_CS);
 #elif defined(ARCADA_USE_QSPI_FS)
   if (!flash.begin(SPIFLASHTYPE_W25Q16BV)) {
     Serial.println("Error, failed to initialize filesys!");
