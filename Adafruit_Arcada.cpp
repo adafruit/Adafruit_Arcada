@@ -7,9 +7,8 @@
   static Adafruit_M0_Express_CircuitPython FileSys(flash);
 #endif
 
-Adafruit_ST7735 tft = Adafruit_ST7735(&ARCADA_TFT_SPI, ARCADA_TFT_CS, ARCADA_TFT_DC, ARCADA_TFT_RST);
-
-Adafruit_Arcada::Adafruit_Arcada(void) {
+Adafruit_Arcada::Adafruit_Arcada(void) : 
+  Adafruit_ST7735(&ARCADA_TFT_SPI, ARCADA_TFT_CS, ARCADA_TFT_DC, ARCADA_TFT_RST) {
 }
 
 /**************************************************************************/
@@ -65,9 +64,8 @@ bool Adafruit_Arcada::begin(void) {
   last_buttons = curr_buttons = justpressed_buttons = justreleased_buttons = 0;
 
   ARCADA_TFT_INIT;
-  tft.fillScreen(ARCADA_TFT_DEFAULTFILL);
-  tft.setRotation(ARCADA_TFT_ROTATION);
-  setBacklight(255);
+  fillScreen(ARCADA_TFT_DEFAULTFILL);
+  setRotation(ARCADA_TFT_ROTATION);
   _first_frame = true;
   _framebuffer = NULL;
 
@@ -76,7 +74,11 @@ bool Adafruit_Arcada::begin(void) {
 
 void Adafruit_Arcada::setBacklight(uint8_t brightness) {
   pinMode(ARCADA_TFT_LITE, OUTPUT);
-  analogWrite(ARCADA_TFT_LITE, brightness);
+  if (brightness == 0) {
+    digitalWrite(ARCADA_TFT_LITE, LOW);
+  } else {
+    analogWrite(ARCADA_TFT_LITE, brightness);
+  }
 }
 
 void Adafruit_Arcada::enableSpeaker(bool on) {
@@ -99,6 +101,7 @@ void Adafruit_Arcada::printf(const char *format, ...) {
   va_end(args);
 }
 
+/*
 
 void Adafruit_Arcada::print(const char *s) {
    Serial.print(s);
@@ -116,6 +119,7 @@ void Adafruit_Arcada::print(int32_t d, uint8_t format) {
 void Adafruit_Arcada::println(int32_t d, uint8_t format) {
   Serial.println(d, format);
 }
+*/
 
 /**************************************************************************/
 /*!
@@ -599,7 +603,7 @@ void flash_write_row(uint32_t *dst, uint32_t *src) {
     @return 0 (darkest) to 1023 (brightest) or 0 if there is no sensor
 */
 /**************************************************************************/
-uint16_t readLightSensor(void) {
+uint16_t Adafruit_Arcada::readLightSensor(void) {
 #if defined(ARCADA_LIGHT_SENSOR)
   return analogRead(ARCADA_LIGHT_SENSOR);
 #else
@@ -607,14 +611,6 @@ uint16_t readLightSensor(void) {
 #endif
 }
 
-
-void Adafruit_Arcada::fillScreen(uint16_t color) {
-  return tft.fillScreen(color);
-}
-
-void Adafruit_Arcada::invertDisplay(bool flag) {
-  return tft.invertDisplay(flag);
-}
 
 bool Adafruit_Arcada::createFrameBuffer(uint16_t width, uint16_t height) {
   _framebuffer = (uint16_t *)malloc(width * height * 2);
@@ -632,13 +628,13 @@ bool Adafruit_Arcada::blitFrameBuffer(uint16_t x, uint16_t y, bool blocking) {
   if (!_framebuffer) return false;
 
   if (! _first_frame) {
-    tft.endWrite(); // End transaction from any prior callback
+    endWrite(); // End transaction from any prior callback
     _first_frame = false;
   }
 
-  tft.startWrite(); // Start new display transaction
-  tft.setAddrWindow(x, y, _framebuf_width, _framebuf_height);
-  tft.writePixels(_framebuffer, _framebuf_width*_framebuf_height, blocking); // immediate return;
+  startWrite(); // Start new display transaction
+  setAddrWindow(x, y, _framebuf_width, _framebuf_height);
+  writePixels(_framebuffer, _framebuf_width*_framebuf_height, blocking); // immediate return;
   return true;
 }
 

@@ -41,7 +41,7 @@
   #define ARCADA_TFT_LITE        47
   #define ARCADA_TFT_ROTATION     1
   #define ARCADA_TFT_DEFAULTFILL  0x7BEF
-  #define ARCADA_TFT_INIT         tft.initR(INITR_BLACKTAB)
+  #define ARCADA_TFT_INIT         initR(INITR_BLACKTAB)
   #define ARCADA_TFT_TYPE         ST7735
 
   #define ARCADA_SPEAKER_ENABLE  51
@@ -76,7 +76,7 @@
   #define ARCADA_TFT_LITE        48
   #define ARCADA_TFT_ROTATION     1
   #define ARCADA_TFT_DEFAULTFILL  0xFFFF
-  #define ARCADA_TFT_INIT         tft.initR(INITR_BLACKTAB)
+  #define ARCADA_TFT_INIT         initR(INITR_BLACKTAB)
   #define ARCADA_TFT_TYPE         ST7735
 
   #define ARCADA_SPEAKER_ENABLE  52
@@ -95,8 +95,8 @@
   #define ARCADA_JOYSTICK_Y    A10
 
   #define ARCADA_LIGHT_SENSOR             A7
-  #define ARCADA_RIGHT_AUDIO_PIN          A0
-  #define ARCADA_LEFT_AUDIO_PIN           A1
+  #define ARCADA_RIGHT_AUDIO_PIN          A1
+  #define ARCADA_LEFT_AUDIO_PIN           A0
 
   #define ARCADA_SD_SPI_PORT             SPI
   #define ARCADA_SD_CS                     4
@@ -115,16 +115,18 @@
   #define   O_WRITE   FILE_WRITE
 #endif
 
-class Adafruit_Arcada {
+class Adafruit_Arcada : public Adafruit_ST7735 {
 
  public:
   Adafruit_Arcada(void);
   bool begin(void);
   void printf(const char *format, ...);
+  /*
   void print(const char *s);
   void println(const char *s);
   void print(int32_t d, uint8_t format=DEC);
   void println(int32_t d, uint8_t format=DEC);
+  */
 
   // Filesystem stuff!
   bool filesysBegin(void);
@@ -141,8 +143,6 @@ class Adafruit_Arcada {
   uint32_t justReleasedButtons(void);
   uint16_t readLightSensor(void);
 
-  void fillScreen(uint16_t color);
-  void invertDisplay(bool flag);
   bool createFrameBuffer(uint16_t width, uint16_t height);
   uint16_t *getFrameBuffer(void);
   bool blitFrameBuffer(uint16_t x, uint16_t y, bool blocking=false);
