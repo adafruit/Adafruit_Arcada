@@ -20,11 +20,13 @@
   #define ARCADA_TFT_CS          10
   #define ARCADA_TFT_RST         -1  // unused
   #define ARCADA_TFT_TYPE        Adafruit_ILI9341
-  #define ARCADA_TFT_ROTATION           1
+  #define ARCADA_TFT_ROTATION    1
   #define ARCADA_TFT_INIT        begin()
+  #define ARCADA_TFT_WIDTH        320
+  #define ARCADA_TFT_HEIGHT       240
 
   #define ARCADA_SD_SPI_PORT     SDCARD_SPI
-  #define ARCADA_SD_CS    SDCARD_SS_PIN
+  #define ARCADA_SD_CS           SDCARD_SS_PIN
   #define ARCADA_RIGHT_AUDIO_PIN A0
   #define ARCADA_LEFT_AUDIO_PIN  A1
 
@@ -49,6 +51,8 @@
   #define ARCADA_TFT_LITE         25
   #define ARCADA_TFT_DEFAULTFILL  0xFFFF
   #define ARCADA_TFT_ROTATION     1
+  #define ARCADA_TFT_WIDTH        320
+  #define ARCADA_TFT_HEIGHT       240
 
   #define ARCADA_TFT_TYPE        Adafruit_ILI9341
   #define ARCADA_TFT_INIT        begin()
@@ -74,6 +78,8 @@
   #define ARCADA_TFT_DEFAULTFILL  0x7BEF
   #define ARCADA_TFT_INIT         initR(INITR_BLACKTAB)
   #define ARCADA_TFT_TYPE         Adafruit_ST7735
+  #define ARCADA_TFT_WIDTH        160
+  #define ARCADA_TFT_HEIGHT       128
 
   #define ARCADA_SPEAKER_ENABLE  51
   #define ARCADA_NEOPIXEL_PIN     8
@@ -111,6 +117,8 @@
   #define ARCADA_TFT_DEFAULTFILL  0xFFFF
   #define ARCADA_TFT_INIT         initR(INITR_BLACKTAB)
   #define ARCADA_TFT_TYPE         Adafruit_ST7735
+  #define ARCADA_TFT_WIDTH        160
+  #define ARCADA_TFT_HEIGHT       128
 
   #define ARCADA_SPEAKER_ENABLE  51
   #define ARCADA_NEOPIXEL_PIN     8
