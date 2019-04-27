@@ -21,7 +21,7 @@ Adafruit_Arcada::Adafruit_Arcada(void) :
 
 /**************************************************************************/
 /*!
-    @brief  Initialize GPIO, display, NeoPixels, TFT, sound system, etc.
+    @brief  Initialize GPIO, NeoPixels, and speaker
     @return True on success, False if something failed!
 */
 /**************************************************************************/
@@ -87,12 +87,23 @@ bool Adafruit_Arcada::begin(void) {
   return true;
 }
 
+/**************************************************************************/
+/*!
+    @brief  Initialize TFT display, doesn't turn on the backlight
+*/
+/**************************************************************************/
 void Adafruit_Arcada::displayBegin(void) {
   ARCADA_TFT_INIT;
   fillScreen(ARCADA_TFT_DEFAULTFILL);
   setRotation(ARCADA_TFT_ROTATION);
 }
 
+/**************************************************************************/
+/*!
+    @brief  Set the backlight brightness
+    @param  brightness From 0 (off) to 255 (full on)
+*/
+/**************************************************************************/
 void Adafruit_Arcada::setBacklight(uint8_t brightness) {
   pinMode(ARCADA_TFT_LITE, OUTPUT);
   if (brightness == 0) {
@@ -102,6 +113,12 @@ void Adafruit_Arcada::setBacklight(uint8_t brightness) {
   }
 }
 
+/**************************************************************************/
+/*!
+    @brief  Turn on the speaker amplifier
+    @param  on True to enable, False to disable
+*/
+/**************************************************************************/
 void Adafruit_Arcada::enableSpeaker(bool on) {
   digitalWrite(ARCADA_SPEAKER_ENABLE, on);
 }
