@@ -120,6 +120,13 @@
   #define   O_WRITE   FILE_WRITE
 #endif
 
+/**************************************************************************/
+/*!
+    @brief  An abstraction class for something with a display, and possibly
+    button controls or speaker. Makes targing games and UI to multiple hardware
+    designs easier
+*/
+/**************************************************************************/
 class Adafruit_Arcada : public Adafruit_ST7735 {
 
  public:
@@ -139,7 +146,7 @@ class Adafruit_Arcada : public Adafruit_ST7735 {
   bool exists(const char *path);
   bool mkdir(const char *path);
   bool remove(const char *path);
-  uint8_t *writeFileToFlash(const char *filename, uint32_t address = 262144);
+  //uint8_t *writeFileToFlash(const char *filename, uint32_t address = 262144);
 
   int16_t readJoystickX(uint8_t oversampling=3);
   int16_t readJoystickY(uint8_t oversampling=3);
@@ -154,7 +161,7 @@ class Adafruit_Arcada : public Adafruit_ST7735 {
   void setBacklight(uint8_t brightness);
   void enableSpeaker(bool flag);
 
-  Adafruit_NeoPixel pixels;
+  Adafruit_NeoPixel pixels;     ///<  The neopixel strip, of length ARCADA_NEOPIXEL_NUM
 
  private:
 
@@ -169,6 +176,7 @@ class Adafruit_Arcada : public Adafruit_ST7735 {
 
   uint32_t last_buttons, curr_buttons, justpressed_buttons, justreleased_buttons;
 };
+
 
 static inline void wait_ready(void);
 static void flash_write_row(uint32_t *dst, uint32_t *src);

@@ -15,6 +15,11 @@ void TC4_Handler(){
 }
 
 
+/**************************************************************************/
+/*!
+    @brief  Instantiator for Arcada class, will allso inistantiate (but not init) the TFT
+*/
+/**************************************************************************/
 Adafruit_Arcada::Adafruit_Arcada(void) : 
   Adafruit_ST7735(&ARCADA_TFT_SPI, ARCADA_TFT_CS, ARCADA_TFT_DC, ARCADA_TFT_RST) {
 }
@@ -161,29 +166,10 @@ void Adafruit_Arcada::printf(const char *format, ...) {
   va_end(args);
 }
 
-/*
-
-void Adafruit_Arcada::print(const char *s) {
-   Serial.print(s);
-}
-
-void Adafruit_Arcada::println(const char *s) {
-   Serial.println(s);
-}
-
-
-void Adafruit_Arcada::print(int32_t d, uint8_t format) {
-  Serial.print(d, format);
-}
-
-void Adafruit_Arcada::println(int32_t d, uint8_t format) {
-  Serial.println(d, format);
-}
-*/
-
 /**************************************************************************/
 /*!
     @brief  Read X analog joystick
+    @param  sampling How many samples to read and average, default is 3
     @return Signed 16 bits, from -512 to 511, 0 being 'center'
 */
 /**************************************************************************/
@@ -205,6 +191,7 @@ int16_t Adafruit_Arcada::readJoystickX(uint8_t sampling) {
 /**************************************************************************/
 /*!
     @brief  Read Y analog joystick
+    @param  sampling How many samples to read and average, default is 3
     @return Signed 16 bits, from -512 to 511, 0 being 'center'
 */
 /**************************************************************************/
@@ -384,6 +371,7 @@ bool Adafruit_Arcada::filesysBegin(void) {
 /**************************************************************************/
 /*!
     @brief  Set working filesys directory to a given path (makes file naming easier)
+    @param  path A string with the directory to change to
     @return True if was able to find a directory at that path
 */
 /**************************************************************************/
@@ -499,6 +487,7 @@ bool Adafruit_Arcada::remove(const char *path) {
 /*!
     @brief  Opens a file and returns the object, a wrapper for our filesystem
     @param  path A string with the filename path, must start with / e.g. "/roms"
+    @param  flags Defaults to O_READ but can use O_WRITE for writing (uses SDfat's flag system)
     @return A File object, for whatever filesystem we're using
 */
 /**************************************************************************/
