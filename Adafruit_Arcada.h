@@ -5,7 +5,10 @@
 
 #include "Adafruit_Arcada_Def.h"
 #include <Adafruit_NeoPixel.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SPITFT.h>
 #include <Adafruit_ST7735.h>
+#include <Adafruit_ILI9341.h>
 #include <Adafruit_ZeroTimer.h>
 
 #define SD_MAX_FILENAME_SIZE 80
@@ -16,6 +19,10 @@
   #define ARCADA_TFT_DC          9
   #define ARCADA_TFT_CS          10
   #define ARCADA_TFT_RST         -1  // unused
+  #define ARCADA_TFT_TYPE        Adafruit_ILI9341
+  #define ARCADA_TFT_ROTATION           1
+  #define ARCADA_TFT_INIT        begin()
+
   #define ARCADA_SD_SPI_PORT     SDCARD_SPI
   #define ARCADA_SD_CS    SDCARD_SS_PIN
   #define ARCADA_RIGHT_AUDIO_PIN A0
@@ -31,6 +38,30 @@
 
   #define ARCADA_USE_SD_FS
 
+#elif defined(ADAFRUIT_PYPORTAL)
+  // 8 bit 320x240 TFT
+  #define ARCADA_TFT_D0          34 // Data bit 0 pin (MUST be on PORT byte boundary)
+  #define ARCADA_TFT_WR          26 // Write-strobe pin (CCL-inverted timer output)
+  #define ARCADA_TFT_DC          10 // Data/command pin
+  #define ARCADA_TFT_CS          11 // Chip-select pin
+  #define ARCADA_TFT_RST         24 // Reset pin
+  #define ARCADA_TFT_RD           9 // Read-strobe pin
+  #define ARCADA_TFT_LITE         25
+  #define ARCADA_TFT_DEFAULTFILL  0xFFFF
+  #define ARCADA_TFT_ROTATION     1
+
+  #define ARCADA_TFT_TYPE        Adafruit_ILI9341
+  #define ARCADA_TFT_INIT        begin()
+
+  #define ARCADA_SPEAKER_ENABLE   50
+
+  #define ARCADA_NEOPIXEL_PIN     2
+  #define ARCADA_NEOPIXEL_NUM     1
+
+  #define ARCADA_SD_SPI_PORT      SPI
+  #define ARCADA_SD_CS            32
+  #define ARCADA_USE_SD_FS
+
 #elif defined(ADAFRUIT_PYBADGE_M4_EXPRESS)
 
   #define ARCADA_TFT_SPI         SPI1
@@ -42,7 +73,7 @@
   #define ARCADA_TFT_ROTATION     1
   #define ARCADA_TFT_DEFAULTFILL  0x7BEF
   #define ARCADA_TFT_INIT         initR(INITR_BLACKTAB)
-  #define ARCADA_TFT_TYPE         ST7735
+  #define ARCADA_TFT_TYPE         Adafruit_ST7735
 
   #define ARCADA_SPEAKER_ENABLE  51
   #define ARCADA_NEOPIXEL_PIN     8
@@ -79,7 +110,7 @@
   #define ARCADA_TFT_ROTATION     1
   #define ARCADA_TFT_DEFAULTFILL  0xFFFF
   #define ARCADA_TFT_INIT         initR(INITR_BLACKTAB)
-  #define ARCADA_TFT_TYPE         ST7735
+  #define ARCADA_TFT_TYPE         Adafruit_ST7735
 
   #define ARCADA_SPEAKER_ENABLE  51
   #define ARCADA_NEOPIXEL_PIN     8
@@ -127,13 +158,11 @@
     designs easier
 */
 /**************************************************************************/
-class Adafruit_Arcada : public Adafruit_ST7735 {
+class Adafruit_Arcada : public ARCADA_TFT_TYPE {
 
  public:
   Adafruit_Arcada(void);
   bool begin(void);
-
-  void displayBegin(void);
 
   bool timerCallback(uint32_t freq, void (*callback)());
   void printf(const char *format, ...);
@@ -155,6 +184,7 @@ class Adafruit_Arcada : public Adafruit_ST7735 {
   uint32_t justReleasedButtons(void);
   uint16_t readLightSensor(void);
 
+  void displayBegin(void);
   bool createFrameBuffer(uint16_t width, uint16_t height);
   uint16_t *getFrameBuffer(void);
   bool blitFrameBuffer(uint16_t x, uint16_t y, bool blocking=false);

@@ -14,14 +14,18 @@ void TC4_Handler(){
   Adafruit_ZeroTimer::timerHandler(4);
 }
 
-
 /**************************************************************************/
 /*!
     @brief  Instantiator for Arcada class, will allso inistantiate (but not init) the TFT
 */
 /**************************************************************************/
-Adafruit_Arcada::Adafruit_Arcada(void) : 
-  Adafruit_ST7735(&ARCADA_TFT_SPI, ARCADA_TFT_CS, ARCADA_TFT_DC, ARCADA_TFT_RST) {
+Adafruit_Arcada::Adafruit_Arcada(void) :
+#ifdef ARCADA_TFT_SPI
+  ARCADA_TFT_TYPE(&ARCADA_TFT_SPI, ARCADA_TFT_CS, ARCADA_TFT_DC, ARCADA_TFT_RST)
+#else
+  ARCADA_TFT_TYPE(tft8bitbus, ARCADA_TFT_D0, ARCADA_TFT_WR, ARCADA_TFT_DC, ARCADA_TFT_CS, ARCADA_TFT_RST, ARCADA_TFT_RD)
+#endif
+{
 }
 
 /**************************************************************************/
@@ -98,7 +102,7 @@ bool Adafruit_Arcada::begin(void) {
 */
 /**************************************************************************/
 void Adafruit_Arcada::displayBegin(void) {
-  ARCADA_TFT_INIT;
+  ARCADA_TFT_TYPE::ARCADA_TFT_INIT;
   fillScreen(ARCADA_TFT_DEFAULTFILL);
   setRotation(ARCADA_TFT_ROTATION);
 }
