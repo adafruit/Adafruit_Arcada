@@ -6,7 +6,7 @@
 #include "Adafruit_Arcada_Def.h"
 #include <Adafruit_NeoPixel.h>
 #include <Adafruit_ST7735.h>
-
+#include <Adafruit_ZeroTimer.h>
 
 #define SD_MAX_FILENAME_SIZE 80
 
@@ -70,22 +70,22 @@
 
   #define ARCADA_TFT_SPI         SPI1
   #define ARCADA_TFT_SERCOM      SERCOM4
-  #define ARCADA_TFT_CS          45       // Display CS Arduino pin number
-  #define ARCADA_TFT_DC          46       // Display D/C Arduino pin number
-  #define ARCADA_TFT_RST         47       // Display reset Arduino pin number
-  #define ARCADA_TFT_LITE        48
+  #define ARCADA_TFT_CS          44       // Display CS Arduino pin number
+  #define ARCADA_TFT_DC          45       // Display D/C Arduino pin number
+  #define ARCADA_TFT_RST         46       // Display reset Arduino pin number
+  #define ARCADA_TFT_LITE        47
   #define ARCADA_TFT_ROTATION     1
   #define ARCADA_TFT_DEFAULTFILL  0xFFFF
   #define ARCADA_TFT_INIT         initR(INITR_BLACKTAB)
   #define ARCADA_TFT_TYPE         ST7735
 
-  #define ARCADA_SPEAKER_ENABLE  52
+  #define ARCADA_SPEAKER_ENABLE  51
   #define ARCADA_NEOPIXEL_PIN     8
   #define ARCADA_NEOPIXEL_NUM     5
   #define ARCADA_AUDIO_OUT       A0
-  #define ARCADA_BUTTON_CLOCK    49
-  #define ARCADA_BUTTON_DATA     50
-  #define ARCADA_BUTTON_LATCH    51
+  #define ARCADA_BUTTON_CLOCK    48
+  #define ARCADA_BUTTON_DATA     49
+  #define ARCADA_BUTTON_LATCH    50
   #define ARCADA_BUTTON_SHIFTMASK_B           0x80
   #define ARCADA_BUTTON_SHIFTMASK_A           0x40
   #define ARCADA_BUTTON_SHIFTMASK_START       0x20
@@ -95,13 +95,17 @@
   #define ARCADA_JOYSTICK_Y    A10
 
   #define ARCADA_LIGHT_SENSOR             A7
-  #define ARCADA_RIGHT_AUDIO_PIN          A1
-  #define ARCADA_LEFT_AUDIO_PIN           A0
+  #define ARCADA_RIGHT_AUDIO_PIN          A0
+  #define ARCADA_LEFT_AUDIO_PIN           A1
 
+  #define ARCADA_MAX_VOLUME               0.2
+  #define ARCADA_USE_QSPI_FS
+/*
   #define ARCADA_SD_SPI_PORT             SPI
   #define ARCADA_SD_CS                     4
-
   #define ARCADA_USE_SD_FS
+
+*/
 #endif
 
 #if defined(ARCADA_USE_SD_FS)
@@ -111,6 +115,7 @@
   #include <Adafruit_SPIFlash_FatFs.h>
   #define ARCADA_FLASH_TYPE    SPIFLASHTYPE_W25Q16BV
 
+  typedef Adafruit_SPIFlash_FAT::File File;
   #define   O_READ    FILE_READ
   #define   O_WRITE   FILE_WRITE
 #endif
@@ -120,6 +125,8 @@ class Adafruit_Arcada : public Adafruit_ST7735 {
  public:
   Adafruit_Arcada(void);
   bool begin(void);
+
+  bool timerCallback(uint32_t freq, void (*callback)());
   void printf(const char *format, ...);
   /*
   void print(const char *s);

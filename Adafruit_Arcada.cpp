@@ -7,6 +7,14 @@
   static Adafruit_M0_Express_CircuitPython FileSys(flash);
 #endif
 
+
+Adafruit_ZeroTimer zt5 = Adafruit_ZeroTimer(5);
+
+void TC5_Handler(){
+  Adafruit_ZeroTimer::timerHandler(5);
+}
+
+
 Adafruit_Arcada::Adafruit_Arcada(void) : 
   Adafruit_ST7735(&ARCADA_TFT_SPI, ARCADA_TFT_CS, ARCADA_TFT_DC, ARCADA_TFT_RST) {
 }
@@ -19,6 +27,9 @@ Adafruit_Arcada::Adafruit_Arcada(void) :
 /**************************************************************************/
 bool Adafruit_Arcada::begin(void) {
   setBacklight(0);
+
+  pinMode(ARCADA_SPEAKER_ENABLE, OUTPUT);
+  enableSpeaker(false);
 
   // current working dir is /
   strcpy(_cwd_path, "/");
@@ -82,8 +93,30 @@ void Adafruit_Arcada::setBacklight(uint8_t brightness) {
 }
 
 void Adafruit_Arcada::enableSpeaker(bool on) {
-  pinMode(ARCADA_SPEAKER_ENABLE, OUTPUT);
   digitalWrite(ARCADA_SPEAKER_ENABLE, on);
+}
+
+/**************************************************************************/
+/*!
+    @brief  Create a repetative callback to a function using a timer
+    @param  freq The callback frequency, must be between 200 Hz and 12MHz (slower is better)
+    @param  callback A pointer to the function we'll call every time
+    @return True on success, False if something failed!
+*/
+/**************************************************************************/
+bool Adafruit_Arcada::timerCallback(uint32_t freq, void (*callback)()) {
+  if ((freq <= 200)  || (freq >= 12000000)) {
+    return false;
+  }
+  zt5.configure(TC_CLOCK_PRESCALER_DIV4, // prescaler
+                TC_COUNTER_SIZE_16BIT,   // bit width of timer/counter
+                TC_WAVE_GENERATION_MATCH_PWM // frequency or PWM mode
+                );
+
+  zt5.setCompare(0, (48000000/4)/freq);
+  zt5.setCallback(true, TC_CALLBACK_CC_CHANNEL0, callback);
+  zt5.enable(true);
+  return true;
 }
 
 /**************************************************************************/
