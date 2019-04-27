@@ -20,10 +20,12 @@ void TC4_Handler(){
 */
 /**************************************************************************/
 Adafruit_Arcada::Adafruit_Arcada(void) :
-#ifdef ARCADA_TFT_SPI
+#if defined(ARCADA_TFT_SPI)
   ARCADA_TFT_TYPE(&ARCADA_TFT_SPI, ARCADA_TFT_CS, ARCADA_TFT_DC, ARCADA_TFT_RST)
-#else
+#elif defined(ARCADA_TFT_D0)
   ARCADA_TFT_TYPE(tft8bitbus, ARCADA_TFT_D0, ARCADA_TFT_WR, ARCADA_TFT_DC, ARCADA_TFT_CS, ARCADA_TFT_RST, ARCADA_TFT_RD)
+#else // default SPI
+  ARCADA_TFT_TYPE(ARCADA_TFT_CS, ARCADA_TFT_DC, ARCADA_TFT_RST)
 #endif
 {
 }
@@ -44,8 +46,10 @@ bool Adafruit_Arcada::begin(void) {
   pinMode(ARCADA_TFT_CS, OUTPUT);
   digitalWrite(ARCADA_TFT_CS, HIGH);
 
+#ifdef ARCADA_SPEAKER_ENABLE
   pinMode(ARCADA_SPEAKER_ENABLE, OUTPUT);
   enableSpeaker(false);
+#endif
 
   // current working dir is /
   strcpy(_cwd_path, "/");
@@ -114,12 +118,14 @@ void Adafruit_Arcada::displayBegin(void) {
 */
 /**************************************************************************/
 void Adafruit_Arcada::setBacklight(uint8_t brightness) {
+#ifdef ARCADA_TFT_LITE
   pinMode(ARCADA_TFT_LITE, OUTPUT);
   if (brightness == 0) {
     digitalWrite(ARCADA_TFT_LITE, LOW);
   } else {
     analogWrite(ARCADA_TFT_LITE, brightness);
   }
+#endif
 }
 
 /**************************************************************************/
@@ -129,7 +135,9 @@ void Adafruit_Arcada::setBacklight(uint8_t brightness) {
 */
 /**************************************************************************/
 void Adafruit_Arcada::enableSpeaker(bool on) {
+#ifdef ARCADA_SPEAKER_ENABLE
   digitalWrite(ARCADA_SPEAKER_ENABLE, on);
+#endif
 }
 
 /**************************************************************************/

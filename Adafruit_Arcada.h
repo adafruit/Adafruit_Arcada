@@ -14,14 +14,13 @@
 #define SD_MAX_FILENAME_SIZE 80
 
 #if defined(ARDUINO_GRAND_CENTRAL_M4) // w/TFT Shield
-  #define ARCADA_TFT_SPI         SPI
-  #define ARCADA_TFT_SERCOM      SERCOM7
-  #define ARCADA_TFT_DC          9
-  #define ARCADA_TFT_CS          10
-  #define ARCADA_TFT_RST         -1  // unused
-  #define ARCADA_TFT_TYPE        Adafruit_ILI9341
-  #define ARCADA_TFT_ROTATION    1
-  #define ARCADA_TFT_INIT        begin()
+  #define ARCADA_TFT_DC           9
+  #define ARCADA_TFT_CS           10
+  #define ARCADA_TFT_RST          -1
+  #define ARCADA_TFT_TYPE         Adafruit_ILI9341
+  #define ARCADA_TFT_ROTATION     1
+  #define ARCADA_TFT_DEFAULTFILL  0xF00F
+  #define ARCADA_TFT_INIT         begin()
   #define ARCADA_TFT_WIDTH        320
   #define ARCADA_TFT_HEIGHT       240
 
@@ -29,6 +28,9 @@
   #define ARCADA_SD_CS           SDCARD_SS_PIN
   #define ARCADA_RIGHT_AUDIO_PIN A0
   #define ARCADA_LEFT_AUDIO_PIN  A1
+
+  #define ARCADA_NEOPIXEL_PIN     88
+  #define ARCADA_NEOPIXEL_NUM     1
 
   // Analog joystick
   #define ARCADA_JOYSTICK_X    A8
@@ -69,7 +71,6 @@
 #elif defined(ADAFRUIT_PYBADGE_M4_EXPRESS)
 
   #define ARCADA_TFT_SPI         SPI1
-  #define ARCADA_TFT_SERCOM      SERCOM4
   #define ARCADA_TFT_CS          44       // Display CS Arduino pin number
   #define ARCADA_TFT_DC          45       // Display D/C Arduino pin number
   #define ARCADA_TFT_RST         46       // Display reset Arduino pin number
@@ -108,7 +109,6 @@
 #elif defined(ADAFRUIT_PYGAMER_M4_EXPRESS)
 
   #define ARCADA_TFT_SPI         SPI1
-  #define ARCADA_TFT_SERCOM      SERCOM4
   #define ARCADA_TFT_CS          44       // Display CS Arduino pin number
   #define ARCADA_TFT_DC          45       // Display D/C Arduino pin number
   #define ARCADA_TFT_RST         46       // Display reset Arduino pin number
