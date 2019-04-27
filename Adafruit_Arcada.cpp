@@ -304,10 +304,24 @@ uint32_t Adafruit_Arcada::readButtons(void) {
   return buttons;
 }
 
+/**************************************************************************/
+/*!
+    @brief  What buttons were just pressed as of the last readButtons() call.
+    Use ARCADA_BUTTONMASK_* defines to extract which bits are true (just pressed)
+    @return Bitmask of all buttons that were just pressed
+*/
+/**************************************************************************/
 uint32_t Adafruit_Arcada::justPressedButtons(void) {  
   return justpressed_buttons;
 }
 
+/**************************************************************************/
+/*!
+    @brief  What buttons were just released as of the last readButtons() call.
+    Use ARCADA_BUTTONMASK_* defines to extract which bits are true (just releasd)
+    @return Bitmask of all buttons that were just released
+*/
+/**************************************************************************/
 uint32_t Adafruit_Arcada::justReleasedButtons(void) {  
   return justreleased_buttons;
 }
@@ -352,7 +366,7 @@ bool Adafruit_Arcada::filesysBegin(void) {
 
 /**************************************************************************/
 /*!
-    @brief  Set working directory to a given path (makes file naming easier)
+    @brief  Set working filesys directory to a given path (makes file naming easier)
     @return True if was able to find a directory at that path
 */
 /**************************************************************************/
@@ -424,7 +438,7 @@ int16_t Adafruit_Arcada::filesysListFiles(const char *path) {
 
 /**************************************************************************/
 /*!
-    @brief  Tests if a file exists
+    @brief  Tests if a file exists on the filesys
     @param  path A string with the filename path
     @return true or false if we can open the file
 */
@@ -440,7 +454,7 @@ bool Adafruit_Arcada::exists(const char *path) {
 
 /**************************************************************************/
 /*!
-    @brief  Make a directory
+    @brief  Make a directory in the filesys
     @param  path A string with the new directory path
     @return true or false if we succeeded
 */
@@ -453,7 +467,7 @@ bool Adafruit_Arcada::mkdir(const char *path) {
 
 /**************************************************************************/
 /*!
-    @brief  Remove a file
+    @brief  Remove a file from the filesys
     @param  path A string with the file to be deleted
     @return true or false if we succeeded
 */
@@ -688,6 +702,14 @@ uint16_t Adafruit_Arcada::readLightSensor(void) {
 }
 
 
+/**************************************************************************/
+/*!
+    @brief  Create (malloc) an internal framebuffer of given width and height
+    @param  width Number of pixels wide
+    @param  height Number of pixels tall
+    @return True on success (could malloc) or false on failure
+*/
+/**************************************************************************/
 bool Adafruit_Arcada::createFrameBuffer(uint16_t width, uint16_t height) {
   _framebuffer = (uint16_t *)malloc(width * height * 2);
   if (!_framebuffer) return false;
@@ -696,10 +718,26 @@ bool Adafruit_Arcada::createFrameBuffer(uint16_t width, uint16_t height) {
   return true;
 }
 
+/**************************************************************************/
+/*!
+    @brief  Getter for internal framebuffer (NULL if not allocated)
+    @return The pointer to a width*height*16-bit framebuf
+*/
+/**************************************************************************/
 uint16_t * Adafruit_Arcada::getFrameBuffer(void) {
   return _framebuffer;
 }
 
+/**************************************************************************/
+/*!
+    @brief  Write the internal framebuffer to the display at coord (x, y)
+    @param  x X coordinate in the TFT screen to write it to
+    @param  y Y coordinate in the TFT screen to write it to
+    @param  blocking If true, we wait until blit is done. otherwise we let DMA
+    do the blitting and return immediately
+    @return True on success, failure if no framebuffer exists
+*/
+/**************************************************************************/
 bool Adafruit_Arcada::blitFrameBuffer(uint16_t x, uint16_t y, bool blocking) {
   if (!_framebuffer) return false;
 
