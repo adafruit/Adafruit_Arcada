@@ -64,6 +64,8 @@
   #define ARCADA_RIGHT_AUDIO_PIN A0
   #define ARCADA_LEFT_AUDIO_PIN  A1
 
+  #define ARCADA_MAX_VOLUME               0.5
+
   #define ARCADA_USE_QSPI_FS
 
 #elif defined(ADAFRUIT_PYGAMER_M4_EXPRESS)
@@ -99,13 +101,10 @@
   #define ARCADA_LEFT_AUDIO_PIN           A1
 
   #define ARCADA_MAX_VOLUME               0.2
-  #define ARCADA_USE_QSPI_FS
-/*
+//  #define ARCADA_USE_QSPI_FS
   #define ARCADA_SD_SPI_PORT             SPI
   #define ARCADA_SD_CS                     4
   #define ARCADA_USE_SD_FS
-
-*/
 #endif
 
 #if defined(ARCADA_USE_SD_FS)
@@ -113,7 +112,8 @@
 #elif defined(ARCADA_USE_QSPI_FS)
   #include <Adafruit_SPIFlash.h>
   #include <Adafruit_SPIFlash_FatFs.h>
-  #define ARCADA_FLASH_TYPE    SPIFLASHTYPE_W25Q16BV
+  #include "Adafruit_QSPI_GD25Q.h"
+  #define ARCADA_FLASH_TYPE     SPIFLASHTYPE_W25Q64 // Flash chip type.
 
   typedef Adafruit_SPIFlash_FAT::File File;
   #define   O_READ    FILE_READ
@@ -126,21 +126,19 @@ class Adafruit_Arcada : public Adafruit_ST7735 {
   Adafruit_Arcada(void);
   bool begin(void);
 
+  void displayBegin(void);
+
   bool timerCallback(uint32_t freq, void (*callback)());
   void printf(const char *format, ...);
-  /*
-  void print(const char *s);
-  void println(const char *s);
-  void print(int32_t d, uint8_t format=DEC);
-  void println(int32_t d, uint8_t format=DEC);
-  */
 
   // Filesystem stuff!
   bool filesysBegin(void);
   int16_t filesysListFiles(const char *path=NULL);
-  bool filesysCWD(const char *path);
+  bool chdir(const char *path);
   File open(const char *path=NULL, uint32_t flags = O_READ);
   bool exists(const char *path);
+  bool mkdir(const char *path);
+  bool remove(const char *path);
   uint8_t *writeFileToFlash(const char *filename, uint32_t address = 262144);
 
   int16_t readJoystickX(uint8_t oversampling=3);

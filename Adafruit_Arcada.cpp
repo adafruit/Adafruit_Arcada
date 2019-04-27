@@ -3,15 +3,15 @@
 #if defined(ARCADA_USE_SD_FS)
   static SdFat FileSys(&ARCADA_SD_SPI_PORT);
 #elif defined(ARCADA_USE_QSPI_FS)
-  static Adafruit_SPIFlash flash(PIN_QSPI_SCK, PIN_QSPI_IO1, PIN_QSPI_IO0, PIN_QSPI_CS);
+  static Adafruit_QSPI_GD25Q flash;
   static Adafruit_M0_Express_CircuitPython FileSys(flash);
 #endif
 
 
-Adafruit_ZeroTimer zt5 = Adafruit_ZeroTimer(5);
+static Adafruit_ZeroTimer zerotimer = Adafruit_ZeroTimer(4);
 
-void TC5_Handler(){
-  Adafruit_ZeroTimer::timerHandler(5);
+void TC4_Handler(){
+  Adafruit_ZeroTimer::timerHandler(4);
 }
 
 
@@ -27,6 +27,13 @@ Adafruit_Arcada::Adafruit_Arcada(void) :
 /**************************************************************************/
 bool Adafruit_Arcada::begin(void) {
   setBacklight(0);
+
+#ifdef ARCADA_SD_CS 
+  pinMode(ARCADA_SD_CS, OUTPUT);
+  digitalWrite(ARCADA_SD_CS, HIGH);
+#endif
+  pinMode(ARCADA_TFT_CS, OUTPUT);
+  digitalWrite(ARCADA_TFT_CS, HIGH);
 
   pinMode(ARCADA_SPEAKER_ENABLE, OUTPUT);
   enableSpeaker(false);
@@ -74,13 +81,16 @@ bool Adafruit_Arcada::begin(void) {
   // we can keep track of buttons for ya
   last_buttons = curr_buttons = justpressed_buttons = justreleased_buttons = 0;
 
-  ARCADA_TFT_INIT;
-  fillScreen(ARCADA_TFT_DEFAULTFILL);
-  setRotation(ARCADA_TFT_ROTATION);
   _first_frame = true;
   _framebuffer = NULL;
 
   return true;
+}
+
+void Adafruit_Arcada::displayBegin(void) {
+  ARCADA_TFT_INIT;
+  fillScreen(ARCADA_TFT_DEFAULTFILL);
+  setRotation(ARCADA_TFT_ROTATION);
 }
 
 void Adafruit_Arcada::setBacklight(uint8_t brightness) {
@@ -108,14 +118,14 @@ bool Adafruit_Arcada::timerCallback(uint32_t freq, void (*callback)()) {
   if ((freq <= 200)  || (freq >= 12000000)) {
     return false;
   }
-  zt5.configure(TC_CLOCK_PRESCALER_DIV4, // prescaler
-                TC_COUNTER_SIZE_16BIT,   // bit width of timer/counter
-                TC_WAVE_GENERATION_MATCH_PWM // frequency or PWM mode
-                );
+  zerotimer.configure(TC_CLOCK_PRESCALER_DIV4, // prescaler
+		      TC_COUNTER_SIZE_16BIT,   // bit width of timer/counter
+		      TC_WAVE_GENERATION_MATCH_PWM // frequency or PWM mode
+		      );
 
-  zt5.setCompare(0, (48000000/4)/freq);
-  zt5.setCallback(true, TC_CALLBACK_CC_CHANNEL0, callback);
-  zt5.enable(true);
+  zerotimer.setCompare(0, (48000000/4)/freq);
+  zerotimer.setCallback(true, TC_CALLBACK_CC_CHANNEL0, callback);
+  zerotimer.enable(true);
   return true;
 }
 
@@ -224,7 +234,6 @@ uint32_t Adafruit_Arcada::readButtons(void) {
     digitalWrite(ARCADA_BUTTON_CLOCK, LOW);
     delayMicroseconds(1);
   }
-
   if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_B)
     buttons |= ARCADA_BUTTONMASK_B;
   if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_A)
@@ -277,13 +286,13 @@ uint32_t Adafruit_Arcada::readButtons(void) {
 #else
   int16_t x = readJoystickX();
   int16_t y = readJoystickY();
-  if (x > 100)  
+  if (x > 350)  
     buttons |= ARCADA_BUTTONMASK_RIGHT;
-  else if (x < -100)  
+  else if (x < -350)  
     buttons |= ARCADA_BUTTONMASK_LEFT;
-  if (y > 100)  
+  if (y > 350)  
     buttons |= ARCADA_BUTTONMASK_DOWN;
-  else if (y < -100)  
+  else if (y < -350)  
     buttons |= ARCADA_BUTTONMASK_UP;
 #endif
 
@@ -316,12 +325,15 @@ uint32_t Adafruit_Arcada::justReleasedButtons(void) {
 /**************************************************************************/
 bool Adafruit_Arcada::filesysBegin(void) {
 #if defined(ARCADA_USE_SD_FS)
+  Serial.println("SD Card filesystem");
   return FileSys.begin(ARCADA_SD_CS);
 #elif defined(ARCADA_USE_QSPI_FS)
-  if (!flash.begin(SPIFLASHTYPE_W25Q16BV)) {
-    Serial.println("Error, failed to initialize filesys!");
+  if (!flash.begin()) {
+    Serial.println("Error, failed to initialize flash!");
     return false;
   }
+  Serial.println("QSPI filesystem");
+  flash.setFlashType(ARCADA_FLASH_TYPE);
   Serial.print("Flash chip JEDEC ID: 0x"); Serial.println(flash.GetJEDECID(), HEX);
 
   // First call begin to mount the filesystem.  Check that it returns true
@@ -344,7 +356,9 @@ bool Adafruit_Arcada::filesysBegin(void) {
     @return True if was able to find a directory at that path
 */
 /**************************************************************************/
-bool Adafruit_Arcada::filesysCWD(const char *path) {
+bool Adafruit_Arcada::chdir(const char *path) {
+  Serial.printf("\tArcadaFileSys : chdir '%s'\n", path);
+
   if (strlen(path) >= sizeof(_cwd_path)) {    // too long!
     return false;
   }
@@ -416,11 +430,39 @@ int16_t Adafruit_Arcada::filesysListFiles(const char *path) {
 */
 /**************************************************************************/
 bool Adafruit_Arcada::exists(const char *path) {
+  Serial.printf("\tArcadaFileSys : Exists? '%s'\n", path);
   File f = open(path);
   if (!f) return false;
   f.close();
   return true;
 }
+
+
+/**************************************************************************/
+/*!
+    @brief  Make a directory
+    @param  path A string with the new directory path
+    @return true or false if we succeeded
+*/
+/**************************************************************************/
+bool Adafruit_Arcada::mkdir(const char *path) {
+  Serial.printf("\tArcadaFileSys : Mkdir '%s'\n", path);
+  return FileSys.mkdir(path);
+}
+
+
+/**************************************************************************/
+/*!
+    @brief  Remove a file
+    @param  path A string with the file to be deleted
+    @return true or false if we succeeded
+*/
+/**************************************************************************/
+bool Adafruit_Arcada::remove(const char *path) {
+  Serial.printf("\tArcadaFileSys : Removing '%s'\n", path);
+  return FileSys.remove(path);
+}
+
 
 /**************************************************************************/
 /*!
@@ -431,11 +473,11 @@ bool Adafruit_Arcada::exists(const char *path) {
 /**************************************************************************/
 File Adafruit_Arcada::open(const char *path, uint32_t flags) {
   if (!path) {    // Just the CWD then
-    Serial.printf("Open CWD\n");
+    Serial.printf("\tArcadaFileSys : open no path '%s'\n", _cwd_path);
     return FileSys.open(_cwd_path, flags);
   }
   if (path[0] == '/') { // absolute path
-    Serial.printf("Open absolute path %s\n", path);
+    Serial.printf("\tArcadaFileSys : open abs path '%s'\n", path);
     return FileSys.open(path, flags);
   }
   // otherwise, merge CWD and path
@@ -444,7 +486,8 @@ File Adafruit_Arcada::open(const char *path, uint32_t flags) {
   String combined = cwd + String("/") + subpath;
   char totalpath[255];
   combined.toCharArray(totalpath, 255);
-  Serial.printf("Open totalpath %s\n", totalpath);
+  Serial.printf("\tArcadaFileSys : open cwd '%s'\n", totalpath);
+
   return FileSys.open(totalpath, flags);
 }
 
