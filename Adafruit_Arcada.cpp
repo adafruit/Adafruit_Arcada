@@ -7,7 +7,6 @@
   static Adafruit_M0_Express_CircuitPython FileSys(flash);
 #endif
 
-
 static Adafruit_ZeroTimer zerotimer = Adafruit_ZeroTimer(4);
 
 void TC4_Handler(){
@@ -143,21 +142,21 @@ void Adafruit_Arcada::enableSpeaker(bool on) {
 /**************************************************************************/
 /*!
     @brief  Create a repetative callback to a function using a timer
-    @param  freq The callback frequency, must be between 200 Hz and 12MHz (slower is better)
+    @param  freq The callback frequency, must be between 50 Hz and 3MHz (slower is better)
     @param  callback A pointer to the function we'll call every time
     @return True on success, False if something failed!
 */
 /**************************************************************************/
 bool Adafruit_Arcada::timerCallback(uint32_t freq, void (*callback)()) {
-  if ((freq <= 200)  || (freq >= 12000000)) {
+  if ((freq <= 50)  || (freq >= 3000000)) {
     return false;
   }
-  zerotimer.configure(TC_CLOCK_PRESCALER_DIV4, // prescaler
+  zerotimer.configure(TC_CLOCK_PRESCALER_DIV16, // prescaler
 		      TC_COUNTER_SIZE_16BIT,   // bit width of timer/counter
 		      TC_WAVE_GENERATION_MATCH_PWM // frequency or PWM mode
 		      );
 
-  zerotimer.setCompare(0, (48000000/4)/freq);
+  zerotimer.setCompare(0, (48000000/16)/freq);
   zerotimer.setCallback(true, TC_CALLBACK_CC_CHANNEL0, callback);
   zerotimer.enable(true);
   return true;
