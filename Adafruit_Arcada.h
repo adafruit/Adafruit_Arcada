@@ -183,7 +183,7 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   bool exists(const char *path);
   bool mkdir(const char *path);
   bool remove(const char *path);
-  //uint8_t *writeFileToFlash(const char *filename, uint32_t address = 262144);
+  uint8_t *writeFileToFlash(const char *filename, uint32_t address);
 
   int16_t readJoystickX(uint8_t oversampling=3);
   int16_t readJoystickY(uint8_t oversampling=3);

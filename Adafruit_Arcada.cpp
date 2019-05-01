@@ -7,6 +7,11 @@
   static Adafruit_M0_Express_CircuitPython FileSys(flash);
 #endif
 
+#define FLASH_ROW_SIZE (FLASH_PAGE_SIZE * 4)
+// Skip writing blocks that are identical to the existing block.
+// only disable for debugging/timing
+#define QUICK_FLASH 1
+
 static Adafruit_ZeroTimer zerotimer = Adafruit_ZeroTimer(4);
 
 void TC4_Handler(){
@@ -523,7 +528,6 @@ File Adafruit_Arcada::open(const char *path, uint32_t flags) {
 }
 
 
-/*
 uint8_t * Adafruit_Arcada::writeFileToFlash(const char *filename, uint32_t address) {
   File f = open(filename);
   if (!f) return NULL;
@@ -534,6 +538,8 @@ uint8_t * Adafruit_Arcada::writeFileToFlash(const char *filename, uint32_t addre
   uint32_t flashsize = 0;
 #ifdef __SAMD51P20A__ 
   flashsize = 1024 * 1024;
+#elif defined(__SAMD51J19A__)
+  flashsize = 512 * 1024;
 #endif
   if (! flashsize) {
     Serial.println("Can't determine flash size");
@@ -558,6 +564,7 @@ uint8_t * Adafruit_Arcada::writeFileToFlash(const char *filename, uint32_t addre
     int toRead = min(fileremaining, FLASH_ROW_SIZE);
     if (f.read(pageBuf, toRead) != toRead) {
       Serial.printf("File read %d bytes failed!", toRead);
+      return NULL;
     }
     fileremaining -= toRead;
 
@@ -566,16 +573,15 @@ uint8_t * Adafruit_Arcada::writeFileToFlash(const char *filename, uint32_t addre
       Serial.printf("0x%02X, ", pageBuf[b]);
     }
     Serial.println();
-    flash_write_row((uint32_t *)(void *)i, (uint32_t *)(void *)pageBuf);
+    flash_write_row((uint32_t *)(void *)(address+i), (uint32_t *)(void *)pageBuf);
 
   }
 
-
-  return NULL;
+  return (uint8_t *)address;
 }
 
 
-static inline wait_ready(void) {
+static inline void wait_ready(void) {
   while (NVMCTRL->STATUS.bit.READY == 0);
 }
 
@@ -633,12 +639,9 @@ void flash_write_words(uint32_t *dst, uint32_t *src, uint32_t n_words) {
 // flush the previously seen rows. Every row after will get written without
 // another erase.
 
-bool block_erased[FLASH_SIZE / NVMCTRL_BLOCK_SIZE];
-bool row_same[FLASH_SIZE / NVMCTRL_BLOCK_SIZE][NVMCTRL_BLOCK_SIZE / FLASH_ROW_SIZE];
+static bool block_erased[FLASH_SIZE / NVMCTRL_BLOCK_SIZE];
+static bool row_same[FLASH_SIZE / NVMCTRL_BLOCK_SIZE][NVMCTRL_BLOCK_SIZE / FLASH_ROW_SIZE];
 
-// Skip writing blocks that are identical to the existing block.
-// only disable for debugging/timing
-#define QUICK_FLASH 1
 
 void flash_write_row(uint32_t *dst, uint32_t *src) {
     const uint32_t FLASH_ROW_SIZE_WORDS = FLASH_ROW_SIZE / 4;
@@ -702,7 +705,6 @@ void flash_write_row(uint32_t *dst, uint32_t *src) {
     wait_ready();
 }
 
-*/
 
 /**************************************************************************/
 /*!
