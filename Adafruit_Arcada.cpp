@@ -536,7 +536,7 @@ uint8_t * Adafruit_Arcada::writeFileToFlash(const char *filename, uint32_t addre
   Serial.printf("Filesize : %d bytes\n", filesize);
 
   uint32_t flashsize = 0;
-#ifdef __SAMD51P20A__ 
+#if defined(__SAMD51P20A__) || defined(__SAMD51J20A__)
   flashsize = 1024 * 1024;
 #elif defined(__SAMD51J19A__)
   flashsize = 512 * 1024;
