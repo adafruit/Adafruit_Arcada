@@ -538,7 +538,7 @@ File Adafruit_Arcada::open(const char *path, uint32_t flags) {
 }
 
 
-**************************************************************************/
+/**************************************************************************/
 /*!
     @brief  Opens a file and writes the data contents to the internal chip flash memory. NOT the QSPI flash but the actual chip memory! It will happily write over program memory being used so make sure the address is set to well past where the program ends!
     @param  filename A string with the filename path, can be relative or absolute
