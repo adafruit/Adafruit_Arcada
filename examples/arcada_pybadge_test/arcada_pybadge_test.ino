@@ -9,19 +9,19 @@ Adafruit_QSPI_Flash qspi_flash;
 uint32_t buttons, last_buttons;
 uint8_t j = 0;  // neopixel counter for rainbow
 
-
+// Check the timer callback, this function is called every millisecond!
 volatile uint16_t milliseconds = 0;
 void timercallback() {
+  analogWrite(13, milliseconds);  // pulse the LED
   if (milliseconds == 0) {
-    Serial.println("tick");
-    milliseconds = 1000;
+    milliseconds = 255;
   } else {
     milliseconds--;
   }
 }
 
 void setup() {
-  // while (!Serial);  // Uncomment to pause on start for serial
+  //while (!Serial);
 
   Serial.println("Hello! Arcada PyBadge test");
   if (!arcada.begin()) {
@@ -97,18 +97,30 @@ void setup() {
 
 void loop() {
   delay(25);  // add some delay so our screen doesnt flicker
-  
+
+  bool playsound = false;
   if (arcada.hasAccel()) {
     uint8_t click = arcada.accel.getClick();
     if (click & 0x30) {
       Serial.print("Click detected (0x"); Serial.print(click, HEX); Serial.print("): ");
       if (click & 0x10) Serial.print(" single click");
       if (click & 0x20) Serial.print(" double click");
-      arcada.enableSpeaker(true);
-      play_tune(audio, sizeof(audio));
-      arcada.enableSpeaker(false);
+      playsound = true;
     }
-  
+  } else {
+    // no accel, check both SEL/START pressed at once
+    if (arcada.readButtons() & ARCADA_BUTTONMASK_START  & ARCADA_BUTTONMASK_SELECT) {
+      playsound = true;
+    }
+  }
+
+  if (playsound) {
+    arcada.enableSpeaker(true);
+    play_tune(audio, sizeof(audio));
+    arcada.enableSpeaker(false);
+  }
+    
+  if (arcada.hasAccel()) {
     sensors_event_t event; 
     arcada.accel.getEvent(&event);
     
@@ -154,7 +166,6 @@ void loop() {
   arcada.print("D3/A9: "); arcada.print(vsense); arcada.println("V");
 
   Serial.printf("Drawing %d NeoPixels", arcada.pixels.numPixels());  
-  arcada.pixels.setBrightness(255);
   for(int32_t i=0; i< arcada.pixels.numPixels(); i++) {
      arcada.pixels.setPixelColor(i, Wheel(((i * 256 / arcada.pixels.numPixels()) + j*5) & 255));
   }
