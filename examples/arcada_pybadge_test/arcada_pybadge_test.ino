@@ -1,5 +1,6 @@
-#include "Adafruit_Arcada.h"
-#include "Adafruit_QSPI.h"
+#include <Adafruit_Arcada.h>
+#include <Adafruit_QSPI.h>
+#include <Adafruit_QSPI_Flash.h>
 
 #include "audio.h"
 
