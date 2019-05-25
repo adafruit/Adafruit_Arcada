@@ -3,7 +3,7 @@
 #if defined(ARCADA_USE_SD_FS)
   static SdFat FileSys(&ARCADA_SD_SPI_PORT);
 #elif defined(ARCADA_USE_QSPI_FS)
-  static Adafruit_QSPI_GD25Q flash;
+  static Adafruit_QSPI_Flash flash;
   static Adafruit_M0_Express_CircuitPython FileSys(flash);
 #endif
 
@@ -93,6 +93,17 @@ bool Adafruit_Arcada::begin(void) {
   pinMode(ARCADA_BUTTON_LATCH, OUTPUT);
   digitalWrite(ARCADA_BUTTON_LATCH, HIGH);
   pinMode(ARCADA_BUTTON_DATA, INPUT);
+#endif
+
+#if (ARCADA_ACCEL_TYPE == ARCADA_ACCEL_LIS3DH)
+  if (! accel.begin(0x18) && ! accel.begin(0x19)) {
+    _has_accel = false;  // no biggie, we may be a pybadge LC
+  } else {
+    _has_accel = true;
+  }
+  if (hasAccel()) {
+    accel.setRange(LIS3DH_RANGE_4_G);   // 2, 4, 8 or 16 G!
+  }
 #endif
 
   // we can keep track of buttons for ya
@@ -367,7 +378,6 @@ bool Adafruit_Arcada::filesysBegin(void) {
     return false;
   }
   Serial.println("QSPI filesystem");
-  flash.setFlashType(ARCADA_FLASH_TYPE);
   Serial.print("Flash chip JEDEC ID: 0x"); Serial.println(flash.GetJEDECID(), HEX);
 
   // First call begin to mount the filesystem.  Check that it returns true
@@ -720,6 +730,19 @@ uint16_t Adafruit_Arcada::readLightSensor(void) {
 #endif
 }
 
+/**************************************************************************/
+/*!
+    @brief  Read the batterysensor onboard if there is one
+    @return Voltage as floating point or NAN if there is no sensor
+*/
+/**************************************************************************/
+float Adafruit_Arcada::readBatterySensor(void) {
+#if defined(ARCADA_BATTERY_SENSOR)
+  return ( (float)analogRead(ARCADA_BATTERY_SENSOR) / 1023.0) * 2.0 * 3.3 ;
+#else
+  return NAN;
+#endif
+}
 
 /**************************************************************************/
 /*!

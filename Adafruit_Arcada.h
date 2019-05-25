@@ -10,6 +10,7 @@
 #include <Adafruit_ST7735.h>
 #include <Adafruit_ILI9341.h>
 #include <Adafruit_ZeroTimer.h>
+#include <Adafruit_LIS3DH.h>
 
 #define SD_MAX_FILENAME_SIZE 80
 
@@ -42,6 +43,8 @@
 
   #define ARCADA_USE_SD_FS
 
+  #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_NONE
+
 #elif defined(ADAFRUIT_PYPORTAL)
   // 8 bit 320x240 TFT
   #define ARCADA_TFT_D0          34 // Data bit 0 pin (MUST be on PORT byte boundary)
@@ -67,6 +70,8 @@
   #define ARCADA_SD_SPI_PORT      SPI
   #define ARCADA_SD_CS            32
   #define ARCADA_USE_SD_FS
+
+  #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_NONE
 
 #elif defined(ADAFRUIT_PYBADGE_M4_EXPRESS)
 
@@ -98,14 +103,18 @@
   #define ARCADA_BUTTON_SHIFTMASK_DOWN        0x04
   #define ARCADA_BUTTON_SHIFTMASK_RIGHT       0x08
 
-  #define ARCADA_LIGHT_SENSOR    A7
-  #define ARCADA_RIGHT_AUDIO_PIN A0
-  #define ARCADA_LEFT_AUDIO_PIN  A1
+  #define ARCADA_LIGHT_SENSOR                A7
+  #define ARCADA_BATTERY_SENSOR              A6
 
-  #define ARCADA_MAX_VOLUME               0.5
+  #define ARCADA_RIGHT_AUDIO_PIN             A0
+  #define ARCADA_LEFT_AUDIO_PIN              A1
+
+  #define ARCADA_MAX_VOLUME                  0.5
 
   #define ARCADA_USE_QSPI_FS
 
+  #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_LIS3DH
+  
 #elif defined(ADAFRUIT_PYGAMER_M4_EXPRESS)
 
   #define ARCADA_TFT_SPI         SPI1
@@ -136,6 +145,8 @@
   #define ARCADA_JOYSTICK_Y    A10
 
   #define ARCADA_LIGHT_SENSOR             A7
+  #define ARCADA_BATTERY_SENSOR           A6
+
   #define ARCADA_RIGHT_AUDIO_PIN          A0
   #define ARCADA_LEFT_AUDIO_PIN           A1
 
@@ -144,6 +155,8 @@
   #define ARCADA_SD_SPI_PORT             SPI
   #define ARCADA_SD_CS                     4
   #define ARCADA_USE_SD_FS
+
+  #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_LIS3DH
 #endif
 
 #if defined(ARCADA_USE_SD_FS)
@@ -151,9 +164,7 @@
 #elif defined(ARCADA_USE_QSPI_FS)
   #include <Adafruit_SPIFlash.h>
   #include <Adafruit_SPIFlash_FatFs.h>
-  #include "Adafruit_QSPI_GD25Q.h"
-  #define ARCADA_FLASH_TYPE     SPIFLASHTYPE_W25Q64 // Flash chip type.
-
+  #include "Adafruit_QSPI_Flash.h"
   typedef Adafruit_SPIFlash_FAT::File File;
   #define   O_READ    FILE_READ
   #define   O_WRITE   FILE_WRITE
@@ -191,6 +202,7 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   uint32_t justPressedButtons(void);
   uint32_t justReleasedButtons(void);
   uint16_t readLightSensor(void);
+  float readBatterySensor(void);
 
   void displayBegin(void);
   bool createFrameBuffer(uint16_t width, uint16_t height);
@@ -201,7 +213,13 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
 
   Adafruit_NeoPixel pixels;     ///<  The neopixel strip, of length ARCADA_NEOPIXEL_NUM
 
+#if (ARCADA_ACCEL_TYPE == ARCADA_ACCEL_LIS3DH)
+  Adafruit_LIS3DH accel = Adafruit_LIS3DH();
+  bool hasAccel(void) { return _has_accel; }
+#endif
+
  private:
+  bool _has_accel;
 
   int16_t _joyx_center = 512;
   int16_t _joyy_center = 512;
@@ -213,6 +231,8 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   uint16_t _framebuf_width, _framebuf_height;
 
   uint32_t last_buttons, curr_buttons, justpressed_buttons, justreleased_buttons;
+
+
 };
 
 

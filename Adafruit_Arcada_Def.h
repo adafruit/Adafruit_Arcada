@@ -31,4 +31,10 @@
 #define ARCADA_ORANGE      0xFD20  ///< 255, 165,   0
 #define ARCADA_GREENYELLOW 0xAFE5  ///< 173, 255,  41
 #define ARCADA_PINK        0xFC18  ///< 255, 130, 198
+
+
+#define ARCADA_ACCEL_NONE    0x00
+#define ARCADA_ACCEL_LIS3DH  0x01
+#define ARCADA_ACCEL_MSA301  0x02
+
 #endif
