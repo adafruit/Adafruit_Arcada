@@ -18,11 +18,69 @@ static void initAlertFonts(void) {
 
 /**************************************************************************/
 /*!
-    @brief  Display an info box
-    @param  brightness From 0 (off) to 255 (full on)
+    @brief  Display an info box with optional 'press to continue' button
+    @param  string The message to display
+    @param  continueButtonMask ARCADA_BUTTONMASK_ value to wait for, or 0 for 
+    immediate return. Default is ARCADA_BUTTONMASK_A 
 */
 /**************************************************************************/
-void Adafruit_Arcada::info(char *string, uint32_t continueButtonMask) {
+void Adafruit_Arcada::infoBox(char *string, uint32_t continueButtonMask) {
+  alertBox(string, ARCADA_WHITE, ARCADA_BLACK, continueButtonMask);
+}
+
+
+/**************************************************************************/
+/*!
+    @brief  Display an warning box with optional 'press to continue' button
+    @param  string The message to display
+    @param  continueButtonMask ARCADA_BUTTONMASK_ value to wait for, or 0 for 
+    immediate return. Default is ARCADA_BUTTONMASK_A 
+*/
+/**************************************************************************/
+void Adafruit_Arcada::warnBox(char *string, uint32_t continueButtonMask) {
+  alertBox(string, ARCADA_YELLOW, ARCADA_WHITE, continueButtonMask);
+}
+
+
+/**************************************************************************/
+/*!
+    @brief  Display an error box with optional 'press to continue' button
+    @param  string The message to display
+    @param  continueButtonMask ARCADA_BUTTONMASK_ value to wait for, or 0 for 
+    immediate return. Default is ARCADA_BUTTONMASK_A 
+*/
+/**************************************************************************/
+void Adafruit_Arcada::errorBox(char *string, uint32_t continueButtonMask) {
+  alertBox(string, ARCADA_RED, ARCADA_WHITE, continueButtonMask);
+}
+
+/**************************************************************************/
+/*!
+    @brief  Display an error box and halt operation
+    @param  string The message to display
+*/
+/**************************************************************************/
+void Adafruit_Arcada::haltBox(char *string) {
+  alertBox(string, ARCADA_RED, ARCADA_WHITE, 0);
+  while (1) {
+    delay(10);
+  }
+}
+
+
+
+/**************************************************************************/
+/*!
+    @brief  Display an alert box with optional 'press to continue' button
+    @param  string The message to display
+    @param  boxColor 16-bit color to use as background
+    @param  textColor 16-bit color to use as outline and text
+    @param  continueButtonMask ARCADA_BUTTONMASK_ value to wait for, or 0 for 
+    immediate return.
+*/
+/**************************************************************************/
+void Adafruit_Arcada::alertBox(char *string, uint16_t boxColor, uint16_t textColor,
+			       uint32_t continueButtonMask) {
   initAlertFonts();
 
   uint16_t boxWidth = (maxCharPerLine + 2) * charWidth;
@@ -50,8 +108,8 @@ void Adafruit_Arcada::info(char *string, uint32_t continueButtonMask) {
   uint16_t boxHeight = (lines + 2) * charHeight;
   uint16_t boxY = (ARCADA_TFT_HEIGHT - boxHeight) / 2;
 
-  fillRoundRect(boxX, boxY, boxWidth, boxHeight, charWidth, ARCADA_WHITE);
-  drawRoundRect(boxX, boxY, boxWidth, boxHeight, charWidth, ARCADA_BLACK);
+  fillRoundRect(boxX, boxY, boxWidth, boxHeight, charWidth, boxColor);
+  drawRoundRect(boxX, boxY, boxWidth, boxHeight, charWidth, textColor);
 
   fontX = boxX + charWidth;
   uint16_t fontY = boxY + charHeight;
@@ -80,17 +138,32 @@ void Adafruit_Arcada::info(char *string, uint32_t continueButtonMask) {
   }
 
   if (continueButtonMask) {
-    fontX = boxX + boxWidth - charWidth;
-    fontY = boxY + boxHeight - charHeight;
-    
-    fillCircle(fontX + charWidth/2, fontY + charHeight/2, charHeight, ARCADA_BLACK);
-    drawCircle(fontX + charWidth/2, fontY + charHeight/2, charHeight, ARCADA_WHITE);
-
-    setCursor(fontX+charWidth/4, fontY);
-    setTextColor(ARCADA_WHITE);
+    char *buttonString = "";
     if (continueButtonMask == ARCADA_BUTTONMASK_A) {
-      print("A");
+      buttonString = "A";
     }
+    if (continueButtonMask == ARCADA_BUTTONMASK_B) {
+      buttonString = "B";
+    }
+    if (continueButtonMask == ARCADA_BUTTONMASK_SELECT) {
+      buttonString = "Sel";
+    }
+    if (continueButtonMask == ARCADA_BUTTONMASK_START) {
+      buttonString = "Sta";
+    }
+    fontX = boxX + boxWidth - (strlen(buttonString)+1)*charWidth;
+    fontY = boxY + boxHeight - charHeight;
+
+    fillRoundRect(fontX, fontY, 
+		  (strlen(buttonString)+2)*charWidth, charHeight*2, 
+		  charWidth, textColor);
+    drawRoundRect(fontX, fontY, 
+		  (strlen(buttonString)+2)*charWidth, charHeight*2,
+		  charWidth, textColor);
+    setCursor(fontX+charWidth, fontY+charHeight/2);
+    setTextColor(boxColor);
+    print(buttonString);
+
     while (1) { 
       readButtons();
       if (justReleasedButtons() & continueButtonMask) {

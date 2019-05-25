@@ -216,7 +216,12 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   void enableSpeaker(bool flag);
 
   // Alerts
-  void info(char *string, uint32_t continueButtonMask);
+  void alertBox(char *string, uint16_t boxColor, uint16_t textColor,
+		uint32_t continueButtonMask);
+  void infoBox(char *string, uint32_t continueButtonMask = ARCADA_BUTTONMASK_A);
+  void warnBox(char *string, uint32_t continueButtonMask = ARCADA_BUTTONMASK_A);
+  void errorBox(char *string, uint32_t continueButtonMask = ARCADA_BUTTONMASK_A);
+  void haltBox(char *string);
 
   Adafruit_NeoPixel pixels;     ///<  The neopixel strip, of length ARCADA_NEOPIXEL_NUM
 

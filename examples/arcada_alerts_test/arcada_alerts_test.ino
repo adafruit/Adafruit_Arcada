@@ -14,16 +14,22 @@ void setup() {
   arcada.displayBegin();
   Serial.println("Arcada display begin");
   arcada.setBacklight(255);
-  arcada.fillScreen(ARCADA_RED);
   
-  arcada.info("Arcada alerts test! This is an info box with many lines of text?", ARCADA_BUTTONMASK_A);
+  arcada.fillScreen(ARCADA_RED);
+  arcada.infoBox("Arcada alerts test! This is an info box with many lines of text?");
 
   arcada.fillScreen(ARCADA_GREEN);
+  arcada.warnBox("Arcada alerts test! This is an warning box ... watch out!", ARCADA_BUTTONMASK_B);
+
+  arcada.fillScreen(ARCADA_BLUE);
+  arcada.errorBox("Arcada alerts test! This is an error box, something went wrong!",  ARCADA_BUTTONMASK_START);
+
+  arcada.fillScreen(ARCADA_BLACK);
+  arcada.haltBox("Arcada alerts test! This is an halting alert box :(");
 }
 
 
 void loop() {
 }
-
 
 /*****************************************************************/
