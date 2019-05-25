@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['writefiletoflash',['writeFileToFlash',['../class_adafruit___arcada.html#acd141bcdad938c0ab400a1747e64f815',1,'Adafruit_Arcada']]]
+  ['setbacklight',['setBacklight',['../class_adafruit___arcada.html#a172ab63265b6364d35ce1446f67a5561',1,'Adafruit_Arcada']]]
 ];

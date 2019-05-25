@@ -165,6 +165,21 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a5eeb99c5b3cc2ceeb5d500e39365d63d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a5eeb99c5b3cc2ceeb5d500e39365d63d">enableSpeaker</a> (bool flag)</td></tr>
 <tr class="memdesc:a5eeb99c5b3cc2ceeb5d500e39365d63d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turn on the speaker amplifier.  <a href="#a5eeb99c5b3cc2ceeb5d500e39365d63d">More...</a><br /></td></tr>
 <tr class="separator:a5eeb99c5b3cc2ceeb5d500e39365d63d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb83d589bf2c7680eb96eba8a233f4b1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#adb83d589bf2c7680eb96eba8a233f4b1">alertBox</a> (char *string, uint16_t boxColor, uint16_t textColor, uint32_t continueButtonMask)</td></tr>
+<tr class="memdesc:adb83d589bf2c7680eb96eba8a233f4b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display an alert box with optional 'press to continue' button.  <a href="#adb83d589bf2c7680eb96eba8a233f4b1">More...</a><br /></td></tr>
+<tr class="separator:adb83d589bf2c7680eb96eba8a233f4b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98270a179ead39de72afef2494f60c53"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a98270a179ead39de72afef2494f60c53">infoBox</a> (char *string, uint32_t continueButtonMask=ARCADA_BUTTONMASK_A)</td></tr>
+<tr class="memdesc:a98270a179ead39de72afef2494f60c53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display an info box with optional 'press to continue' button.  <a href="#a98270a179ead39de72afef2494f60c53">More...</a><br /></td></tr>
+<tr class="separator:a98270a179ead39de72afef2494f60c53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe801b470a9218bcb5d7a55f9df7aa94"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#afe801b470a9218bcb5d7a55f9df7aa94">warnBox</a> (char *string, uint32_t continueButtonMask=ARCADA_BUTTONMASK_A)</td></tr>
+<tr class="memdesc:afe801b470a9218bcb5d7a55f9df7aa94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display an warning box with optional 'press to continue' button.  <a href="#afe801b470a9218bcb5d7a55f9df7aa94">More...</a><br /></td></tr>
+<tr class="separator:afe801b470a9218bcb5d7a55f9df7aa94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a098b4d4c6efc398a04f8ceefed26391d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a098b4d4c6efc398a04f8ceefed26391d">errorBox</a> (char *string, uint32_t continueButtonMask=ARCADA_BUTTONMASK_A)</td></tr>
+<tr class="memdesc:a098b4d4c6efc398a04f8ceefed26391d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display an error box with optional 'press to continue' button.  <a href="#a098b4d4c6efc398a04f8ceefed26391d">More...</a><br /></td></tr>
+<tr class="separator:a098b4d4c6efc398a04f8ceefed26391d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2c57589b0ee9d079dfc14f483f5a290"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#ad2c57589b0ee9d079dfc14f483f5a290">haltBox</a> (char *string)</td></tr>
+<tr class="memdesc:ad2c57589b0ee9d079dfc14f483f5a290"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display an error box and halt operation.  <a href="#ad2c57589b0ee9d079dfc14f483f5a290">More...</a><br /></td></tr>
+<tr class="separator:ad2c57589b0ee9d079dfc14f483f5a290"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -866,9 +881,198 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 
 </div>
 </div>
+<a id="adb83d589bf2c7680eb96eba8a233f4b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb83d589bf2c7680eb96eba8a233f4b1">&#9670;&nbsp;</a></span>alertBox()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_Arcada::alertBox </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>string</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>boxColor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>textColor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>continueButtonMask</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Display an alert box with optional 'press to continue' button. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">string</td><td>The message to display </td></tr>
+    <tr><td class="paramname">boxColor</td><td>16-bit color to use as background </td></tr>
+    <tr><td class="paramname">textColor</td><td>16-bit color to use as outline and text </td></tr>
+    <tr><td class="paramname">continueButtonMask</td><td>ARCADA_BUTTONMASK_ value to wait for, or 0 for immediate return. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a98270a179ead39de72afef2494f60c53"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98270a179ead39de72afef2494f60c53">&#9670;&nbsp;</a></span>infoBox()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_Arcada::infoBox </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>string</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>continueButtonMask</em> = <code>ARCADA_BUTTONMASK_A</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Display an info box with optional 'press to continue' button. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">string</td><td>The message to display </td></tr>
+    <tr><td class="paramname">continueButtonMask</td><td>ARCADA_BUTTONMASK_ value to wait for, or 0 for immediate return. Default is ARCADA_BUTTONMASK_A </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="afe801b470a9218bcb5d7a55f9df7aa94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe801b470a9218bcb5d7a55f9df7aa94">&#9670;&nbsp;</a></span>warnBox()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_Arcada::warnBox </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>string</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>continueButtonMask</em> = <code>ARCADA_BUTTONMASK_A</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Display an warning box with optional 'press to continue' button. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">string</td><td>The message to display </td></tr>
+    <tr><td class="paramname">continueButtonMask</td><td>ARCADA_BUTTONMASK_ value to wait for, or 0 for immediate return. Default is ARCADA_BUTTONMASK_A </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a098b4d4c6efc398a04f8ceefed26391d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a098b4d4c6efc398a04f8ceefed26391d">&#9670;&nbsp;</a></span>errorBox()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_Arcada::errorBox </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>string</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>continueButtonMask</em> = <code>ARCADA_BUTTONMASK_A</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Display an error box with optional 'press to continue' button. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">string</td><td>The message to display </td></tr>
+    <tr><td class="paramname">continueButtonMask</td><td>ARCADA_BUTTONMASK_ value to wait for, or 0 for immediate return. Default is ARCADA_BUTTONMASK_A </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad2c57589b0ee9d079dfc14f483f5a290"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad2c57589b0ee9d079dfc14f483f5a290">&#9670;&nbsp;</a></span>haltBox()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_Arcada::haltBox </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>string</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Display an error box and halt operation. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">string</td><td>The message to display </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="_adafruit___arcada_8h_source.html">Adafruit_Arcada.h</a></li>
 <li>Adafruit_Arcada.cpp</li>
+<li>Adafruit_Arcada_Alerts.cpp</li>
 <li>Adafruit_Arcada_InternalFlash.cpp</li>
 <li>Adafruit_Arcada_USBMSD.cpp</li>
 </ul>

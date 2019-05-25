@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['open',['open',['../class_adafruit___arcada.html#ae402406595840f5c1ecfc0f06835a6c9',1,'Adafruit_Arcada']]]
+  ['justpressedbuttons',['justPressedButtons',['../class_adafruit___arcada.html#a158a43cdab5d20bae0203c219cdb45a6',1,'Adafruit_Arcada']]],
+  ['justreleasedbuttons',['justReleasedButtons',['../class_adafruit___arcada.html#a31c1e21cd33d7fb1099f45b6a4e705db',1,'Adafruit_Arcada']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['setbacklight',['setBacklight',['../class_adafruit___arcada.html#a172ab63265b6364d35ce1446f67a5561',1,'Adafruit_Arcada']]]
+  ['printf',['printf',['../class_adafruit___arcada.html#a23ffe085b412f29448f9137244ccb02c',1,'Adafruit_Arcada']]]
 ];
