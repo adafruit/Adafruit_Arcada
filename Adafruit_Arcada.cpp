@@ -7,8 +7,8 @@
     static SdFat FileSys();
   #endif
 #elif defined(ARCADA_USE_QSPI_FS)
-  Adafruit_QSPI_Flash flash;
-  static Adafruit_M0_Express_CircuitPython FileSys(flash);
+  Adafruit_QSPI_Flash arcada_qspi_flash;
+  static Adafruit_M0_Express_CircuitPython FileSys(arcada_qspi_flash);
 #endif
 
 static Adafruit_ZeroTimer zerotimer = Adafruit_ZeroTimer(4);
@@ -372,12 +372,12 @@ bool Adafruit_Arcada::filesysBegin(void) {
   Serial.println("SD Card filesystem");
   return FileSys.begin(ARCADA_SD_CS);
 #elif defined(ARCADA_USE_QSPI_FS)
-  if (!flash.begin()) {
-    Serial.println("Error, failed to initialize flash!");
+  if (!arcada_qspi_flash.begin()) {
+    Serial.println("Error, failed to initialize arcada_qspi_flash!");
     return false;
   }
   Serial.println("QSPI filesystem");
-  Serial.print("Flash chip JEDEC ID: 0x"); Serial.println(flash.GetJEDECID(), HEX);
+  Serial.print("QSPI flash chip JEDEC ID: 0x"); Serial.println(arcada_qspi_flash.GetJEDECID(), HEX);
 
   // First call begin to mount the filesystem.  Check that it returns true
   // to make sure the filesystem was mounted.
