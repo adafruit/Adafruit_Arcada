@@ -1,5 +1,6 @@
 #include <Adafruit_Arcada.h>
 
+#if defined(USE_TINYUSB)
 static Adafruit_USBD_MSC usb_msc;
 extern Adafruit_QSPI_Flash flash;
 
@@ -9,7 +10,7 @@ static void msc_flush_cb (void);
 static void flash_cache_read (uint8_t* dst, uint32_t addr, uint32_t count);
 static uint32_t flash_cache_write (uint32_t dst, void const * src, uint32_t len);
 static void flash_cache_flush (void);
-
+#endif
 
 /**************************************************************************/
 /*!
@@ -18,7 +19,7 @@ static void flash_cache_flush (void);
 */
 /**************************************************************************/
 bool Adafruit_Arcada::filesysBeginMSD(void) {
-#if defined(ARCADA_USE_QSPI_FS)
+#if defined(USE_TINYUSB) && defined(ARCADA_USE_QSPI_FS)
   // Set disk vendor id, product id and revision with string up to 8, 16, 4 characters respectively
   usb_msc.setID("Adafruit", "Arcada", "1.0");
 
@@ -40,7 +41,7 @@ bool Adafruit_Arcada::filesysBeginMSD(void) {
 }
 
 
-
+#if defined(USE_TINYUSB)
 // Callback invoked when received READ10 command.
 // Copy disk's data to buffer (up to bufsize) and 
 // return number of copied bytes (must be multiple of block size) 
@@ -171,3 +172,4 @@ static void flash_cache_read (uint8_t* dst, uint32_t addr, uint32_t count)
     flash.readBuffer(addr, dst, count);
   }
 }
+#endif
