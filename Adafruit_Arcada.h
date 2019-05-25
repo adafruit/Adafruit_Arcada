@@ -67,7 +67,6 @@
   #define ARCADA_NEOPIXEL_PIN     2
   #define ARCADA_NEOPIXEL_NUM     1
 
-  #define ARCADA_SD_SPI_PORT      SPI
   #define ARCADA_SD_CS            32
   #define ARCADA_USE_SD_FS
 
@@ -152,7 +151,6 @@
 
   #define ARCADA_MAX_VOLUME               0.2
 //  #define ARCADA_USE_QSPI_FS
-  #define ARCADA_SD_SPI_PORT             SPI
   #define ARCADA_SD_CS                     4
   #define ARCADA_USE_SD_FS
 
@@ -168,6 +166,10 @@
   typedef Adafruit_SPIFlash_FAT::File File;
   #define   O_READ    FILE_READ
   #define   O_WRITE   FILE_WRITE
+#endif
+
+#if defined(USE_TINYUSB)
+  #include "Adafruit_TinyUSB.h"
 #endif
 
 /**************************************************************************/
@@ -195,6 +197,7 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   bool mkdir(const char *path);
   bool remove(const char *path);
   uint8_t *writeFileToFlash(const char *filename, uint32_t address);
+  bool filesysBeginMSD(void);
 
   int16_t readJoystickX(uint8_t oversampling=3);
   int16_t readJoystickY(uint8_t oversampling=3);
@@ -234,12 +237,5 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
 
 
 };
-
-
-static inline void wait_ready(void);
-static void flash_write_row(uint32_t *dst, uint32_t *src);
-static void flash_erase_block(uint32_t *dst);
-static void flash_write_words(uint32_t *dst, uint32_t *src, uint32_t n_words);
-
 
 #endif
