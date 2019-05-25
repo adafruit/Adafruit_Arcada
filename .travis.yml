@@ -17,6 +17,9 @@ env:
 before_install:
   - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
 
+install:
+   - arduino --install-library "Adafruit Unified Sensor", "Adafruit NeoPixel","Adafruit QSPI","Adafruit GFX Library","Adafruit ST7735 and ST7789 Library"
+
 script:
    - build_m4_platforms
 
