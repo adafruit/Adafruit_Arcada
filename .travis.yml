@@ -23,6 +23,10 @@ install:
    - arduino --install-library "Adafruit QSPI"
    - arduino --install-library "Adafruit GFX Library"
    - arduino --install-library "Adafruit ST7735 and ST7789 Library"
+   - arduino --install-library "Adafruit ILI9341"
+   - arduino --install-library "Adafruit SPIFlash"
+   - arduino --install-library "Adafruit LIS3DH"
+   - arduino --install-library "Adafruit ZeroTimer Library"
 
 script:
    - build_arcada_platforms
