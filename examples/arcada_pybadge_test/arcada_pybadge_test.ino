@@ -21,7 +21,7 @@ void timercallback() {
 }
 
 void setup() {
-  while (!Serial);
+  // while (!Serial);  // Uncomment to pause on start for serial
 
   Serial.println("Hello! Arcada PyBadge test");
   if (!arcada.begin()) {
