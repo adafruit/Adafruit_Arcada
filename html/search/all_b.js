@@ -5,5 +5,6 @@ var searchData=
   ['readjoystickx',['readJoystickX',['../class_adafruit___arcada.html#a6f05150283452cf925bf5d23d3a23739',1,'Adafruit_Arcada']]],
   ['readjoysticky',['readJoystickY',['../class_adafruit___arcada.html#a15d87a69632213f3625c489f8472acd8',1,'Adafruit_Arcada']]],
   ['readlightsensor',['readLightSensor',['../class_adafruit___arcada.html#afec10bc5587711075affd4d50c824ac4',1,'Adafruit_Arcada']]],
+  ['recentusb',['recentUSB',['../class_adafruit___arcada.html#a2eab16eb0b94b8edaab823d6b9973d25',1,'Adafruit_Arcada']]],
   ['remove',['remove',['../class_adafruit___arcada.html#aeb8541c1823529ecb8b1395d9eb51dff',1,'Adafruit_Arcada']]]
 ];
