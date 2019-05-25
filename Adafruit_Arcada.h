@@ -215,6 +215,9 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   void setBacklight(uint8_t brightness);
   void enableSpeaker(bool flag);
 
+  // Alerts
+  void info(char *string, uint32_t continueButtonMask);
+
   Adafruit_NeoPixel pixels;     ///<  The neopixel strip, of length ARCADA_NEOPIXEL_NUM
 
 #if (ARCADA_ACCEL_TYPE == ARCADA_ACCEL_LIS3DH)
