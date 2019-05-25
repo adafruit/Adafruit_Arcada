@@ -18,7 +18,11 @@ before_install:
   - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
 
 install:
-   - arduino --install-library "Adafruit Unified Sensor", "Adafruit NeoPixel", "Adafruit QSPI", "Adafruit GFX Library", "Adafruit ST7735 and ST7789 Library"
+   - arduino --install-library "Adafruit Unified Sensor"
+   - arduino --install-library "Adafruit NeoPixel"
+   - arduino --install-library "Adafruit QSPI"
+   - arduino --install-library "Adafruit GFX Library"
+   - arduino --install-library "Adafruit ST7735 and ST7789 Library"
 
 script:
    - build_arcada_platforms
