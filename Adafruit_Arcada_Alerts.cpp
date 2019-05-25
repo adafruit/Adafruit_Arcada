@@ -131,14 +131,14 @@ void Adafruit_Arcada::alertBox(char *string, uint16_t boxColor, uint16_t textCol
       fontX = boxX + charWidth;
     }
     setCursor(fontX, fontY);
-    if (isprint(string[c])) {
+    if (isprint(string[c]) && string[c] != '\n') {
       print(string[c]);
     }
     fontX += charWidth;
   }
 
   if (continueButtonMask) {
-    char *buttonString = "";
+    const char *buttonString = "";
     if (continueButtonMask == ARCADA_BUTTONMASK_A) {
       buttonString = "A";
     }
