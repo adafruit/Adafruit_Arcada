@@ -4,7 +4,7 @@
 #if defined(ARCADA_SD_SPI_PORT)
     static SdFat FileSys(&ARCADA_SD_SPI_PORT);
   #else
-    static SdFat FileSys();
+    static SdFat FileSys;
   #endif
 #elif defined(ARCADA_USE_QSPI_FS)
   Adafruit_QSPI_Flash arcada_qspi_flash;

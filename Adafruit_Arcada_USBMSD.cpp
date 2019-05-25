@@ -1,5 +1,6 @@
 #include <Adafruit_Arcada.h>
 
+//#define ARCADA_MSD_DEBUG
 
 #if defined(USE_TINYUSB)
 static Adafruit_USBD_MSC usb_msc;
@@ -17,6 +18,8 @@ void flash_cache_flush (void);
 
 uint32_t cache_addr = FLASH_CACHE_INVALID_ADDR;
 uint8_t  cache_buf[FLASH_CACHE_SIZE];
+
+static uint32_t last_access_ms;
 
 #endif
 
@@ -53,6 +56,27 @@ bool Adafruit_Arcada::filesysBeginMSD(void) {
 }
 
 
+/**************************************************************************/
+/*!
+    @brief  Hints whether we're doing a bunch of USB stuff recently
+    @param  timeout The timeperiod to look at, defaults to 100ms
+    @return True if some USB stuff happened in last timeout # millis
+*/
+/**************************************************************************/
+bool Adafruit_Arcada::recentUSB(uint32_t timeout) {
+
+#if defined(USE_TINYUSB) && defined(ARCADA_USE_QSPI_FS)
+  uint32_t curr_time = millis();
+  if (last_access_ms > curr_time) {  // oi, rollover
+    return false;
+  }
+  if ((last_access_ms + timeout) >= curr_time) {
+    return true;  // indeed!
+  }
+#endif
+  return false;
+}
+
 #if defined(USE_TINYUSB)
 // Callback invoked when received READ10 command.
 // Copy disk's data to buffer (up to bufsize) and 
@@ -61,6 +85,10 @@ int32_t msc_read_cb (uint32_t lba, void* buffer, uint32_t bufsize)
 {
   const uint32_t addr = lba*512;
   flash_cache_read((uint8_t*) buffer, addr, bufsize);
+#ifdef ARCADA_MSD_DEBUG
+  Serial.printf("Read block %08x\n", lba);
+#endif
+  last_access_ms = millis();
   return bufsize;
 }
 
@@ -69,9 +97,13 @@ int32_t msc_read_cb (uint32_t lba, void* buffer, uint32_t bufsize)
 // return number of written bytes (must be multiple of block size)
 int32_t msc_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize)
 {
+#ifdef ARCADA_MSD_DEBUG
+  Serial.printf("Write block %08x\n", lba);
+#endif
   // need to erase & caching write back
   const uint32_t addr = lba*512;
   flash_cache_write(addr, buffer, bufsize);
+  last_access_ms = millis();
   return bufsize;
 }
 
@@ -79,6 +111,10 @@ int32_t msc_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize)
 // used to flush any pending cache.
 void msc_flush_cb (void)
 {
+#ifdef ARCADA_MSD_DEBUG
+  Serial.printf("Flush block\n");
+#endif
+  last_access_ms = millis();
   flash_cache_flush();
 }
 
