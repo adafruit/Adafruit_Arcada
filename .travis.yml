@@ -27,6 +27,7 @@ install:
    - arduino --install-library "Adafruit SPIFlash"
    - arduino --install-library "Adafruit LIS3DH"
    - arduino --install-library "Adafruit ZeroTimer Library"
+   - arduino --install-library "SdFat"
 
 script:
    - build_arcada_platforms
