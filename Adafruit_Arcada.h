@@ -11,6 +11,7 @@
 #include <Adafruit_ILI9341.h>
 #include <Adafruit_ZeroTimer.h>
 #include <Adafruit_LIS3DH.h>
+#include <TouchScreen.h>
 #include <ArduinoJson.h>
 
 
@@ -58,7 +59,7 @@
   #define ARCADA_TFT_RD           9 // Read-strobe pin
   #define ARCADA_TFT_LITE         25
   #define ARCADA_TFT_DEFAULTFILL  0xFFFF
-  #define ARCADA_TFT_ROTATION     1
+  #define ARCADA_TFT_ROTATION     3
   #define ARCADA_TFT_WIDTH        320
   #define ARCADA_TFT_HEIGHT       240
 
@@ -71,9 +72,19 @@
   #define ARCADA_NEOPIXEL_NUM     1
 
   #define ARCADA_SD_CS            32
-  #define ARCADA_USE_SD_FS
+  #define ARCADA_USE_QSPI_FS
+  //#define ARCADA_USE_SD_FS
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_NONE
+  #define ARCADA_USE_TOUCHSCREEN
+  #define ARCADA_TOUCHSCREEN_XP A5
+  #define ARCADA_TOUCHSCREEN_YM A4
+  #define ARCADA_TOUCHSCREEN_XM A7
+  #define ARCADA_TOUCHSCREEN_YP A6
+  #define ARCADA_TOUCHSCREEN_CALIBX_MIN  325
+  #define ARCADA_TOUCHSCREEN_CALIBX_MAX  750
+  #define ARCADA_TOUCHSCREEN_CALIBY_MIN  240
+  #define ARCADA_TOUCHSCREEN_CALIBY_MAX  840
 
 #elif defined(ADAFRUIT_PYBADGE_M4_EXPRESS)
 
@@ -212,6 +223,12 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   uint32_t readButtons(void);
   uint32_t justPressedButtons(void);
   uint32_t justReleasedButtons(void);
+  bool hasTouchscreen(void);
+  void setTouchscreenCalibration(int16_t xmin, int16_t xmax, int16_t ymin, int16_t ymax);
+  TSPoint getTouchscreenPoint(void);
+
+  bool hasControlPad(void);
+
   uint16_t readLightSensor(void);
   float readBatterySensor(void);
 
@@ -247,8 +264,9 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
 #endif
 
   StaticJsonDocument<1024> configJSON;  ///< The object to store our various settings, you need to restore/save this with (load/save)ConfigurationFile
-
  private:
+  void _initAlertFonts(void);
+
   bool _has_accel;
 
   int16_t _joyx_center = 512;
@@ -263,6 +281,9 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   uint32_t last_buttons, curr_buttons, justpressed_buttons, justreleased_buttons;
 
   uint8_t _volume = 255, _brightness = 255;
+
+  TouchScreen *_touchscreen;
+  int16_t _ts_xmin = 0, _ts_xmax = 1023, _ts_ymin = 0, _ts_ymax = 1023;
 };
 
 #endif

@@ -6,9 +6,9 @@
 static uint8_t maxCharPerLine, fontSize;
 static uint16_t charHeight, charWidth;
 
-static void initAlertFonts(void) {
+void Adafruit_Arcada::_initAlertFonts(void) {
   fontSize = 1;
-  if (ARCADA_TFT_WIDTH > 160) {
+  if (width() > 160) {
     fontSize = 2;
   }
   charHeight = 8 * fontSize;
@@ -81,10 +81,10 @@ void Adafruit_Arcada::haltBox(const char *string) {
 /**************************************************************************/
 void Adafruit_Arcada::alertBox(const char *string, uint16_t boxColor, uint16_t textColor,
 			       uint32_t continueButtonMask) {
-  initAlertFonts();
+  _initAlertFonts();
 
   uint16_t boxWidth = (maxCharPerLine + 2) * charWidth;
-  uint16_t boxX = (ARCADA_TFT_WIDTH - boxWidth) / 2;
+  uint16_t boxX = (width() - boxWidth) / 2;
 
   // pre-calculate # of lines!
   uint8_t lines = 1;
@@ -106,7 +106,7 @@ void Adafruit_Arcada::alertBox(const char *string, uint16_t boxColor, uint16_t t
   }
 
   uint16_t boxHeight = (lines + 2) * charHeight;
-  uint16_t boxY = (ARCADA_TFT_HEIGHT - boxHeight) / 2;
+  uint16_t boxY = (height() - boxHeight) / 2;
 
   fillRoundRect(boxX, boxY, boxWidth, boxHeight, charWidth, boxColor);
   drawRoundRect(boxX, boxY, boxWidth, boxHeight, charWidth, textColor);

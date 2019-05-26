@@ -52,6 +52,16 @@ bool Adafruit_Arcada::begin(void) {
   pixels.setBrightness(20);
   pixels.show();  // turn off
 
+  if (hasTouchscreen()) {
+    _touchscreen = new TouchScreen(ARCADA_TOUCHSCREEN_XP, ARCADA_TOUCHSCREEN_YP,
+				   ARCADA_TOUCHSCREEN_XM, ARCADA_TOUCHSCREEN_YM, 300);
+    setTouchscreenCalibration(ARCADA_TOUCHSCREEN_CALIBX_MIN,
+			      ARCADA_TOUCHSCREEN_CALIBX_MAX,
+			      ARCADA_TOUCHSCREEN_CALIBY_MIN,
+			      ARCADA_TOUCHSCREEN_CALIBY_MAX); 
+  }
+
+
 #ifdef ARCADA_BUTTONPIN_START
   pinMode(ARCADA_BUTTONPIN_START, INPUT_PULLUP);
 #endif
@@ -471,4 +481,97 @@ bool Adafruit_Arcada::blitFrameBuffer(uint16_t x, uint16_t y, bool blocking) {
   return true;
 }
 
-					
+/**************************************************************************/
+/*!
+    @brief  Does this board have a touchscreen
+    @returns True if it does
+*/
+/**************************************************************************/
+bool Adafruit_Arcada::hasTouchscreen(void) {
+#if defined(ARCADA_USE_TOUCHSCREEN) 
+  return true;
+#else
+  return false;
+#endif
+}
+
+/**************************************************************************/
+/*!
+    @brief  Set the X/Y calibration values for the touchscreen
+    @param xmin The value of X which corresponds to 0 on that axis
+    @param ymin The value of Y which corresponds to 0 on that axis
+    @param xmax The value of X which corresponds to the TFT width on that axis
+    @param ymax The value of Y which corresponds to the TFT height on that axis
+*/
+/**************************************************************************/
+void Adafruit_Arcada::setTouchscreenCalibration(int16_t xmin, int16_t xmax, 
+						int16_t ymin, int16_t ymax) {
+  _ts_xmin = xmin;
+  _ts_xmax = xmax;
+  _ts_ymin = ymin;
+  _ts_ymax = ymax;
+}
+
+/**************************************************************************/
+/*!
+    @brief Get a calibrated point that corresponds to the TFT
+    @returns A TSPoint with x, y and z pressure readings. If z is 0 no
+    touch was detected.
+*/
+/**************************************************************************/
+TSPoint Adafruit_Arcada::getTouchscreenPoint(void) {
+  if (!_touchscreen) {
+    TSPoint p;
+    p.x = p.y = p.z = 0;
+    return p;
+  }
+  TSPoint p = _touchscreen->getPoint(); // the uncalibrated point
+  if ((p.z < 100) || (p.z > 1000)) {
+    p.x = -1;
+    p.y = -1;
+    p.z = 0;
+    return p;
+  }
+  //Serial.printf("rot: %d (%d, %d) \t", getRotation(), p.x, p.y);
+
+  if (getRotation() == 0) {
+    int _y = map(p.y, _ts_ymin, _ts_ymax, 0, height());
+    int _x = map(p.x, _ts_xmin, _ts_xmax, 0, width());
+    p.x = _x;
+    p.y = _y;
+  }
+  if (getRotation() == 1) {
+    int _x = map(p.y, _ts_ymin, _ts_ymax, 0, width());
+    int _y = map(p.x, _ts_xmax, _ts_xmin, 0, height());
+    p.x = _x;
+    p.y = _y;
+  }
+  if (getRotation() == 2) {
+    int _y = map(p.y, _ts_ymax, _ts_ymin, 0, height());
+    int _x = map(p.x, _ts_xmax, _ts_xmin, 0, width());
+    p.x = _x;
+    p.y = _y;
+  }
+  if (getRotation() == 3) {
+    int _x = map(p.y, _ts_ymax, _ts_ymin, 0, width());
+    int _y = map(p.x, _ts_xmin, _ts_xmax, 0, height());
+    p.x = _x;
+    p.y = _y;
+  }
+  return p;
+}
+
+
+/**************************************************************************/
+/*!
+    @brief  Does this board have a control pad - latch, buttons or analog joystick?
+    @returns True if it does
+*/
+/**************************************************************************/
+bool Adafruit_Arcada::hasControlPad(void) {
+#if defined(ARCADA_BUTTON_CLOCK) ||  defined(ARCADA_BUTTONPIN_A) || defined(ARCADA_JOYSTICK_X)
+  return true;
+#else
+  return false;
+#endif
+}
