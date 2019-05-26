@@ -24,7 +24,7 @@ static void initAlertFonts(void) {
     immediate return. Default is ARCADA_BUTTONMASK_A 
 */
 /**************************************************************************/
-void Adafruit_Arcada::infoBox(char *string, uint32_t continueButtonMask) {
+void Adafruit_Arcada::infoBox(const char *string, uint32_t continueButtonMask) {
   alertBox(string, ARCADA_WHITE, ARCADA_BLACK, continueButtonMask);
 }
 
@@ -37,7 +37,7 @@ void Adafruit_Arcada::infoBox(char *string, uint32_t continueButtonMask) {
     immediate return. Default is ARCADA_BUTTONMASK_A 
 */
 /**************************************************************************/
-void Adafruit_Arcada::warnBox(char *string, uint32_t continueButtonMask) {
+void Adafruit_Arcada::warnBox(const char *string, uint32_t continueButtonMask) {
   alertBox(string, ARCADA_YELLOW, ARCADA_WHITE, continueButtonMask);
 }
 
@@ -50,7 +50,7 @@ void Adafruit_Arcada::warnBox(char *string, uint32_t continueButtonMask) {
     immediate return. Default is ARCADA_BUTTONMASK_A 
 */
 /**************************************************************************/
-void Adafruit_Arcada::errorBox(char *string, uint32_t continueButtonMask) {
+void Adafruit_Arcada::errorBox(const char *string, uint32_t continueButtonMask) {
   alertBox(string, ARCADA_RED, ARCADA_WHITE, continueButtonMask);
 }
 
@@ -60,7 +60,7 @@ void Adafruit_Arcada::errorBox(char *string, uint32_t continueButtonMask) {
     @param  string The message to display
 */
 /**************************************************************************/
-void Adafruit_Arcada::haltBox(char *string) {
+void Adafruit_Arcada::haltBox(const char *string) {
   alertBox(string, ARCADA_RED, ARCADA_WHITE, 0);
   while (1) {
     delay(10);
@@ -79,7 +79,7 @@ void Adafruit_Arcada::haltBox(char *string) {
     immediate return.
 */
 /**************************************************************************/
-void Adafruit_Arcada::alertBox(char *string, uint16_t boxColor, uint16_t textColor,
+void Adafruit_Arcada::alertBox(const char *string, uint16_t boxColor, uint16_t textColor,
 			       uint32_t continueButtonMask) {
   initAlertFonts();
 
@@ -90,7 +90,7 @@ void Adafruit_Arcada::alertBox(char *string, uint16_t boxColor, uint16_t textCol
   uint8_t lines = 1;
   uint16_t fontX = boxX + charWidth;
   for (int c=0; c<strlen(string); c++) {
-    char *nextBreakStr = strpbrk(string+c, " \n");
+    const char *nextBreakStr = strpbrk(string+c, " \n");
     if (!nextBreakStr) {
       nextBreakStr = string + strlen(string);
     }
@@ -118,7 +118,7 @@ void Adafruit_Arcada::alertBox(char *string, uint16_t boxColor, uint16_t textCol
   setTextColor(ARCADA_BLACK);
 
   for (int c=0; c<strlen(string); c++) {
-    char *nextBreakStr = strpbrk(string+c, " \n");
+    const char *nextBreakStr = strpbrk(string+c, " \n");
     if (!nextBreakStr) {
       nextBreakStr = string + strlen(string);
     }

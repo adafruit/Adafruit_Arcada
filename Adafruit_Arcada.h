@@ -11,6 +11,8 @@
 #include <Adafruit_ILI9341.h>
 #include <Adafruit_ZeroTimer.h>
 #include <Adafruit_LIS3DH.h>
+#include <ArduinoJson.h>
+
 
 #define SD_MAX_FILENAME_SIZE 80
 
@@ -150,9 +152,10 @@
   #define ARCADA_LEFT_AUDIO_PIN           A1
 
   #define ARCADA_MAX_VOLUME               0.2
-//  #define ARCADA_USE_QSPI_FS
   #define ARCADA_SD_CS                     4
-  #define ARCADA_USE_SD_FS
+
+  #define ARCADA_USE_QSPI_FS
+//#define ARCADA_USE_SD_FS
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_LIS3DH
 #endif
@@ -216,12 +219,17 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   void enableSpeaker(bool flag);
 
   // Alerts
-  void alertBox(char *string, uint16_t boxColor, uint16_t textColor,
+  void alertBox(const char *string, uint16_t boxColor, uint16_t textColor,
 		uint32_t continueButtonMask);
-  void infoBox(char *string, uint32_t continueButtonMask = ARCADA_BUTTONMASK_A);
-  void warnBox(char *string, uint32_t continueButtonMask = ARCADA_BUTTONMASK_A);
-  void errorBox(char *string, uint32_t continueButtonMask = ARCADA_BUTTONMASK_A);
-  void haltBox(char *string);
+  void infoBox(const char *string, uint32_t continueButtonMask = ARCADA_BUTTONMASK_A);
+  void warnBox(const char *string, uint32_t continueButtonMask = ARCADA_BUTTONMASK_A);
+  void errorBox(const char *string, uint32_t continueButtonMask = ARCADA_BUTTONMASK_A);
+  void haltBox(const char *string);
+
+
+  // Configuration JSON files
+  bool loadConfigurationFile(const char *filename = "/arcada_config.json");
+  bool saveConfigurationFile(const char *filename = "/arcada_config.json");
 
   Adafruit_NeoPixel pixels;     ///<  The neopixel strip, of length ARCADA_NEOPIXEL_NUM
 
@@ -244,7 +252,8 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
 
   uint32_t last_buttons, curr_buttons, justpressed_buttons, justreleased_buttons;
 
-
+  uint8_t volume = 255, brightness = 255;
+  StaticJsonDocument<1024> _config_json;
 };
 
 #endif
