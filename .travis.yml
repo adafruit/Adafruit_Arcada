@@ -28,7 +28,7 @@ install:
    - arduino --install-library "Adafruit LIS3DH"
    - arduino --install-library "Adafruit ZeroTimer Library"
    - arduino --install-library "SdFat"
-   - arduino --install-library "ArduinoJSON"
+   - arduino --install-library "ArduinoJson"
 
 script:
    - build_arcada_platforms
