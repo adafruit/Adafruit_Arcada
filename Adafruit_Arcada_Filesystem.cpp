@@ -199,6 +199,7 @@ File Adafruit_Arcada::open(const char *path, uint32_t flags) {
     @param  path A string with the directory path, must start with / e.g. "/roms"
     @param  index The n'th file to open, 0 is first file
     @param  flags Defaults to O_READ but can use O_WRITE for writing (uses SDfat's flag system)
+    @param  extensionFilter A 3 (or more?) string to match against the final characters of each file for them to count. If they don't match, the index isn't incremented at all. We toupper() the extension and filename so don't worry about it.
     @return A File object, for whatever filesystem we're using
 */
 /**************************************************************************/

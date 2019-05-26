@@ -15,6 +15,7 @@
 
 
 #define SD_MAX_FILENAME_SIZE 80
+#define ARCADA_DEFAULT_CONFIGURATION_FILENAME  "/arcada_config.json"
 
 #if defined(ARDUINO_GRAND_CENTRAL_M4) // w/TFT Shield
   #define ARCADA_TFT_DC           9
@@ -231,8 +232,8 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
 
 
   // Configuration JSON files
-  bool loadConfigurationFile(const char *filename = "/arcada_config.json");
-  bool saveConfigurationFile(const char *filename = "/arcada_config.json");
+  bool loadConfigurationFile(const char *filename = ARCADA_DEFAULT_CONFIGURATION_FILENAME);
+  bool saveConfigurationFile(const char *filename = ARCADA_DEFAULT_CONFIGURATION_FILENAME);
 
   Adafruit_NeoPixel pixels;     ///<  The neopixel strip, of length ARCADA_NEOPIXEL_NUM
 
@@ -240,6 +241,8 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   Adafruit_LIS3DH accel = Adafruit_LIS3DH();
   bool hasAccel(void) { return _has_accel; }
 #endif
+
+  StaticJsonDocument<1024> configJSON;
 
  private:
   bool _has_accel;
@@ -256,7 +259,6 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   uint32_t last_buttons, curr_buttons, justpressed_buttons, justreleased_buttons;
 
   uint8_t volume = 255, brightness = 255;
-  StaticJsonDocument<1024> configJSON;
 };
 
 #endif
