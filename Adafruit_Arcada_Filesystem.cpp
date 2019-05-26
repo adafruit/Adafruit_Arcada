@@ -212,30 +212,31 @@ File Adafruit_Arcada::openFileByIndex(const char *path, uint16_t index,
   File dir = FileSys.open(path);
   char filename[SD_MAX_FILENAME_SIZE];
   uint16_t file_number = 0;
+  File tmpFile;
 
   if (!dir) 
-    return NULL;
+    return tmpFile;
 
   while (1) {
-    File entry =  dir.openNextFile();
-    if (! entry) {
-      return NULL;
+    tmpFile =  dir.openNextFile();
+    if (! tmpFile) {
+      return tmpFile;
     }
 #if defined(ARCADA_USE_QSPI_FS)
-    strncpy(filename, entry.name(), SD_MAX_FILENAME_SIZE);
+    strncpy(filename, tmpFile.name(), SD_MAX_FILENAME_SIZE);
 #else
-    entry.getName(filename, SD_MAX_FILENAME_SIZE);
+    tmpFile.getName(filename, SD_MAX_FILENAME_SIZE);
 #endif
 
-    if (!entry.isDirectory() && filenameValidityChecker(filename, extensionFilter)) {
+    if (!tmpFile.isDirectory() && filenameValidityChecker(filename, extensionFilter)) {
       if (file_number == index) {
-	return entry;
+	return tmpFile;
       }
       file_number++;
     }
-    entry.close();
+    tmpFile.close();
   }
-  return NULL;
+  return tmpFile;
 }
 
 

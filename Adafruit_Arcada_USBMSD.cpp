@@ -4,22 +4,23 @@
 
 #if defined(USE_TINYUSB)
 static Adafruit_USBD_MSC usb_msc;
-extern Adafruit_QSPI_Flash arcada_qspi_flash;
-
-int32_t msc_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize);
-int32_t msc_read_cb (uint32_t lba, void* buffer, uint32_t bufsize);
-void msc_flush_cb (void);
-void flash_cache_read (uint8_t* dst, uint32_t addr, uint32_t count);
-uint32_t flash_cache_write (uint32_t dst, void const * src, uint32_t len);
-void flash_cache_flush (void);
-
-#define FLASH_CACHE_SIZE          4096        // must be a erasable page size
-#define FLASH_CACHE_INVALID_ADDR  0xffffffff
-
-uint32_t cache_addr = FLASH_CACHE_INVALID_ADDR;
-uint8_t  cache_buf[FLASH_CACHE_SIZE];
-
 static uint32_t last_access_ms;
+
+#if defined(ARCADA_USE_QSPI_FS)
+  extern Adafruit_QSPI_Flash arcada_qspi_flash;
+
+  int32_t msc_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize);
+  int32_t msc_read_cb (uint32_t lba, void* buffer, uint32_t bufsize);
+  void msc_flush_cb (void);
+  void flash_cache_read (uint8_t* dst, uint32_t addr, uint32_t count);
+  uint32_t flash_cache_write (uint32_t dst, void const * src, uint32_t len);
+  void flash_cache_flush (void);
+
+  #define FLASH_CACHE_SIZE          4096        // must be a erasable page size
+  #define FLASH_CACHE_INVALID_ADDR  0xffffffff
+
+  uint32_t cache_addr = FLASH_CACHE_INVALID_ADDR;
+  uint8_t  cache_buf[FLASH_CACHE_SIZE];
 
 #endif
 
@@ -45,16 +46,17 @@ bool Adafruit_Arcada::filesysBeginMSD(void) {
   usb_msc.setCapacity(arcada_qspi_flash.pageSize()*arcada_qspi_flash.numPages()/512, 512);
 
   // MSC is ready for read/write
-  usb_msc.setUnitReady(true);
-  
+  usb_msc.setUnitReady(true);  
   usb_msc.begin();
-
   return true;
-#else
-  return false; // only QSPI supported at this time!
-#endif
-}
 
+#elif defined(USE_TINYUSB) && defined(ARCADA_USE_SD_FS)
+  return false; // not supported yet
+#else
+  return false;
+#endif
+  return false;
+}
 
 /**************************************************************************/
 /*!
@@ -77,7 +79,8 @@ bool Adafruit_Arcada::recentUSB(uint32_t timeout) {
   return false;
 }
 
-#if defined(USE_TINYUSB)
+#if defined(ARCADA_USE_QSPI_FS)
+
 // Callback invoked when received READ10 command.
 // Copy disk's data to buffer (up to bufsize) and 
 // return number of copied bytes (must be multiple of block size) 
@@ -121,7 +124,6 @@ void msc_flush_cb (void)
 //--------------------------------------------------------------------+
 // Flash Caching
 //--------------------------------------------------------------------+
-
 static inline uint32_t page_addr_of (uint32_t addr)
 {
   return addr & ~(FLASH_CACHE_SIZE - 1);
@@ -215,4 +217,6 @@ void flash_cache_read (uint8_t* dst, uint32_t addr, uint32_t count)
     arcada_qspi_flash.readBuffer(addr, dst, count);
   }
 }
-#endif
+#endif // QSPI
+
+#endif  // tinyusb
