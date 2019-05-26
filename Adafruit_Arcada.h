@@ -242,7 +242,7 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   bool hasAccel(void) { return _has_accel; }
 #endif
 
-  StaticJsonDocument<1024> configJSON;
+  StaticJsonDocument<1024> configJSON;  ///< The object to store our various settings, you need to restore/save this with (load/save)ConfigurationFile
 
  private:
   bool _has_accel;
