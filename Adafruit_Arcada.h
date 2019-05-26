@@ -193,9 +193,12 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
 
   // Filesystem stuff!
   bool filesysBegin(void);
-  int16_t filesysListFiles(const char *path=NULL);
+  int16_t filesysListFiles(const char *path=NULL, const char *extensionFilter=NULL);
   bool chdir(const char *path);
   File open(const char *path=NULL, uint32_t flags = O_READ);
+  File openFileByIndex(const char *path, uint16_t index, 
+		       uint32_t flags = O_READ, const char *extensionFilter=NULL);
+
   bool exists(const char *path);
   bool mkdir(const char *path);
   bool remove(const char *path);
