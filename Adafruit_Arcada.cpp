@@ -128,7 +128,7 @@ void Adafruit_Arcada::displayBegin(void) {
 /*!
     @brief  Set the backlight brightness and save to the configuration
     @param  brightness From 0 (off) to 255 (full on)
-    @param  bool saveToDisk Whether we save this permanently to disk, default is false
+    @param  saveToDisk Whether we save this permanently to disk, default is false
     @returns Whether saving to disk succeeded, or true if we don't save
 */
 /**************************************************************************/
@@ -165,7 +165,7 @@ uint8_t Adafruit_Arcada::getBacklight(void) {
 /*!
     @brief  Set the audio volume (not working at this time)
     @param  volume From 0 (off) to 255 (full on)
-    @param  bool saveToDisk Whether we save this permanently to disk, default is false
+    @param  saveToDisk Whether we save this permanently to disk, default is false
     @returns Whether saving to disk succeeded, or true if we don't save
 */
 /**************************************************************************/
