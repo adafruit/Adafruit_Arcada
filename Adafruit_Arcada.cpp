@@ -52,13 +52,16 @@ bool Adafruit_Arcada::begin(void) {
   pixels.setBrightness(20);
   pixels.show();  // turn off
 
+  _touchscreen = NULL;
   if (hasTouchscreen()) {
+#if defined(ARCADA_TOUCHSCREEN_XP)
     _touchscreen = new TouchScreen(ARCADA_TOUCHSCREEN_XP, ARCADA_TOUCHSCREEN_YP,
 				   ARCADA_TOUCHSCREEN_XM, ARCADA_TOUCHSCREEN_YM, 300);
     setTouchscreenCalibration(ARCADA_TOUCHSCREEN_CALIBX_MIN,
 			      ARCADA_TOUCHSCREEN_CALIBX_MAX,
 			      ARCADA_TOUCHSCREEN_CALIBY_MIN,
 			      ARCADA_TOUCHSCREEN_CALIBY_MAX); 
+#endif
   }
 
 
