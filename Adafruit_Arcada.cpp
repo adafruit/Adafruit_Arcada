@@ -294,8 +294,7 @@ int16_t Adafruit_Arcada::readJoystickY(uint8_t sampling) {
 uint32_t Adafruit_Arcada::readButtons(void) {
   uint32_t buttons = 0;
 
-
-#ifdef ARCADA_BUTTON_CLOCK
+#if defined(ARCADA_BUTTON_CLOCK)
   // Use a latch to read 8 bits
   uint8_t shift_buttons = 0;
   digitalWrite(ARCADA_BUTTON_LATCH, LOW);
@@ -319,7 +318,7 @@ uint32_t Adafruit_Arcada::readButtons(void) {
     buttons |= ARCADA_BUTTONMASK_SELECT;
   if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_START)
     buttons |= ARCADA_BUTTONMASK_START;
-#ifdef ARCADA_BUTTON_SHIFTMASK_UP  // D Pad buttons
+#if defined(ARCADA_BUTTON_SHIFTMASK_UP)  // D Pad buttons on shift register
   if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_UP)
     buttons |= ARCADA_BUTTONMASK_UP;
   if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_DOWN)
@@ -331,6 +330,7 @@ uint32_t Adafruit_Arcada::readButtons(void) {
 #endif
 #endif
 
+  // GPIO buttons!
 #ifdef ARCADA_BUTTONPIN_START
   if (!digitalRead(ARCADA_BUTTONPIN_START)) 
     buttons |= ARCADA_BUTTONMASK_START;
@@ -351,7 +351,7 @@ uint32_t Adafruit_Arcada::readButtons(void) {
     buttons |= ARCADA_BUTTONMASK_B;
 #endif
 
-#ifdef BUTTONPIN_UP  // gpio for buttons
+#if defined(BUTTONPIN_UP)  // gpio for D-PAD
   if (!digitalRead(ARCADA_BUTTONPIN_UP)) 
     buttons |= ARCADA_BUTTONMASK_UP;
   if (!digitalRead(ARCADA_BUTTONPIN_DOWN))
@@ -360,17 +360,63 @@ uint32_t Adafruit_Arcada::readButtons(void) {
     buttons |= ARCADA_BUTTONMASK_LEFT;
   if (!digitalRead(ARCADA_BUTTONPIN_RIGHT))
     buttons |= ARCADA_BUTTONMASK_RIGHT;
-#else
+#endif
+
+  // Potentiometers for X & Y
+#if defined(ARCADA_JOYSTICK_X)
   int16_t x = readJoystickX();
-  int16_t y = readJoystickY();
   if (x > 350)  
     buttons |= ARCADA_BUTTONMASK_RIGHT;
   else if (x < -350)  
     buttons |= ARCADA_BUTTONMASK_LEFT;
+#endif
+#if defined(ARCADA_JOYSTICK_Y)
+  int16_t y = readJoystickY();
   if (y > 350)  
     buttons |= ARCADA_BUTTONMASK_DOWN;
   else if (y < -350)  
     buttons |= ARCADA_BUTTONMASK_UP;
+#endif
+
+
+  // Touchscreen
+#if defined(ARCADA_USE_TOUCHSCREEN)
+  TSPoint p = getTouchscreenPoint();
+  if (p.z > 100) {
+    //Serial.printf("(%d, %d)\n", p.x, p.y);
+    // up!
+    if ( (p.y < height()/4) && (p.x > width()/4) && (p.x < (width()*3.0/4.0)) ) {
+       buttons |= ARCADA_BUTTONMASK_UP;
+    }
+    // down!
+    if ( (p.y > (height()*3.0/4.0)) && 
+	 (p.x > width()/3) && (p.x < (width()*3.0/4.0)) ) {
+       buttons |= ARCADA_BUTTONMASK_DOWN;
+    }
+    // left!
+    if ( (p.x < width()/4) && (p.y > height()/4) && (p.y < (height()*3.0/4.0)) ) {
+       buttons |= ARCADA_BUTTONMASK_LEFT;
+    }
+    // right!
+    if ( (p.x > (width()*3.0/4.0)) &&  
+	 (p.y > height()/4) && (p.y < (height()*3.0/4.0)) ) {
+       buttons |= ARCADA_BUTTONMASK_RIGHT;
+    }
+    // left!
+    if ( (p.x < width()/4) && (p.y > height()/4) && (p.y < (height()*3.0/4.0)) ) {
+       buttons |= ARCADA_BUTTONMASK_LEFT;
+    }
+    // B
+    if ( (p.x > width()/4) && (p.x < width()/2) // 2nd quarter
+	 && (p.y > height()/4) && (p.y < (height()*3.0/4.0)) ) {
+       buttons |= ARCADA_BUTTONMASK_B;
+    }
+    // A
+    if ( (p.x > width()/2) && (p.x < (width()*3.0/4.0)) // 3rd quarter
+	 && (p.y > height()/4) && (p.y < (height()*3.0/4.0)) ) {
+       buttons |= ARCADA_BUTTONMASK_A;
+    }
+  }
 #endif
 
   last_buttons = curr_buttons;
@@ -525,13 +571,26 @@ TSPoint Adafruit_Arcada::getTouchscreenPoint(void) {
     p.x = p.y = p.z = 0;
     return p;
   }
-  TSPoint p = _touchscreen->getPoint(); // the uncalibrated point
-  if ((p.z < 100) || (p.z > 1000)) {
-    p.x = -1;
-    p.y = -1;
-    p.z = 0;
+
+  TSPoint points[8];
+  for (int i=0; i<8; i++) {
+    points[i] = _touchscreen->getPoint(); // the uncalibrated point
+  }
+  bool invalid = true;
+  TSPoint p;
+  for (int i=0; i<8; i++) {
+    if ((points[i].z > 100) && (points[i].z < 1000)) {
+      p.x = points[i].x;
+      p.y = points[i].y;
+      p.z = points[i].z;
+      invalid = false;
+    }
+  }
+  if (invalid) {
+    p.x = p.y = p.z = 0;
     return p;
   }
+
   //Serial.printf("rot: %d (%d, %d) \t", getRotation(), p.x, p.y);
 
   if (getRotation() == 0) {

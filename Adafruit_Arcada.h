@@ -218,16 +218,17 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   bool filesysBeginMSD(void);
   bool recentUSB(uint32_t timeout = 100);
 
+  bool hasControlPad(void);
   int16_t readJoystickX(uint8_t oversampling=3);
   int16_t readJoystickY(uint8_t oversampling=3);
   uint32_t readButtons(void);
   uint32_t justPressedButtons(void);
   uint32_t justReleasedButtons(void);
-  bool hasTouchscreen(void);
-  void setTouchscreenCalibration(int16_t xmin, int16_t xmax, int16_t ymin, int16_t ymax);
-  TSPoint getTouchscreenPoint(void);
 
-  bool hasControlPad(void);
+  bool hasTouchscreen(void);
+  void setTouchscreenCalibration(int16_t xmin, int16_t xmax, 
+				 int16_t ymin, int16_t ymax);
+  TSPoint getTouchscreenPoint(void);
 
   uint16_t readLightSensor(void);
   float readBatterySensor(void);

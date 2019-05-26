@@ -139,17 +139,21 @@ void Adafruit_Arcada::alertBox(const char *string, uint16_t boxColor, uint16_t t
 
   if (continueButtonMask) {
     const char *buttonString = "";
-    if (continueButtonMask == ARCADA_BUTTONMASK_A) {
-      buttonString = "A";
-    }
-    if (continueButtonMask == ARCADA_BUTTONMASK_B) {
-      buttonString = "B";
-    }
-    if (continueButtonMask == ARCADA_BUTTONMASK_SELECT) {
-      buttonString = "Sel";
-    }
-    if (continueButtonMask == ARCADA_BUTTONMASK_START) {
-      buttonString = "Sta";
+    if (hasTouchscreen() && ! hasControlPad()) {
+      buttonString = "TAP";
+    } else {
+      if (continueButtonMask == ARCADA_BUTTONMASK_A) {
+	buttonString = "A";
+      }
+      if (continueButtonMask == ARCADA_BUTTONMASK_B) {
+	buttonString = "B";
+      }
+      if (continueButtonMask == ARCADA_BUTTONMASK_SELECT) {
+	buttonString = "Sel";
+      }
+      if (continueButtonMask == ARCADA_BUTTONMASK_START) {
+	buttonString = "Sta";
+      }
     }
     fontX = boxX + boxWidth - (strlen(buttonString)+1)*charWidth;
     fontY = boxY + boxHeight - charHeight;
@@ -164,11 +168,22 @@ void Adafruit_Arcada::alertBox(const char *string, uint16_t boxColor, uint16_t t
     setTextColor(boxColor);
     print(buttonString);
 
-    while (1) { 
-      readButtons();
-      if (justReleasedButtons() & continueButtonMask) {
-	break;
+    while (1) {
+      uint32_t b = readButtons();
+      //Serial.printf("Buttons = 0x%x\t", b);
+      uint32_t released = justReleasedButtons();
+      //Serial.printf("Released = 0x%x\n", released);
+
+      if (hasControlPad()) {
+	if (released & continueButtonMask) {
+	  break;
+	}
+      } else if (hasTouchscreen()) {
+	if (released) {     // anything
+	  break;
+	}
       }
+      
       delay(10); 
     }
   }
