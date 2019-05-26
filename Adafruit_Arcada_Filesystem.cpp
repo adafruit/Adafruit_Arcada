@@ -1,5 +1,6 @@
 #include <Adafruit_Arcada.h>
 
+static bool filenameValidityChecker(const char *filename, const char *extension);
 
 #if defined(ARCADA_USE_SD_FS)
 #if defined(ARCADA_SD_SPI_PORT)
@@ -103,17 +104,7 @@ int16_t Adafruit_Arcada::filesysListFiles(const char *path, const char *extensio
 #else
     entry.getName(filename, SD_MAX_FILENAME_SIZE);
 #endif
-    bool valid_file = true;
-    if (extensionFilter && !entry.isDirectory()) {
-      char *p = filename + strlen(filename) - strlen(extensionFilter);
-      for (int i=0; i<strlen(extensionFilter); i++) {
-	if (toupper(p[i]) != toupper(extensionFilter[i])) {
-	  valid_file = false;
-	  break;
-	}
-      }
-    }
-    if (entry.isDirectory() || valid_file) {
+    if (entry.isDirectory() || filenameValidityChecker(filename, extensionFilter)) {
       Serial.print(filename);
       if (entry.isDirectory()) {
 	Serial.println("/");
@@ -234,17 +225,8 @@ File Adafruit_Arcada::openFileByIndex(const char *path, uint16_t index,
 #else
     entry.getName(filename, SD_MAX_FILENAME_SIZE);
 #endif
-    bool valid_file = true;
-    if (extensionFilter && !entry.isDirectory()) {
-      char *p = filename + strlen(filename) - strlen(extensionFilter);
-      for (int i=0; i<strlen(extensionFilter); i++) {
-	if (toupper(p[i]) != toupper(extensionFilter[i])) {
-	  valid_file = false;
-	  break;
-	}
-      }
-    }
-    if (valid_file) {
+
+    if (!entry.isDirectory() && filenameValidityChecker(filename, extensionFilter)) {
       if (file_number == index) {
 	return entry;
       }
@@ -253,4 +235,25 @@ File Adafruit_Arcada::openFileByIndex(const char *path, uint16_t index,
     entry.close();
   }
   return NULL;
+}
+
+
+static bool filenameValidityChecker(const char *filename, const char *extensionFilter) {
+  if (strlen(filename) > 2) {
+    if ((filename[0] == '.') && (filename[1] == '_')) {
+      return false;  // annoying macOS trashfiles
+    }
+  }
+    
+  // Check the last 3 (or 4?) characters to see if its the right filetype
+  if (extensionFilter) {
+    const char *p = filename + strlen(filename) - strlen(extensionFilter);
+    for (int i=0; i<strlen(extensionFilter); i++) {
+      if (toupper(p[i]) != toupper(extensionFilter[i])) {
+	return false;
+      }
+    }
+  }
+  // passes all tests!
+  return true;
 }

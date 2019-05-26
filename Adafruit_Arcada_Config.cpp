@@ -22,7 +22,7 @@ bool Adafruit_Arcada::loadConfigurationFile(const char *filename) {
   }
 
   // Deserialize the JSON document
-  DeserializationError error = deserializeJson(_config_json, file);
+  DeserializationError error = deserializeJson(config_json, file);
   if (error) {
     Serial.println(F("Failed to read file"));
     return false;
@@ -37,8 +37,8 @@ bool Adafruit_Arcada::loadConfigurationFile(const char *filename) {
 // Saves the configuration to a file
 bool Adafruit_Arcada::saveConfigurationFile(const char *filename) {
 
-  _config_json["volume"] = volume;
-  _config_json["brightness"] = brightness;
+  config_json["volume"] = volume;
+  config_json["brightness"] = brightness;
 
   // Delete existing file, otherwise the configuration is appended to the file
   remove(filename);
@@ -51,7 +51,7 @@ bool Adafruit_Arcada::saveConfigurationFile(const char *filename) {
   }
 
   // Serialize JSON to file
-  if (serializeJson(_config_json, file) == 0) {
+  if (serializeJson(configJSON, file) == 0) {
     Serial.println(F("Failed to write to file"));
     return false;
   }
