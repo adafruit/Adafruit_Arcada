@@ -128,6 +128,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2eab16eb0b94b8edaab823d6b9973d25"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a2eab16eb0b94b8edaab823d6b9973d25">recentUSB</a> (uint32_t timeout=100)</td></tr>
 <tr class="memdesc:a2eab16eb0b94b8edaab823d6b9973d25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hints whether we're doing a bunch of USB stuff recently.  <a href="#a2eab16eb0b94b8edaab823d6b9973d25">More...</a><br /></td></tr>
 <tr class="separator:a2eab16eb0b94b8edaab823d6b9973d25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3fc21ab83e48bfb63c0ee1542bca435"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#ad3fc21ab83e48bfb63c0ee1542bca435">hasControlPad</a> (void)</td></tr>
+<tr class="memdesc:ad3fc21ab83e48bfb63c0ee1542bca435"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does this board have a control pad - latch, buttons or analog joystick?  <a href="#ad3fc21ab83e48bfb63c0ee1542bca435">More...</a><br /></td></tr>
+<tr class="separator:ad3fc21ab83e48bfb63c0ee1542bca435"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f05150283452cf925bf5d23d3a23739"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a6f05150283452cf925bf5d23d3a23739">readJoystickX</a> (uint8_t oversampling=3)</td></tr>
 <tr class="memdesc:a6f05150283452cf925bf5d23d3a23739"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read X analog joystick.  <a href="#a6f05150283452cf925bf5d23d3a23739">More...</a><br /></td></tr>
 <tr class="separator:a6f05150283452cf925bf5d23d3a23739"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -143,6 +146,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a31c1e21cd33d7fb1099f45b6a4e705db"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a31c1e21cd33d7fb1099f45b6a4e705db">justReleasedButtons</a> (void)</td></tr>
 <tr class="memdesc:a31c1e21cd33d7fb1099f45b6a4e705db"><td class="mdescLeft">&#160;</td><td class="mdescRight">What buttons were just released as of the last <a class="el" href="class_adafruit___arcada.html#a8e361e8fec10d82edb5edc6c4cfa93e2" title="Read all buttons/joystick and return a bitmask of which buttons are pressed, check ARCADA_BUTTONMASK_...">readButtons()</a> call. Use ARCADA_BUTTONMASK_* defines to extract which bits are true (just releasd)  <a href="#a31c1e21cd33d7fb1099f45b6a4e705db">More...</a><br /></td></tr>
 <tr class="separator:a31c1e21cd33d7fb1099f45b6a4e705db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa660ac3c75c3fb959c97b37e6b1c0bbd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#aa660ac3c75c3fb959c97b37e6b1c0bbd">hasTouchscreen</a> (void)</td></tr>
+<tr class="memdesc:aa660ac3c75c3fb959c97b37e6b1c0bbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does this board have a touchscreen.  <a href="#aa660ac3c75c3fb959c97b37e6b1c0bbd">More...</a><br /></td></tr>
+<tr class="separator:aa660ac3c75c3fb959c97b37e6b1c0bbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a969146fed75948883e7fdee3dfc869f0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a969146fed75948883e7fdee3dfc869f0">setTouchscreenCalibration</a> (int16_t xmin, int16_t xmax, int16_t ymin, int16_t ymax)</td></tr>
+<tr class="memdesc:a969146fed75948883e7fdee3dfc869f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the X/Y calibration values for the touchscreen.  <a href="#a969146fed75948883e7fdee3dfc869f0">More...</a><br /></td></tr>
+<tr class="separator:a969146fed75948883e7fdee3dfc869f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5571e209cc8b63abbc18f033f340c195"><td class="memItemLeft" align="right" valign="top">TSPoint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a5571e209cc8b63abbc18f033f340c195">getTouchscreenPoint</a> (void)</td></tr>
+<tr class="memdesc:a5571e209cc8b63abbc18f033f340c195"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a calibrated point that corresponds to the TFT.  <a href="#a5571e209cc8b63abbc18f033f340c195">More...</a><br /></td></tr>
+<tr class="separator:a5571e209cc8b63abbc18f033f340c195"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afec10bc5587711075affd4d50c824ac4"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#afec10bc5587711075affd4d50c824ac4">readLightSensor</a> (void)</td></tr>
 <tr class="memdesc:afec10bc5587711075affd4d50c824ac4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the light sensor onboard if there is one.  <a href="#afec10bc5587711075affd4d50c824ac4">More...</a><br /></td></tr>
 <tr class="separator:afec10bc5587711075affd4d50c824ac4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -162,9 +174,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:ae44bf590a6fcc42af10f2a439ea896ce"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#ae44bf590a6fcc42af10f2a439ea896ce">blitFrameBuffer</a> (uint16_t x, uint16_t y, bool blocking=false)</td></tr>
 <tr class="memdesc:ae44bf590a6fcc42af10f2a439ea896ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the internal framebuffer to the display at coord (x, y)  <a href="#ae44bf590a6fcc42af10f2a439ea896ce">More...</a><br /></td></tr>
 <tr class="separator:ae44bf590a6fcc42af10f2a439ea896ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a172ab63265b6364d35ce1446f67a5561"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a172ab63265b6364d35ce1446f67a5561">setBacklight</a> (uint8_t brightness)</td></tr>
-<tr class="memdesc:a172ab63265b6364d35ce1446f67a5561"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the backlight brightness.  <a href="#a172ab63265b6364d35ce1446f67a5561">More...</a><br /></td></tr>
-<tr class="separator:a172ab63265b6364d35ce1446f67a5561"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a55557e8dff6b31c5e1988857b113ea"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a1a55557e8dff6b31c5e1988857b113ea">setBacklight</a> (uint8_t brightness, bool saveToDisk=false)</td></tr>
+<tr class="memdesc:a1a55557e8dff6b31c5e1988857b113ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the backlight brightness and save to the configuration.  <a href="#a1a55557e8dff6b31c5e1988857b113ea">More...</a><br /></td></tr>
+<tr class="separator:a1a55557e8dff6b31c5e1988857b113ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6312ecd7b4c3a230a14a10e186a177c8"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a6312ecd7b4c3a230a14a10e186a177c8">getBacklight</a> (void)</td></tr>
+<tr class="memdesc:a6312ecd7b4c3a230a14a10e186a177c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the backlight brightness.  <a href="#a6312ecd7b4c3a230a14a10e186a177c8">More...</a><br /></td></tr>
+<tr class="separator:a6312ecd7b4c3a230a14a10e186a177c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf6381e22cb5c0dd2c050255767d5656"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#acf6381e22cb5c0dd2c050255767d5656">setVolume</a> (uint8_t volume, bool saveToDisk=false)</td></tr>
+<tr class="memdesc:acf6381e22cb5c0dd2c050255767d5656"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the audio volume (not working at this time)  <a href="#acf6381e22cb5c0dd2c050255767d5656">More...</a><br /></td></tr>
+<tr class="separator:acf6381e22cb5c0dd2c050255767d5656"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42e8e5d7dc0a0db55ee0eee206d0201d"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a42e8e5d7dc0a0db55ee0eee206d0201d">getVolume</a> (void)</td></tr>
+<tr class="memdesc:a42e8e5d7dc0a0db55ee0eee206d0201d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the audio volume (not working at this time)  <a href="#a42e8e5d7dc0a0db55ee0eee206d0201d">More...</a><br /></td></tr>
+<tr class="separator:a42e8e5d7dc0a0db55ee0eee206d0201d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5eeb99c5b3cc2ceeb5d500e39365d63d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a5eeb99c5b3cc2ceeb5d500e39365d63d">enableSpeaker</a> (bool flag)</td></tr>
 <tr class="memdesc:a5eeb99c5b3cc2ceeb5d500e39365d63d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turn on the speaker amplifier.  <a href="#a5eeb99c5b3cc2ceeb5d500e39365d63d">More...</a><br /></td></tr>
 <tr class="separator:a5eeb99c5b3cc2ceeb5d500e39365d63d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -642,6 +663,27 @@ StaticJsonDocument&lt; 1024 &gt;&#160;</td><td class="memItemRight" valign="bott
 
 </div>
 </div>
+<a id="ad3fc21ab83e48bfb63c0ee1542bca435"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3fc21ab83e48bfb63c0ee1542bca435">&#9670;&nbsp;</a></span>hasControlPad()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Adafruit_Arcada::hasControlPad </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Does this board have a control pad - latch, buttons or analog joystick? </p>
+<dl class="section return"><dt>Returns</dt><dd>True if it does </dd></dl>
+
+</div>
+</div>
 <a id="a6f05150283452cf925bf5d23d3a23739"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6f05150283452cf925bf5d23d3a23739">&#9670;&nbsp;</a></span>readJoystickX()</h2>
 
@@ -756,6 +798,99 @@ StaticJsonDocument&lt; 1024 &gt;&#160;</td><td class="memItemRight" valign="bott
 
 <p>What buttons were just released as of the last <a class="el" href="class_adafruit___arcada.html#a8e361e8fec10d82edb5edc6c4cfa93e2" title="Read all buttons/joystick and return a bitmask of which buttons are pressed, check ARCADA_BUTTONMASK_...">readButtons()</a> call. Use ARCADA_BUTTONMASK_* defines to extract which bits are true (just releasd) </p>
 <dl class="section return"><dt>Returns</dt><dd>Bitmask of all buttons that were just released </dd></dl>
+
+</div>
+</div>
+<a id="aa660ac3c75c3fb959c97b37e6b1c0bbd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa660ac3c75c3fb959c97b37e6b1c0bbd">&#9670;&nbsp;</a></span>hasTouchscreen()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Adafruit_Arcada::hasTouchscreen </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Does this board have a touchscreen. </p>
+<dl class="section return"><dt>Returns</dt><dd>True if it does </dd></dl>
+
+</div>
+</div>
+<a id="a969146fed75948883e7fdee3dfc869f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a969146fed75948883e7fdee3dfc869f0">&#9670;&nbsp;</a></span>setTouchscreenCalibration()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_Arcada::setTouchscreenCalibration </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>xmin</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>xmax</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>ymin</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>ymax</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the X/Y calibration values for the touchscreen. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">xmin</td><td>The value of X which corresponds to 0 on that axis </td></tr>
+    <tr><td class="paramname">ymin</td><td>The value of Y which corresponds to 0 on that axis </td></tr>
+    <tr><td class="paramname">xmax</td><td>The value of X which corresponds to the TFT width on that axis </td></tr>
+    <tr><td class="paramname">ymax</td><td>The value of Y which corresponds to the TFT height on that axis </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a5571e209cc8b63abbc18f033f340c195"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5571e209cc8b63abbc18f033f340c195">&#9670;&nbsp;</a></span>getTouchscreenPoint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TSPoint Adafruit_Arcada::getTouchscreenPoint </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get a calibrated point that corresponds to the TFT. </p>
+<dl class="section return"><dt>Returns</dt><dd>A TSPoint with x, y and z pressure readings. If z is 0 no touch was detected. </dd></dl>
 
 </div>
 </div>
@@ -905,29 +1040,121 @@ StaticJsonDocument&lt; 1024 &gt;&#160;</td><td class="memItemRight" valign="bott
 
 </div>
 </div>
-<a id="a172ab63265b6364d35ce1446f67a5561"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a172ab63265b6364d35ce1446f67a5561">&#9670;&nbsp;</a></span>setBacklight()</h2>
+<a id="a1a55557e8dff6b31c5e1988857b113ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a55557e8dff6b31c5e1988857b113ea">&#9670;&nbsp;</a></span>setBacklight()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void Adafruit_Arcada::setBacklight </td>
+          <td class="memname">bool Adafruit_Arcada::setBacklight </td>
           <td>(</td>
           <td class="paramtype">uint8_t&#160;</td>
-          <td class="paramname"><em>brightness</em></td><td>)</td>
+          <td class="paramname"><em>brightness</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>saveToDisk</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the backlight brightness and save to the configuration. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">brightness</td><td>From 0 (off) to 255 (full on) </td></tr>
+    <tr><td class="paramname">saveToDisk</td><td>Whether we save this permanently to disk, default is false </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Whether saving to disk succeeded, or true if we don't save </dd></dl>
+
+</div>
+</div>
+<a id="a6312ecd7b4c3a230a14a10e186a177c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6312ecd7b4c3a230a14a10e186a177c8">&#9670;&nbsp;</a></span>getBacklight()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t Adafruit_Arcada::getBacklight </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set the backlight brightness. </p>
+<p>Get the backlight brightness. </p>
+<dl class="section return"><dt>Returns</dt><dd>brightness From 0 (off) to 255 (full on) </dd></dl>
+
+</div>
+</div>
+<a id="acf6381e22cb5c0dd2c050255767d5656"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf6381e22cb5c0dd2c050255767d5656">&#9670;&nbsp;</a></span>setVolume()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Adafruit_Arcada::setVolume </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>volume</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>saveToDisk</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the audio volume (not working at this time) </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">brightness</td><td>From 0 (off) to 255 (full on) </td></tr>
+    <tr><td class="paramname">volume</td><td>From 0 (off) to 255 (full on) </td></tr>
+    <tr><td class="paramname">saveToDisk</td><td>Whether we save this permanently to disk, default is false </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>Whether saving to disk succeeded, or true if we don't save </dd></dl>
+
+</div>
+</div>
+<a id="a42e8e5d7dc0a0db55ee0eee206d0201d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42e8e5d7dc0a0db55ee0eee206d0201d">&#9670;&nbsp;</a></span>getVolume()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t Adafruit_Arcada::getVolume </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the audio volume (not working at this time) </p>
+<dl class="section return"><dt>Returns</dt><dd>Volume From 0 (off) to 255 (full on) </dd></dl>
 
 </div>
 </div>
