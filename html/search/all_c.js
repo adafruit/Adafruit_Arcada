@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['pixels',['pixels',['../class_adafruit___arcada.html#a4c78f0a0eb3941b6329d9c0261469fc8',1,'Adafruit_Arcada']]],
-  ['printf',['printf',['../class_adafruit___arcada.html#a23ffe085b412f29448f9137244ccb02c',1,'Adafruit_Arcada']]]
+  ['open',['open',['../class_adafruit___arcada.html#ae402406595840f5c1ecfc0f06835a6c9',1,'Adafruit_Arcada']]],
+  ['openfilebyindex',['openFileByIndex',['../class_adafruit___arcada.html#a1df48fc07c5e195d1df8fd193357d710',1,'Adafruit_Arcada']]]
 ];

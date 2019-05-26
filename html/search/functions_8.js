@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['infobox',['infoBox',['../class_adafruit___arcada.html#a98270a179ead39de72afef2494f60c53',1,'Adafruit_Arcada']]]
+  ['infobox',['infoBox',['../class_adafruit___arcada.html#a1c981921ab09c6cd649311841ff57716',1,'Adafruit_Arcada']]]
 ];

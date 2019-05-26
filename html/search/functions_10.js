@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['warnbox',['warnBox',['../class_adafruit___arcada.html#afe801b470a9218bcb5d7a55f9df7aa94',1,'Adafruit_Arcada']]],
-  ['writefiletoflash',['writeFileToFlash',['../class_adafruit___arcada.html#acd141bcdad938c0ab400a1747e64f815',1,'Adafruit_Arcada']]]
+  ['timercallback',['timerCallback',['../class_adafruit___arcada.html#af8d328afb235c8943bc6e40ef64994d8',1,'Adafruit_Arcada']]]
 ];

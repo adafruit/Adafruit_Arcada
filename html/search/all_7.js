@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['haltbox',['haltBox',['../class_adafruit___arcada.html#ad2c57589b0ee9d079dfc14f483f5a290',1,'Adafruit_Arcada']]]
+  ['haltbox',['haltBox',['../class_adafruit___arcada.html#aeeecd475390ead532a141442574286ae',1,'Adafruit_Arcada']]]
 ];

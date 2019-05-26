@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['open',['open',['../class_adafruit___arcada.html#ae402406595840f5c1ecfc0f06835a6c9',1,'Adafruit_Arcada']]]
+  ['mkdir',['mkdir',['../class_adafruit___arcada.html#a8f8e0af701cf758ac61a5412b4b5fb7d',1,'Adafruit_Arcada']]]
 ];

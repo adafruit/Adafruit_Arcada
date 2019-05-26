@@ -98,15 +98,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4dd5a2164bb35264382ad5977190adcf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a4dd5a2164bb35264382ad5977190adcf">filesysBegin</a> (void)</td></tr>
 <tr class="memdesc:a4dd5a2164bb35264382ad5977190adcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the filesystem, either SD or QSPI.  <a href="#a4dd5a2164bb35264382ad5977190adcf">More...</a><br /></td></tr>
 <tr class="separator:a4dd5a2164bb35264382ad5977190adcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58c59108c7a1a3f14e52ae2d6ba6b4ec"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a58c59108c7a1a3f14e52ae2d6ba6b4ec">filesysListFiles</a> (const char *path=NULL)</td></tr>
-<tr class="memdesc:a58c59108c7a1a3f14e52ae2d6ba6b4ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Debugging helper, prints to Serial a list of files in a path.  <a href="#a58c59108c7a1a3f14e52ae2d6ba6b4ec">More...</a><br /></td></tr>
-<tr class="separator:a58c59108c7a1a3f14e52ae2d6ba6b4ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae04e74c0e37d5ec04d8cb7c61a9c1ab"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#aae04e74c0e37d5ec04d8cb7c61a9c1ab">filesysListFiles</a> (const char *path=NULL, const char *extensionFilter=NULL)</td></tr>
+<tr class="memdesc:aae04e74c0e37d5ec04d8cb7c61a9c1ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Debugging helper, prints to Serial a list of files in a path.  <a href="#aae04e74c0e37d5ec04d8cb7c61a9c1ab">More...</a><br /></td></tr>
+<tr class="separator:aae04e74c0e37d5ec04d8cb7c61a9c1ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adcaf9c1fb9f338911b9b2f941c10bf67"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#adcaf9c1fb9f338911b9b2f941c10bf67">chdir</a> (const char *path)</td></tr>
 <tr class="memdesc:adcaf9c1fb9f338911b9b2f941c10bf67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set working filesys directory to a given path (makes file naming easier)  <a href="#adcaf9c1fb9f338911b9b2f941c10bf67">More...</a><br /></td></tr>
 <tr class="separator:adcaf9c1fb9f338911b9b2f941c10bf67"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae402406595840f5c1ecfc0f06835a6c9"><td class="memItemLeft" align="right" valign="top">File&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#ae402406595840f5c1ecfc0f06835a6c9">open</a> (const char *path=NULL, uint32_t flags=O_READ)</td></tr>
 <tr class="memdesc:ae402406595840f5c1ecfc0f06835a6c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens a file and returns the object, a wrapper for our filesystem.  <a href="#ae402406595840f5c1ecfc0f06835a6c9">More...</a><br /></td></tr>
 <tr class="separator:ae402406595840f5c1ecfc0f06835a6c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1df48fc07c5e195d1df8fd193357d710"><td class="memItemLeft" align="right" valign="top">File&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a1df48fc07c5e195d1df8fd193357d710">openFileByIndex</a> (const char *path, uint16_t index, uint32_t flags=O_READ, const char *extensionFilter=NULL)</td></tr>
+<tr class="memdesc:a1df48fc07c5e195d1df8fd193357d710"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens a file as an indexed # in a directory (0 is first file), and returns the object.  <a href="#a1df48fc07c5e195d1df8fd193357d710">More...</a><br /></td></tr>
+<tr class="separator:a1df48fc07c5e195d1df8fd193357d710"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6972a519e306fd6ab7d80962bbb3cef4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a6972a519e306fd6ab7d80962bbb3cef4">exists</a> (const char *path)</td></tr>
 <tr class="memdesc:a6972a519e306fd6ab7d80962bbb3cef4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tests if a file exists on the filesys.  <a href="#a6972a519e306fd6ab7d80962bbb3cef4">More...</a><br /></td></tr>
 <tr class="separator:a6972a519e306fd6ab7d80962bbb3cef4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -165,21 +168,27 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a5eeb99c5b3cc2ceeb5d500e39365d63d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a5eeb99c5b3cc2ceeb5d500e39365d63d">enableSpeaker</a> (bool flag)</td></tr>
 <tr class="memdesc:a5eeb99c5b3cc2ceeb5d500e39365d63d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turn on the speaker amplifier.  <a href="#a5eeb99c5b3cc2ceeb5d500e39365d63d">More...</a><br /></td></tr>
 <tr class="separator:a5eeb99c5b3cc2ceeb5d500e39365d63d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb83d589bf2c7680eb96eba8a233f4b1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#adb83d589bf2c7680eb96eba8a233f4b1">alertBox</a> (char *string, uint16_t boxColor, uint16_t textColor, uint32_t continueButtonMask)</td></tr>
-<tr class="memdesc:adb83d589bf2c7680eb96eba8a233f4b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display an alert box with optional 'press to continue' button.  <a href="#adb83d589bf2c7680eb96eba8a233f4b1">More...</a><br /></td></tr>
-<tr class="separator:adb83d589bf2c7680eb96eba8a233f4b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98270a179ead39de72afef2494f60c53"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a98270a179ead39de72afef2494f60c53">infoBox</a> (char *string, uint32_t continueButtonMask=ARCADA_BUTTONMASK_A)</td></tr>
-<tr class="memdesc:a98270a179ead39de72afef2494f60c53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display an info box with optional 'press to continue' button.  <a href="#a98270a179ead39de72afef2494f60c53">More...</a><br /></td></tr>
-<tr class="separator:a98270a179ead39de72afef2494f60c53"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe801b470a9218bcb5d7a55f9df7aa94"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#afe801b470a9218bcb5d7a55f9df7aa94">warnBox</a> (char *string, uint32_t continueButtonMask=ARCADA_BUTTONMASK_A)</td></tr>
-<tr class="memdesc:afe801b470a9218bcb5d7a55f9df7aa94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display an warning box with optional 'press to continue' button.  <a href="#afe801b470a9218bcb5d7a55f9df7aa94">More...</a><br /></td></tr>
-<tr class="separator:afe801b470a9218bcb5d7a55f9df7aa94"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a098b4d4c6efc398a04f8ceefed26391d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a098b4d4c6efc398a04f8ceefed26391d">errorBox</a> (char *string, uint32_t continueButtonMask=ARCADA_BUTTONMASK_A)</td></tr>
-<tr class="memdesc:a098b4d4c6efc398a04f8ceefed26391d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display an error box with optional 'press to continue' button.  <a href="#a098b4d4c6efc398a04f8ceefed26391d">More...</a><br /></td></tr>
-<tr class="separator:a098b4d4c6efc398a04f8ceefed26391d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad2c57589b0ee9d079dfc14f483f5a290"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#ad2c57589b0ee9d079dfc14f483f5a290">haltBox</a> (char *string)</td></tr>
-<tr class="memdesc:ad2c57589b0ee9d079dfc14f483f5a290"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display an error box and halt operation.  <a href="#ad2c57589b0ee9d079dfc14f483f5a290">More...</a><br /></td></tr>
-<tr class="separator:ad2c57589b0ee9d079dfc14f483f5a290"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaccfecf2fd68e3e3a9681306d4fd0966"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#aaccfecf2fd68e3e3a9681306d4fd0966">alertBox</a> (const char *string, uint16_t boxColor, uint16_t textColor, uint32_t continueButtonMask)</td></tr>
+<tr class="memdesc:aaccfecf2fd68e3e3a9681306d4fd0966"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display an alert box with optional 'press to continue' button.  <a href="#aaccfecf2fd68e3e3a9681306d4fd0966">More...</a><br /></td></tr>
+<tr class="separator:aaccfecf2fd68e3e3a9681306d4fd0966"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c981921ab09c6cd649311841ff57716"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a1c981921ab09c6cd649311841ff57716">infoBox</a> (const char *string, uint32_t continueButtonMask=ARCADA_BUTTONMASK_A)</td></tr>
+<tr class="memdesc:a1c981921ab09c6cd649311841ff57716"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display an info box with optional 'press to continue' button.  <a href="#a1c981921ab09c6cd649311841ff57716">More...</a><br /></td></tr>
+<tr class="separator:a1c981921ab09c6cd649311841ff57716"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb2d96cfb93845cf1f11f142e86f21df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#abb2d96cfb93845cf1f11f142e86f21df">warnBox</a> (const char *string, uint32_t continueButtonMask=ARCADA_BUTTONMASK_A)</td></tr>
+<tr class="memdesc:abb2d96cfb93845cf1f11f142e86f21df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display an warning box with optional 'press to continue' button.  <a href="#abb2d96cfb93845cf1f11f142e86f21df">More...</a><br /></td></tr>
+<tr class="separator:abb2d96cfb93845cf1f11f142e86f21df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6677c1990fb50d422fe9934842bfd7e4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a6677c1990fb50d422fe9934842bfd7e4">errorBox</a> (const char *string, uint32_t continueButtonMask=ARCADA_BUTTONMASK_A)</td></tr>
+<tr class="memdesc:a6677c1990fb50d422fe9934842bfd7e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display an error box with optional 'press to continue' button.  <a href="#a6677c1990fb50d422fe9934842bfd7e4">More...</a><br /></td></tr>
+<tr class="separator:a6677c1990fb50d422fe9934842bfd7e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeeecd475390ead532a141442574286ae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#aeeecd475390ead532a141442574286ae">haltBox</a> (const char *string)</td></tr>
+<tr class="memdesc:aeeecd475390ead532a141442574286ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display an error box and halt operation.  <a href="#aeeecd475390ead532a141442574286ae">More...</a><br /></td></tr>
+<tr class="separator:aeeecd475390ead532a141442574286ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ee0c4e1df9cd4567e807a580525786d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a7ee0c4e1df9cd4567e807a580525786d">loadConfigurationFile</a> (const char *filename=ARCADA_DEFAULT_CONFIGURATION_FILENAME)</td></tr>
+<tr class="memdesc:a7ee0c4e1df9cd4567e807a580525786d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the configuration JSON from the filesystem (which must be initialized before this function is called) and stores parsed JSON data internally.  <a href="#a7ee0c4e1df9cd4567e807a580525786d">More...</a><br /></td></tr>
+<tr class="separator:a7ee0c4e1df9cd4567e807a580525786d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11c18f24f398a22cce241be5af754cb7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a11c18f24f398a22cce241be5af754cb7">saveConfigurationFile</a> (const char *filename=ARCADA_DEFAULT_CONFIGURATION_FILENAME)</td></tr>
+<tr class="memdesc:a11c18f24f398a22cce241be5af754cb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the configuration JSON to the filesystem (which must be initialized before this function is called)  <a href="#a11c18f24f398a22cce241be5af754cb7">More...</a><br /></td></tr>
+<tr class="separator:a11c18f24f398a22cce241be5af754cb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -187,6 +196,10 @@ Public Attributes</h2></td></tr>
 Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a4c78f0a0eb3941b6329d9c0261469fc8">pixels</a></td></tr>
 <tr class="memdesc:a4c78f0a0eb3941b6329d9c0261469fc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">The neopixel strip, of length ARCADA_NEOPIXEL_NUM. <br /></td></tr>
 <tr class="separator:a4c78f0a0eb3941b6329d9c0261469fc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a061237c560f80262b23c4c930e0e669d"><td class="memItemLeft" align="right" valign="top"><a id="a061237c560f80262b23c4c930e0e669d"></a>
+StaticJsonDocument&lt; 1024 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a061237c560f80262b23c4c930e0e669d">configJSON</a></td></tr>
+<tr class="memdesc:a061237c560f80262b23c4c930e0e669d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The object to store our various settings, you need to restore/save this with (load/save)ConfigurationFile. <br /></td></tr>
+<tr class="separator:a061237c560f80262b23c4c930e0e669d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An abstraction class for something with a display, and possibly button controls or speaker. Makes targing games and UI to multiple hardware designs easier. </p>
@@ -307,8 +320,8 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 
 </div>
 </div>
-<a id="a58c59108c7a1a3f14e52ae2d6ba6b4ec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a58c59108c7a1a3f14e52ae2d6ba6b4ec">&#9670;&nbsp;</a></span>filesysListFiles()</h2>
+<a id="aae04e74c0e37d5ec04d8cb7c61a9c1ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae04e74c0e37d5ec04d8cb7c61a9c1ab">&#9670;&nbsp;</a></span>filesysListFiles()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -317,8 +330,18 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
           <td class="memname">int16_t Adafruit_Arcada::filesysListFiles </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>path</em> = <code>NULL</code></td><td>)</td>
+          <td class="paramname"><em>path</em> = <code>NULL</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>extensionFilter</em> = <code>NULL</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -327,6 +350,7 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">path</td><td>A string with the filename path, must start with / e.g. "/roms". If nothing is passed in, we use the CWD (default is "/") </td></tr>
+    <tr><td class="paramname">extensionFilter</td><td>The 3 letters to check at the end of the filename to match </td></tr>
   </table>
   </dd>
 </dl>
@@ -392,6 +416,58 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
   <table class="params">
     <tr><td class="paramname">path</td><td>A string with the filename path, must start with / e.g. "/roms" </td></tr>
     <tr><td class="paramname">flags</td><td>Defaults to O_READ but can use O_WRITE for writing (uses SDfat's flag system) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A File object, for whatever filesystem we're using </dd></dl>
+
+</div>
+</div>
+<a id="a1df48fc07c5e195d1df8fd193357d710"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1df48fc07c5e195d1df8fd193357d710">&#9670;&nbsp;</a></span>openFileByIndex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">File Adafruit_Arcada::openFileByIndex </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramname"><em>flags</em> = <code>O_READ</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>extensionFilter</em> = <code>NULL</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Opens a file as an indexed # in a directory (0 is first file), and returns the object. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>A string with the directory path, must start with / e.g. "/roms" </td></tr>
+    <tr><td class="paramname">index</td><td>The n'th file to open, 0 is first file </td></tr>
+    <tr><td class="paramname">flags</td><td>Defaults to O_READ but can use O_WRITE for writing (uses SDfat's flag system) </td></tr>
+    <tr><td class="paramname">extensionFilter</td><td>A 3 (or more?) string to match against the final characters of each file for them to count. If they don't match, the index isn't incremented at all. We toupper() the extension and filename so don't worry about it. </td></tr>
   </table>
   </dd>
 </dl>
@@ -881,8 +957,8 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 
 </div>
 </div>
-<a id="adb83d589bf2c7680eb96eba8a233f4b1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adb83d589bf2c7680eb96eba8a233f4b1">&#9670;&nbsp;</a></span>alertBox()</h2>
+<a id="aaccfecf2fd68e3e3a9681306d4fd0966"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaccfecf2fd68e3e3a9681306d4fd0966">&#9670;&nbsp;</a></span>alertBox()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -890,7 +966,7 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
         <tr>
           <td class="memname">void Adafruit_Arcada::alertBox </td>
           <td>(</td>
-          <td class="paramtype">char *&#160;</td>
+          <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>string</em>, </td>
         </tr>
         <tr>
@@ -932,8 +1008,8 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 
 </div>
 </div>
-<a id="a98270a179ead39de72afef2494f60c53"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a98270a179ead39de72afef2494f60c53">&#9670;&nbsp;</a></span>infoBox()</h2>
+<a id="a1c981921ab09c6cd649311841ff57716"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c981921ab09c6cd649311841ff57716">&#9670;&nbsp;</a></span>infoBox()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -941,7 +1017,7 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
         <tr>
           <td class="memname">void Adafruit_Arcada::infoBox </td>
           <td>(</td>
-          <td class="paramtype">char *&#160;</td>
+          <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>string</em>, </td>
         </tr>
         <tr>
@@ -969,8 +1045,8 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 
 </div>
 </div>
-<a id="afe801b470a9218bcb5d7a55f9df7aa94"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afe801b470a9218bcb5d7a55f9df7aa94">&#9670;&nbsp;</a></span>warnBox()</h2>
+<a id="abb2d96cfb93845cf1f11f142e86f21df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb2d96cfb93845cf1f11f142e86f21df">&#9670;&nbsp;</a></span>warnBox()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -978,7 +1054,7 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
         <tr>
           <td class="memname">void Adafruit_Arcada::warnBox </td>
           <td>(</td>
-          <td class="paramtype">char *&#160;</td>
+          <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>string</em>, </td>
         </tr>
         <tr>
@@ -1006,8 +1082,8 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 
 </div>
 </div>
-<a id="a098b4d4c6efc398a04f8ceefed26391d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a098b4d4c6efc398a04f8ceefed26391d">&#9670;&nbsp;</a></span>errorBox()</h2>
+<a id="a6677c1990fb50d422fe9934842bfd7e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6677c1990fb50d422fe9934842bfd7e4">&#9670;&nbsp;</a></span>errorBox()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1015,7 +1091,7 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
         <tr>
           <td class="memname">void Adafruit_Arcada::errorBox </td>
           <td>(</td>
-          <td class="paramtype">char *&#160;</td>
+          <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>string</em>, </td>
         </tr>
         <tr>
@@ -1043,8 +1119,8 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 
 </div>
 </div>
-<a id="ad2c57589b0ee9d079dfc14f483f5a290"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad2c57589b0ee9d079dfc14f483f5a290">&#9670;&nbsp;</a></span>haltBox()</h2>
+<a id="aeeecd475390ead532a141442574286ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeeecd475390ead532a141442574286ae">&#9670;&nbsp;</a></span>haltBox()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1052,7 +1128,7 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
         <tr>
           <td class="memname">void Adafruit_Arcada::haltBox </td>
           <td>(</td>
-          <td class="paramtype">char *&#160;</td>
+          <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>string</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1069,10 +1145,66 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 
 </div>
 </div>
+<a id="a7ee0c4e1df9cd4567e807a580525786d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ee0c4e1df9cd4567e807a580525786d">&#9670;&nbsp;</a></span>loadConfigurationFile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Adafruit_Arcada::loadConfigurationFile </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>filename</em> = <code>ARCADA_DEFAULT_CONFIGURATION_FILENAME</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Loads the configuration JSON from the filesystem (which must be initialized before this function is called) and stores parsed JSON data internally. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>The path to the JSON file </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if a the file was found and was parsable </dd></dl>
+
+</div>
+</div>
+<a id="a11c18f24f398a22cce241be5af754cb7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11c18f24f398a22cce241be5af754cb7">&#9670;&nbsp;</a></span>saveConfigurationFile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Adafruit_Arcada::saveConfigurationFile </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>filename</em> = <code>ARCADA_DEFAULT_CONFIGURATION_FILENAME</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Saves the configuration JSON to the filesystem (which must be initialized before this function is called) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>The path to the JSON file </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if a the file was writable and saved </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="_adafruit___arcada_8h_source.html">Adafruit_Arcada.h</a></li>
 <li>Adafruit_Arcada.cpp</li>
 <li>Adafruit_Arcada_Alerts.cpp</li>
+<li>Adafruit_Arcada_Config.cpp</li>
+<li>Adafruit_Arcada_Filesystem.cpp</li>
 <li>Adafruit_Arcada_InternalFlash.cpp</li>
 <li>Adafruit_Arcada_USBMSD.cpp</li>
 </ul>

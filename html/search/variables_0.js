@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['pixels',['pixels',['../class_adafruit___arcada.html#a4c78f0a0eb3941b6329d9c0261469fc8',1,'Adafruit_Arcada']]]
+  ['configjson',['configJSON',['../class_adafruit___arcada.html#a061237c560f80262b23c4c930e0e669d',1,'Adafruit_Arcada']]]
 ];
