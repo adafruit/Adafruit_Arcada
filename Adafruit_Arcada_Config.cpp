@@ -10,6 +10,7 @@
     @brief  Loads the configuration JSON from the filesystem 
     (which must be initialized before this function is called) and stores
     parsed JSON data internally.
+    @param  filename The path to the JSON file
     @return True if a the file was found and was parsable
 */
 /**************************************************************************/
@@ -22,7 +23,7 @@ bool Adafruit_Arcada::loadConfigurationFile(const char *filename) {
   }
 
   // Deserialize the JSON document
-  DeserializationError error = deserializeJson(config_json, file);
+  DeserializationError error = deserializeJson(configJSON, file);
   if (error) {
     Serial.println(F("Failed to read file"));
     return false;
@@ -34,11 +35,20 @@ bool Adafruit_Arcada::loadConfigurationFile(const char *filename) {
   return true;
 }
 
+
+/**************************************************************************/
+/*!
+    @brief  Saves the configuration JSON to the filesystem 
+    (which must be initialized before this function is called)
+    @param  filename The path to the JSON file
+    @return True if a the file was writable and saved
+*/
+/**************************************************************************/
 // Saves the configuration to a file
 bool Adafruit_Arcada::saveConfigurationFile(const char *filename) {
 
-  config_json["volume"] = volume;
-  config_json["brightness"] = brightness;
+  configJSON["volume"] = volume;
+  configJSON["brightness"] = brightness;
 
   // Delete existing file, otherwise the configuration is appended to the file
   remove(filename);

@@ -256,7 +256,7 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   uint32_t last_buttons, curr_buttons, justpressed_buttons, justreleased_buttons;
 
   uint8_t volume = 255, brightness = 255;
-  StaticJsonDocument<1024> config_json;
+  StaticJsonDocument<1024> configJSON;
 };
 
 #endif
