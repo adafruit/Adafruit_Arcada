@@ -116,19 +116,67 @@ void Adafruit_Arcada::displayBegin(void) {
 
 /**************************************************************************/
 /*!
-    @brief  Set the backlight brightness
+    @brief  Set the backlight brightness and save to the configuration
     @param  brightness From 0 (off) to 255 (full on)
+    @param  bool saveToDisk Whether we save this permanently to disk, default is false
+    @returns Whether saving to disk succeeded, or true if we don't save
 */
 /**************************************************************************/
-void Adafruit_Arcada::setBacklight(uint8_t brightness) {
+bool Adafruit_Arcada::setBacklight(uint8_t brightness, bool saveToDisk) {
+  _brightness = brightness;
+
 #ifdef ARCADA_TFT_LITE
   pinMode(ARCADA_TFT_LITE, OUTPUT);
-  if (brightness == 0) {
+  if (_brightness == 0) {
     digitalWrite(ARCADA_TFT_LITE, LOW);
   } else {
     analogWrite(ARCADA_TFT_LITE, brightness);
   }
 #endif
+  configJSON["brightness"] = _brightness;
+  if (saveToDisk) {
+    return saveConfigurationFile();
+  }
+  return true; 
+}
+
+
+/**************************************************************************/
+/*!
+    @brief  Get the backlight brightness
+    @returns  brightness From 0 (off) to 255 (full on)
+*/
+/**************************************************************************/
+uint8_t Adafruit_Arcada::getBacklight(void) {
+  return _brightness;
+}
+
+/**************************************************************************/
+/*!
+    @brief  Set the audio volume (not working at this time)
+    @param  volume From 0 (off) to 255 (full on)
+    @param  bool saveToDisk Whether we save this permanently to disk, default is false
+    @returns Whether saving to disk succeeded, or true if we don't save
+*/
+/**************************************************************************/
+bool Adafruit_Arcada::setVolume(uint8_t volume, bool saveToDisk) {
+  _volume = volume;
+
+  configJSON["volume"] = _volume;
+  if (saveToDisk) {
+    return saveConfigurationFile();
+  }
+  return true; 
+}
+
+/**************************************************************************/
+/*!
+    @brief  Get the audio volume (not working at this time)
+    @returns  Volume From 0 (off) to 255 (full on)
+*/
+/**************************************************************************/
+uint8_t Adafruit_Arcada::getVolume(void) {
+  return _volume;
 }
 
 /**************************************************************************/

@@ -32,6 +32,9 @@ bool Adafruit_Arcada::loadConfigurationFile(const char *filename) {
   // Close the file (File's destructor doesn't close the file)
   file.close();
 
+  setVolume(configJSON["volume"]);
+  setBacklight(configJSON["brightness"]);
+
   return true;
 }
 
@@ -47,8 +50,8 @@ bool Adafruit_Arcada::loadConfigurationFile(const char *filename) {
 // Saves the configuration to a file
 bool Adafruit_Arcada::saveConfigurationFile(const char *filename) {
 
-  configJSON["volume"] = volume;
-  configJSON["brightness"] = brightness;
+  configJSON["volume"] = _volume;
+  configJSON["brightness"] = _brightness;
 
   // Delete existing file, otherwise the configuration is appended to the file
   remove(filename);

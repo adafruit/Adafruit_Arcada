@@ -219,7 +219,11 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   bool createFrameBuffer(uint16_t width, uint16_t height);
   uint16_t *getFrameBuffer(void);
   bool blitFrameBuffer(uint16_t x, uint16_t y, bool blocking=false);
-  void setBacklight(uint8_t brightness);
+
+  bool setBacklight(uint8_t brightness, bool saveToDisk=false);
+  uint8_t getBacklight(void);
+  bool setVolume(uint8_t volume, bool saveToDisk=false);
+  uint8_t getVolume(void);
   void enableSpeaker(bool flag);
 
   // Alerts
@@ -258,7 +262,7 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
 
   uint32_t last_buttons, curr_buttons, justpressed_buttons, justreleased_buttons;
 
-  uint8_t volume = 255, brightness = 255;
+  uint8_t _volume = 255, _brightness = 255;
 };
 
 #endif
