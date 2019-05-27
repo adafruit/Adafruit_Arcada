@@ -4,9 +4,9 @@ static bool filenameValidityChecker(const char *filename, const char *extension)
 
 #if defined(ARCADA_USE_SD_FS)
 #if defined(ARCADA_SD_SPI_PORT)
-    static SdFat FileSys(&ARCADA_SD_SPI_PORT);
+    SdFat FileSys(&ARCADA_SD_SPI_PORT);
   #else
-    static SdFat FileSys;
+    SdFat FileSys;
   #endif
 #elif defined(ARCADA_USE_QSPI_FS)
   Adafruit_QSPI_Flash arcada_qspi_flash;
@@ -21,7 +21,11 @@ static bool filenameValidityChecker(const char *filename, const char *extension)
 /**************************************************************************/
 bool Adafruit_Arcada::filesysBegin(void) {
 #if defined(ARCADA_USE_SD_FS)
+  if (_filesys_begun) {
+    return true;
+  }
   Serial.println("SD Card filesystem");
+  _filesys_begun = true;
   return FileSys.begin(ARCADA_SD_CS);
 #elif defined(ARCADA_USE_QSPI_FS)
   if (!arcada_qspi_flash.begin()) {
@@ -39,6 +43,7 @@ bool Adafruit_Arcada::filesysBegin(void) {
     return false;
   }
   Serial.println("Mounted filesystem!");
+  _filesys_begun = true;
   return true;
 #else
   return false;

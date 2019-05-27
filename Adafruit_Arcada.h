@@ -73,7 +73,7 @@
 
   #define ARCADA_SD_CS            32
   #define ARCADA_USE_QSPI_FS
-  //#define ARCADA_USE_SD_FS
+//#define ARCADA_USE_SD_FS
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_NONE
   #define ARCADA_USE_TOUCHSCREEN
@@ -273,6 +273,7 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   int16_t _joyx_center = 512;
   int16_t _joyy_center = 512;
 
+  bool _filesys_begun = false;
   char _cwd_path[255];
 
   bool _first_frame;
