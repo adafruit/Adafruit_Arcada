@@ -73,7 +73,7 @@
 
   #define ARCADA_SD_CS            32
   #define ARCADA_USE_QSPI_FS
-//#define ARCADA_USE_SD_FS
+  //#define ARCADA_USE_SD_FS
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_NONE
   #define ARCADA_USE_TOUCHSCREEN

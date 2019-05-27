@@ -3,10 +3,18 @@
 static bool filenameValidityChecker(const char *filename, const char *extension);
 
 #if defined(ARCADA_USE_SD_FS)
-#if defined(ARCADA_SD_SPI_PORT)
-    SdFat FileSys(&ARCADA_SD_SPI_PORT);
+  #if defined(ARCADA_SD_SPI_PORT)
+    #if defined(ENABLE_EXTENDED_TRANSFER_CLASS)
+      SdFatEX FileSys(&ARCADA_SD_SPI_PORT);
+    #else
+      SdFat FileSys(&ARCADA_SD_SPI_PORT);
+    #endif
   #else
-    SdFat FileSys;
+    #if defined(ENABLE_EXTENDED_TRANSFER_CLASS)
+      SdFatEX FileSys;
+    #else
+      SdFat FileSys;
+    #endif
   #endif
 #elif defined(ARCADA_USE_QSPI_FS)
   Adafruit_QSPI_Flash arcada_qspi_flash;
