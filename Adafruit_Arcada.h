@@ -235,8 +235,23 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
 
   void displayBegin(void);
   bool createFrameBuffer(uint16_t width, uint16_t height);
-  uint16_t *getFrameBuffer(void);
-  bool blitFrameBuffer(uint16_t x, uint16_t y, bool blocking=false);
+  /************************************************************************/
+  /*!
+    @brief  Return pointer to GFX canvas (NULL if not allocated)
+    @return The pointer to a width*height*16-bit GFXcanvas16 canvas.
+  */
+  /************************************************************************/
+  GFXcanvas16 *getCanvas(void) { return _canvas; }
+  /************************************************************************/
+  /*!
+    @brief  Return address of internal framebuffer (NULL if not allocated)
+    @return The pointer to a width*height*16-bit framebuf
+  */
+  /************************************************************************/
+  uint16_t *getFrameBuffer(void) {
+    return _canvas ? _canvas->getBuffer() : NULL; }
+  bool blitFrameBuffer(uint16_t x, uint16_t y,
+    bool blocking=false, bool bigEndian=false);
 
   bool setBacklight(uint8_t brightness, bool saveToDisk=false);
   uint8_t getBacklight(void);
@@ -276,9 +291,8 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   bool _filesys_begun = false;
   char _cwd_path[255];
 
-  bool _first_frame;
-  uint16_t *_framebuffer;
-  uint16_t _framebuf_width, _framebuf_height;
+  GFXcanvas16 *_canvas = NULL;
+  bool _first_frame = true;
 
   uint32_t last_buttons, curr_buttons, justpressed_buttons, justreleased_buttons;
 

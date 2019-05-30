@@ -110,9 +110,6 @@ bool Adafruit_Arcada::begin(void) {
   // we can keep track of buttons for ya
   last_buttons = curr_buttons = justpressed_buttons = justreleased_buttons = 0;
 
-  _first_frame = true;
-  _framebuffer = NULL;
-
   return true;
 }
 
@@ -482,28 +479,16 @@ float Adafruit_Arcada::readBatterySensor(void) {
 
 /**************************************************************************/
 /*!
-    @brief  Create (malloc) an internal framebuffer of given width and height
+    @brief  Create (allocate) an internal GFX canvas of given width and height
     @param  width Number of pixels wide
     @param  height Number of pixels tall
-    @return True on success (could malloc) or false on failure
+    @return True on success (could allocate) or false on failure
 */
 /**************************************************************************/
 bool Adafruit_Arcada::createFrameBuffer(uint16_t width, uint16_t height) {
-  _framebuffer = (uint16_t *)malloc(width * height * 2);
-  if (!_framebuffer) return false;
-  _framebuf_width = width;
-  _framebuf_height = height;
-  return true;
-}
-
-/**************************************************************************/
-/*!
-    @brief  Getter for internal framebuffer (NULL if not allocated)
-    @return The pointer to a width*height*16-bit framebuf
-*/
-/**************************************************************************/
-uint16_t * Adafruit_Arcada::getFrameBuffer(void) {
-  return _framebuffer;
+  if(_canvas) delete(_canvas);
+  _canvas = new GFXcanvas16(width, height);
+  return (_canvas != NULL);
 }
 
 /**************************************************************************/
@@ -511,23 +496,48 @@ uint16_t * Adafruit_Arcada::getFrameBuffer(void) {
     @brief  Write the internal framebuffer to the display at coord (x, y)
     @param  x X coordinate in the TFT screen to write it to
     @param  y Y coordinate in the TFT screen to write it to
-    @param  blocking If true, we wait until blit is done. otherwise we let DMA
-    do the blitting and return immediately
-    @return True on success, failure if no framebuffer exists
+    @param  blocking If true, function waits until blit is done. Otherwise
+    we let DMA do the blitting and return immediately (THIS ISN'T NECESSARILY
+    TRUE, SEE NOTE BELOW)
+    @param  bigEndian If true, frame buffer data is already in big-endian
+    order (which is NOT SAMD-native order) and an actual background DMA blit
+    can take place (SEE NOTE BELOW)
+    @return True on success, failure if no canvas exists yet
+    @note Even if blocking is 'false,' this function may still block.
+    For starters, DMA must be enabled in Adafruit_SPITFT.h. If bigEndian is
+    NOT true (and this is the normal case on SAMD, being little-endian, and
+    with GFX pixels in RAM being in MCU-native order), then every pixel
+    needs to be byte-swapped before issuing to the display (which tend to be
+    big-endian). If blocking is false, DMA transfers are used on a per-
+    scanline basis and we at least get the cycles to perform this byte-
+    swapping "free," but really it's no faster than a blocking write without
+    byte swaps (except for the last scanline, which we allow the transfer to
+    complete in the background). To really truly get a non-blocking full DMA
+    transfer, blocking must be false AND bigEndian must be true...and
+    graphics must be drawn to the canvas using byte-swapped colors, which is
+    not normal (GFX uses device-native 16-bit type for pixels, i.e. little-
+    endian). ONLY THEN will the entire transfer take place in the background
+    (and the application should wait before further drawing in the
+    framebuffer until the transfer completes).
 */
 /**************************************************************************/
-bool Adafruit_Arcada::blitFrameBuffer(uint16_t x, uint16_t y, bool blocking) {
-  if (!_framebuffer) return false;
-
-  if (! _first_frame) {
-    endWrite(); // End transaction from any prior callback
-    _first_frame = false;
+bool Adafruit_Arcada::blitFrameBuffer(uint16_t x, uint16_t y, bool blocking,
+  bool bigEndian) {
+  if(_canvas) {
+    if (! _first_frame) {
+      dmaWait();  // Wait for prior DMA transfer to complete
+      endWrite(); // End transaction from any prior call
+    } else {
+      _first_frame = false;
+    }
+    startWrite(); // Start new display transaction
+    setAddrWindow(x, y, _canvas->width(), _canvas->height());
+    writePixels(_canvas->getBuffer(), _canvas->width() * _canvas->height(),
+      blocking, bigEndian);
+    return true;
   }
 
-  startWrite(); // Start new display transaction
-  setAddrWindow(x, y, _framebuf_width, _framebuf_height);
-  writePixels(_framebuffer, _framebuf_width*_framebuf_height, blocking); // immediate return;
-  return true;
+  return false; // No canvas allocated yet
 }
 
 /**************************************************************************/
