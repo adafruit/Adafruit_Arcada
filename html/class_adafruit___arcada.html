@@ -128,6 +128,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2eab16eb0b94b8edaab823d6b9973d25"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a2eab16eb0b94b8edaab823d6b9973d25">recentUSB</a> (uint32_t timeout=100)</td></tr>
 <tr class="memdesc:a2eab16eb0b94b8edaab823d6b9973d25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hints whether we're doing a bunch of USB stuff recently.  <a href="#a2eab16eb0b94b8edaab823d6b9973d25">More...</a><br /></td></tr>
 <tr class="separator:a2eab16eb0b94b8edaab823d6b9973d25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d6d7b4327106dcf5836e8a98d8e10b4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a8d6d7b4327106dcf5836e8a98d8e10b4">chooseFile</a> (const char *path, char *filename, uint16_t filename_max, const char *extensionFilter=NULL)</td></tr>
+<tr class="memdesc:a8d6d7b4327106dcf5836e8a98d8e10b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Presents a navigation menu for choosing a file from the filesys.  <a href="#a8d6d7b4327106dcf5836e8a98d8e10b4">More...</a><br /></td></tr>
+<tr class="separator:a8d6d7b4327106dcf5836e8a98d8e10b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3fc21ab83e48bfb63c0ee1542bca435"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#ad3fc21ab83e48bfb63c0ee1542bca435">hasControlPad</a> (void)</td></tr>
 <tr class="memdesc:ad3fc21ab83e48bfb63c0ee1542bca435"><td class="mdescLeft">&#160;</td><td class="mdescRight">Does this board have a control pad - latch, buttons or analog joystick?  <a href="#ad3fc21ab83e48bfb63c0ee1542bca435">More...</a><br /></td></tr>
 <tr class="separator:ad3fc21ab83e48bfb63c0ee1542bca435"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -177,6 +180,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:abe2fcf4224aae8a7a9a5f64c94955cee"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#abe2fcf4224aae8a7a9a5f64c94955cee">blitFrameBuffer</a> (uint16_t x, uint16_t y, bool blocking=false, bool bigEndian=false)</td></tr>
 <tr class="memdesc:abe2fcf4224aae8a7a9a5f64c94955cee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write the internal framebuffer to the display at coord (x, y)  <a href="#abe2fcf4224aae8a7a9a5f64c94955cee">More...</a><br /></td></tr>
 <tr class="separator:abe2fcf4224aae8a7a9a5f64c94955cee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4afdb2b8f9836f9dcd88f823b1c979b"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#ae4afdb2b8f9836f9dcd88f823b1c979b">ColorHSV565</a> (int16_t H, uint8_t S, uint8_t V)</td></tr>
+<tr class="memdesc:ae4afdb2b8f9836f9dcd88f823b1c979b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert hue, saturation and value into a packed 16-bit RGB color that can be passed to TFT.  <a href="#ae4afdb2b8f9836f9dcd88f823b1c979b">More...</a><br /></td></tr>
+<tr class="separator:ae4afdb2b8f9836f9dcd88f823b1c979b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a55557e8dff6b31c5e1988857b113ea"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a1a55557e8dff6b31c5e1988857b113ea">setBacklight</a> (uint8_t brightness, bool saveToDisk=false)</td></tr>
 <tr class="memdesc:a1a55557e8dff6b31c5e1988857b113ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the backlight brightness and save to the configuration.  <a href="#a1a55557e8dff6b31c5e1988857b113ea">More...</a><br /></td></tr>
 <tr class="separator:a1a55557e8dff6b31c5e1988857b113ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -666,6 +672,58 @@ StaticJsonDocument&lt; 1024 &gt;&#160;</td><td class="memItemRight" valign="bott
 
 </div>
 </div>
+<a id="a8d6d7b4327106dcf5836e8a98d8e10b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d6d7b4327106dcf5836e8a98d8e10b4">&#9670;&nbsp;</a></span>chooseFile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Adafruit_Arcada::chooseFile </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>selected_filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>selected_filename_maxlen</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>extensionFilter</em> = <code>NULL</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Presents a navigation menu for choosing a file from the filesys. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>A string with the starting directory path, must start with / e.g. "/roms" </td></tr>
+    <tr><td class="paramname">selected_filename</td><td>A buffer to put the final selection in. Given long filename support, make this big! </td></tr>
+    <tr><td class="paramname">selected_filename_maxlen</td><td>Maximum buffer available in 'selected_filename' </td></tr>
+    <tr><td class="paramname">extensionFilter</td><td>A 3 (or more?) string to match against the final characters of each file for them to count. If they don't match, the index isn't incremented at all. We toupper() the extension and filename so don't worry about it. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true on success, false on some sort of failure </dd></dl>
+
+</div>
+</div>
 <a id="ad3fc21ab83e48bfb63c0ee1542bca435"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad3fc21ab83e48bfb63c0ee1542bca435">&#9670;&nbsp;</a></span>hasControlPad()</h2>
 
@@ -1085,6 +1143,51 @@ StaticJsonDocument&lt; 1024 &gt;&#160;</td><td class="memItemRight" valign="bott
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True on success, failure if no canvas exists yet </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Even if blocking is 'false,' this function may still block. For starters, DMA must be enabled in Adafruit_SPITFT.h. If bigEndian is NOT true (and this is the normal case on SAMD, being little-endian, and with GFX pixels in RAM being in MCU-native order), then every pixel needs to be byte-swapped before issuing to the display (which tend to be big-endian). If blocking is false, DMA transfers are used on a per- scanline basis and we at least get the cycles to perform this byte- swapping "free," but really it's no faster than a blocking write without byte swaps (except for the last scanline, which we allow the transfer to complete in the background). To really truly get a non-blocking full DMA transfer, blocking must be false AND bigEndian must be true...and graphics must be drawn to the canvas using byte-swapped colors, which is not normal (GFX uses device-native 16-bit type for pixels, i.e. little- endian). ONLY THEN will the entire transfer take place in the background (and the application should wait before further drawing in the framebuffer until the transfer completes). </dd></dl>
+
+</div>
+</div>
+<a id="ae4afdb2b8f9836f9dcd88f823b1c979b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4afdb2b8f9836f9dcd88f823b1c979b">&#9670;&nbsp;</a></span>ColorHSV565()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t Adafruit_Arcada::ColorHSV565 </td>
+          <td>(</td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>H</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>S</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>V</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Convert hue, saturation and value into a packed 16-bit RGB color that can be passed to TFT. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">H</td><td>The Hue ranging from 0 to 359 </td></tr>
+    <tr><td class="paramname">S</td><td>Saturation, 8-bit value, 0 (min or pure grayscale) to 100 (max or pure hue) </td></tr>
+    <tr><td class="paramname">V</td><td>Value (brightness), 8-bit value, 0 (min / black / off) to 100 (max or full brightness) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Packed 16-bit 5-6-5 RGB. Result is linearly but not perceptually correct for LEDs. Intended for TFT use only. </dd></dl>
 
 </div>
 </div>
