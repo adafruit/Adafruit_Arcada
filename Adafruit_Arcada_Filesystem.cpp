@@ -1,4 +1,5 @@
 #include <Adafruit_Arcada.h>
+#include <Adafruit_Arcada_Filesystem.h>
 
 static bool filenameValidityChecker(const char *filename, const char *extension);
 
@@ -252,6 +253,189 @@ File Adafruit_Arcada::openFileByIndex(const char *path, uint16_t index,
   return tmpFile;
 }
 
+/**************************************************************************/
+/*!
+    @brief  Presents a navigation menu for choosing a file from the filesys
+    @param  path A string with the starting directory path, must start with / e.g. "/roms"
+    @param  selected_filename A buffer to put the final selection in. 
+    Given long filename support, make this big!
+    @param  selected_filename_maxlen Maximum buffer available in 'selected_filename'
+    @param  extensionFilter A 3 (or more?) string to match against the final characters 
+    of each file for them to count. If they don't match, the index isn't incremented at 
+    all. We toupper() the extension and filename so don't worry about it.
+    @return true on success, false on some sort of failure
+*/
+/**************************************************************************/
+bool Adafruit_Arcada::chooseFile(const char *path,
+				 char *selected_filename, uint16_t selected_filename_maxlen,
+				 const char *extensionFilter) {
+  int8_t selected_line = 0;
+  int    starting_line = 0;  // what line to start drawing at (for scrolling)
+  bool selected_isdir = false;
+  char filename[SD_MAX_FILENAME_SIZE];
+  char curr_path[255];
+  File entry;
+  uint32_t repeatTimestamp = millis();
+
+  if (! path) {   // use CWD!
+    path = _cwd_path;
+  }
+
+  strncpy(curr_path, path, 255);
+  filename[0] = NULL;
+
+  setTextSize(FILECHOOSEMENU_TEXT_SIZE);
+  setTextWrap(false);
+
+  bool redraw = true; // we need to redraw the filenames/selection
+  bool chdir  = true; // changed dir, we need to redraw everything!
+  int line    = 0;
+  while (1) {
+    if (redraw || chdir) {
+      File dir = FileSys.open(curr_path);
+      if (!dir) 
+	return false;
+
+      if (chdir) {
+	Serial.println("\nRedrawing menu");
+	starting_line = selected_line = 0;
+	fillScreen(ARCADA_BLACK);
+	fillRect(0, 0, ARCADA_TFT_WIDTH, FILECHOOSEMENU_TEXT_HEIGHT*2, ARCADA_BLUE);
+	setTextColor(ARCADA_WHITE);
+	
+	// figure out how to display the directory at the top
+	int dirlen = strlen(curr_path);
+	if (dirlen != 1) dirlen++;        // if not '/'
+	if (extensionFilter) dirlen += 2+strlen(extensionFilter);   // if we'll be displaying *.txt
+	setCursor((ARCADA_TFT_WIDTH - dirlen*FILECHOOSEMENU_TEXT_WIDTH)/2, 0);
+	print(curr_path);
+	if (strcmp(curr_path, "/") != 0) {
+	  print("/");
+	}
+	if (extensionFilter) {
+	  print("*.");
+	  print(extensionFilter);
+	}
+	setCursor(0, FILECHOOSEMENU_TEXT_HEIGHT);
+	print("A to select & B to go back");
+	chdir = false;
+      }
+
+      setCursor(0, FILECHOOSEMENU_TEXT_HEIGHT*2);
+      line = 0;
+      while (entry = dir.openNextFile()) {
+#if defined(ARCADA_USE_QSPI_FS)
+	strncpy(filename, entry.name(), SD_MAX_FILENAME_SIZE-1);
+#else
+	entry.getName(filename, SD_MAX_FILENAME_SIZE-1);
+#endif
+	if (entry.isDirectory() || filenameValidityChecker(filename, extensionFilter)) {
+	  if (line == selected_line) {
+	    setTextColor(ARCADA_YELLOW, ARCADA_RED);
+	    int maxlen = selected_filename_maxlen;
+	    char *fn_ptr = selected_filename;
+	    strncpy(fn_ptr, curr_path, maxlen);
+	    maxlen -= strlen(curr_path);
+	    fn_ptr += strlen(fn_ptr);
+	    // add a '/' if there isnt one already
+	    if (fn_ptr[-1] != '/') {
+	      strncpy(fn_ptr, "/", maxlen);
+	      maxlen -= 1;
+	      fn_ptr++;
+	    }
+	    strncpy(fn_ptr, filename, maxlen);
+	    Serial.print("-> "); Serial.println(selected_filename);
+	    selected_isdir = entry.isDirectory();
+	  } else {
+	    setTextColor(ARCADA_WHITE, ARCADA_BLACK);
+	  }
+	  //Serial.printf("line %d, starting %d\n", line, starting_line);
+	  if (line >= starting_line) {
+	    print(filename);
+	    if (entry.isDirectory()) {
+	      print("/");
+	    }
+	    for (int x=strlen(filename); x<FILECHOOSEMENU_MAX_LINELENGTH+1; x++) {
+	      print(" ");
+	    }
+	    println();
+	  }
+	  line++;
+	}
+	entry.close();
+      }
+      dir.close();
+      redraw = false;
+    }
+
+    uint8_t currPressed = readButtons();
+    uint8_t justPressed = justPressedButtons();
+
+    // Fake a repeating press for scrolling thru a filelist fast!
+    if ((millis() - repeatTimestamp) > 150) {
+      repeatTimestamp = millis();
+      if (currPressed & ARCADA_BUTTONMASK_UP) {
+	justPressed |= ARCADA_BUTTONMASK_UP;
+      }
+      if (currPressed & ARCADA_BUTTONMASK_DOWN) {
+	justPressed |= ARCADA_BUTTONMASK_DOWN;
+      }
+    }
+
+    // Check for selection or movement
+    if (justPressed) {
+      if (justPressed & ARCADA_BUTTONMASK_DOWN) {
+	selected_line++;
+	if (selected_line >= line) {
+	  selected_line = 0;
+	  starting_line = 0;
+	}
+	if (selected_line >= FILECHOOSEMENU_MAX_LINES) {
+	  starting_line = selected_line - FILECHOOSEMENU_MAX_LINES + 1;
+	}
+	redraw = true;
+      }
+      else if (justPressed & ARCADA_BUTTONMASK_UP) {
+	selected_line--;
+	if (selected_line < 0) {
+	  selected_line = line-1;
+	}
+	if (selected_line >= FILECHOOSEMENU_MAX_LINES) {
+	  starting_line = selected_line - FILECHOOSEMENU_MAX_LINES + 1;
+	}
+	if (selected_line < starting_line) {
+	  starting_line = selected_line;
+	}
+	redraw = true;
+      }
+      else if (justPressed & ARCADA_BUTTONMASK_A) {
+	if (!selected_isdir) {
+	  break;
+	}
+	// change dir
+	strncpy(curr_path, selected_filename, 255);
+	chdir = true;
+      }
+      else if (justPressed & ARCADA_BUTTONMASK_B) {
+	if (strcmp(curr_path, "/") != 0) {
+	  // get rid of trailing /
+	  if (curr_path[strlen(curr_path)-1] == '/') {
+	    curr_path[strlen(curr_path)-1] = 0; 
+	  }  
+	  Serial.println(curr_path);
+	  char *last = strrchr(curr_path, '/');
+	  if (last) {
+	    last[0] = 0; // ok slice off at this point!
+	  }
+	  chdir = true;
+	}
+      }
+    }
+  }
+
+  fillScreen(ARCADA_BLACK);
+  return true;
+}
 
 static bool filenameValidityChecker(const char *filename, const char *extensionFilter) {
   if (strlen(filename) > 2) {

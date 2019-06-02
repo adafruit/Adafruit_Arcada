@@ -647,3 +647,63 @@ bool Adafruit_Arcada::hasControlPad(void) {
   return false;
 #endif
 }
+
+
+/*!
+  @brief   Convert hue, saturation and value into a packed 16-bit RGB color
+           that can be passed to TFT
+  @param   hue  An unsigned 16-bit value, 0 to 65535, representing one full
+                loop of the color wheel, which allows 16-bit hues to "roll
+                over" while still doing the expected thing (and allowing
+                more precision than the wheel() function that was common to
+                prior NeoPixel examples).
+  @param   sat  Saturation, 8-bit value, 0 (min or pure grayscale) to 
+                (max or pure hue)
+  @param   val  Value (brightness), 8-bit value, 0 (min / black / off) to
+                100 (max or full brightness)
+  @return  Packed 16-bit 5-6-5 RGB. Result is linearly but not perceptually 
+           correct for LEDs. Intended for TFT use only.
+*/
+// https://gist.github.com/kuathadianto/200148f53616cbd226d993b400214a7f
+uint16_t Adafruit_Arcada::ColorHSV565(int16_t H, uint8_t S, uint8_t V) {
+  double C = S * V / 10000.0;
+  double X = C * (1 - abs(fmod(H / 60.0, 2) - 1));
+  double m = (V / 100.0) - C;
+  double Rs, Gs, Bs;
+  
+  if(H >= 0 && H < 60) {
+    Rs = C;
+    Gs = X;
+    Bs = 0;	
+  }
+  else if(H >= 60 && H < 120) {	
+    Rs = X;
+    Gs = C;
+    Bs = 0;	
+  }
+  else if(H >= 120 && H < 180) {
+    Rs = 0;
+    Gs = C;
+    Bs = X;	
+  }
+  else if(H >= 180 && H < 240) {
+    Rs = 0;
+    Gs = X;
+    Bs = C;	
+  }
+  else if(H >= 240 && H < 300) {
+    Rs = X;
+    Gs = 0;
+    Bs = C;	
+  }
+  else {
+    Rs = C;
+    Gs = 0;
+    Bs = X;	
+  }
+  
+  uint8_t red = (Rs + m) * 255;
+  uint8_t green = (Gs + m) * 255;
+  uint8_t blue = (Bs + m) * 255;
+  return color565(red, green, blue);
+}

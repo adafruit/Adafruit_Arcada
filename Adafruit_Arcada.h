@@ -217,6 +217,8 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   uint8_t *writeFileToFlash(const char *filename, uint32_t address);
   bool filesysBeginMSD(void);
   bool recentUSB(uint32_t timeout = 100);
+  bool chooseFile(const char *path, char *filename, uint16_t filename_max, 
+		  const char *extensionFilter=NULL);
 
   bool hasControlPad(void);
   int16_t readJoystickX(uint8_t oversampling=3);
@@ -252,6 +254,7 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
     return _canvas ? _canvas->getBuffer() : NULL; }
   bool blitFrameBuffer(uint16_t x, uint16_t y,
     bool blocking=false, bool bigEndian=false);
+  uint16_t ColorHSV565(int16_t H, uint8_t S, uint8_t V);
 
   bool setBacklight(uint8_t brightness, bool saveToDisk=false);
   uint8_t getBacklight(void);
