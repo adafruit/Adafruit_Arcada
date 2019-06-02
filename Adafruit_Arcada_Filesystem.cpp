@@ -269,20 +269,19 @@ File Adafruit_Arcada::openFileByIndex(const char *path, uint16_t index,
 bool Adafruit_Arcada::chooseFile(const char *path,
 				 char *selected_filename, uint16_t selected_filename_maxlen,
 				 const char *extensionFilter) {
-  int8_t selected_line = 0;
-  int    starting_line = 0;  // what line to start drawing at (for scrolling)
-  bool selected_isdir = false;
-  char filename[SD_MAX_FILENAME_SIZE];
-  char curr_path[255];
-  File entry;
-  uint32_t repeatTimestamp = millis();
+  int8_t  selected_line = 0;        // the line # that we have selected
+  bool    selected_isdir = false;   // whether the current line is a directory
+  int8_t  selected_scroll_idx = 0;  // where to start drawing for selected filename scroll
+  int     starting_line = 0;        // what line to start drawing at (for scrolling thru files)
+  char    curr_path[255];           // The current working directory
+  File    entry;                    // iterate thru directory entries
+  uint32_t repeatTimestamp = millis();   // a timestamp for repeat presses
 
   if (! path) {   // use CWD!
     path = _cwd_path;
   }
 
   strncpy(curr_path, path, 255);
-  filename[0] = NULL;
 
   setTextSize(FILECHOOSEMENU_TEXT_SIZE);
   setTextWrap(false);
@@ -291,10 +290,13 @@ bool Adafruit_Arcada::chooseFile(const char *path,
   bool chdir  = true; // changed dir, we need to redraw everything!
   int line    = 0;
   while (1) {
+    delay(10);
     if (redraw || chdir) {
       File dir = FileSys.open(curr_path);
-      if (!dir) 
+      if (!dir) {
+	Serial.println("Not a directory!");
 	return false;
+      }
 
       if (chdir) {
 	Serial.println("\nRedrawing menu");
@@ -324,6 +326,9 @@ bool Adafruit_Arcada::chooseFile(const char *path,
       setCursor(0, FILECHOOSEMENU_TEXT_HEIGHT*2);
       line = 0;
       while (entry = dir.openNextFile()) {
+	char    filename[SD_MAX_FILENAME_SIZE];
+	filename[0] = NULL;
+
 #if defined(ARCADA_USE_QSPI_FS)
 	strncpy(filename, entry.name(), SD_MAX_FILENAME_SIZE-1);
 #else
@@ -332,7 +337,7 @@ bool Adafruit_Arcada::chooseFile(const char *path,
 	if (entry.isDirectory() || filenameValidityChecker(filename, extensionFilter)) {
 	  if (line == selected_line) {
 	    setTextColor(ARCADA_YELLOW, ARCADA_RED);
-	    int maxlen = selected_filename_maxlen;
+	    int maxlen = selected_filename_maxlen-1;
 	    char *fn_ptr = selected_filename;
 	    strncpy(fn_ptr, curr_path, maxlen);
 	    maxlen -= strlen(curr_path);
@@ -344,7 +349,10 @@ bool Adafruit_Arcada::chooseFile(const char *path,
 	      fn_ptr++;
 	    }
 	    strncpy(fn_ptr, filename, maxlen);
-	    Serial.print("-> "); Serial.println(selected_filename);
+	    fn_ptr += strlen(filename);
+	    maxlen -= strlen(filename);
+
+	    Serial.print("Select -> "); Serial.println(selected_filename);
 	    selected_isdir = entry.isDirectory();
 	  } else {
 	    setTextColor(ARCADA_WHITE, ARCADA_BLACK);
@@ -371,14 +379,36 @@ bool Adafruit_Arcada::chooseFile(const char *path,
     uint8_t currPressed = readButtons();
     uint8_t justPressed = justPressedButtons();
 
-    // Fake a repeating press for scrolling thru a filelist fast!
-    if ((millis() - repeatTimestamp) > 150) {
+    if ((millis() - repeatTimestamp) > 200) {
       repeatTimestamp = millis();
+
+      // Fake a repeating press for scrolling thru a filelist fast!
       if (currPressed & ARCADA_BUTTONMASK_UP) {
 	justPressed |= ARCADA_BUTTONMASK_UP;
       }
       if (currPressed & ARCADA_BUTTONMASK_DOWN) {
 	justPressed |= ARCADA_BUTTONMASK_DOWN;
+      }
+
+      // Scroll the selected filename?
+      char *fn_ptr = selected_filename;
+      fn_ptr = strrchr(selected_filename, '/');
+      if (fn_ptr) {
+	fn_ptr++;
+	int scrollnum = strlen(fn_ptr) - FILECHOOSEMENU_MAX_LINELENGTH;
+	if (scrollnum > 0) {
+	  int ypos = ((selected_line - starting_line) + 2) * FILECHOOSEMENU_TEXT_HEIGHT;
+	  setTextColor(ARCADA_YELLOW, ARCADA_RED);
+	  setCursor(0, ypos);
+	  print(fn_ptr+selected_scroll_idx);
+	  for (int s=strlen(fn_ptr+selected_scroll_idx); s<FILECHOOSEMENU_MAX_LINELENGTH+2; s++) {
+	    print(' ');
+	  }
+	  selected_scroll_idx++;
+	  if (selected_scroll_idx > scrollnum) {
+	    selected_scroll_idx = 0;
+	  }
+	}
       }
     }
 
@@ -413,7 +443,9 @@ bool Adafruit_Arcada::chooseFile(const char *path,
 	  break;
 	}
 	// change dir
+	Serial.print("Chdir from "); Serial.print(curr_path);
 	strncpy(curr_path, selected_filename, 255);
+	Serial.print(" to "); Serial.println(curr_path);
 	chdir = true;
       }
       else if (justPressed & ARCADA_BUTTONMASK_B) {
@@ -422,11 +454,12 @@ bool Adafruit_Arcada::chooseFile(const char *path,
 	  if (curr_path[strlen(curr_path)-1] == '/') {
 	    curr_path[strlen(curr_path)-1] = 0; 
 	  }  
-	  Serial.println(curr_path);
+	  Serial.print("Chdir from "); Serial.print(curr_path);
 	  char *last = strrchr(curr_path, '/');
 	  if (last) {
-	    last[0] = 0; // ok slice off at this point!
+	    last[1] = 0; // ok slice off at this point!
 	  }
+	  Serial.print(" to "); Serial.println(curr_path);
 	  chdir = true;
 	}
       }
