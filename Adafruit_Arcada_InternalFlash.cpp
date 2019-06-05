@@ -41,6 +41,11 @@ uint8_t * Adafruit_Arcada::writeFileToFlash(const char *filename, uint32_t addre
     return NULL;
   }
   Serial.printf("%d bytes available\n", flashsize - address);
+
+  if ((flashsize - address) < filesize) {
+    Serial.println("Too large!");
+    return NULL;
+  }
   
   if (8 << NVMCTRL->PARAM.bit.PSZ != FLASH_PAGE_SIZE) {
     Serial.printf("Wrong flash page size %d\n", FLASH_PAGE_SIZE);
