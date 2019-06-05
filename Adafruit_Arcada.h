@@ -8,12 +8,11 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SPITFT.h>
 #include <Adafruit_ST7735.h>
+#include <Adafruit_ST7789.h>
 #include <Adafruit_ILI9341.h>
 #include <Adafruit_ZeroTimer.h>
 #include <Adafruit_LIS3DH.h>
 #include <TouchScreen.h>
-#include <ArduinoJson.h>
-
 
 #define SD_MAX_FILENAME_SIZE 80
 #define ARCADA_DEFAULT_CONFIGURATION_FILENAME  "/arcada_config.json"
@@ -170,6 +169,50 @@
 //#define ARCADA_USE_SD_FS
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_LIS3DH
+
+#elif defined(ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS)
+
+  #define ARCADA_TFT_SPI         SPI1
+  #define ARCADA_TFT_CS          44       // Display CS Arduino pin number
+  #define ARCADA_TFT_DC          45       // Display D/C Arduino pin number
+  #define ARCADA_TFT_RST         46       // Display reset Arduino pin number
+  #define ARCADA_TFT_LITE        47
+  #define ARCADA_TFT_ROTATION     3
+  #define ARCADA_TFT_DEFAULTFILL  0xFFFF
+  #define ARCADA_TFT_INIT         init(320, 240)
+  #define ARCADA_TFT_TYPE         Adafruit_ST7789
+  #define ARCADA_TFT_WIDTH        320
+  #define ARCADA_TFT_HEIGHT       240
+
+  #define ARCADA_SPEAKER_ENABLE  51
+  #define ARCADA_NEOPIXEL_PIN     8
+  #define ARCADA_NEOPIXEL_NUM     5
+  #define ARCADA_AUDIO_OUT       A0
+  #define ARCADA_BUTTON_CLOCK    48
+  #define ARCADA_BUTTON_DATA     49
+  #define ARCADA_BUTTON_LATCH    50
+  #define ARCADA_BUTTON_SHIFTMASK_B           0x80
+  #define ARCADA_BUTTON_SHIFTMASK_A           0x40
+  #define ARCADA_BUTTON_SHIFTMASK_START       0x20
+  #define ARCADA_BUTTON_SHIFTMASK_SELECT      0x10
+
+  #define ARCADA_JOYSTICK_X    A11
+  #define ARCADA_JOYSTICK_Y    A10
+
+  #define ARCADA_LIGHT_SENSOR             A7
+  #define ARCADA_BATTERY_SENSOR           A6
+
+  #define ARCADA_RIGHT_AUDIO_PIN          A0
+  #define ARCADA_LEFT_AUDIO_PIN           A1
+
+  #define ARCADA_MAX_VOLUME               0.2
+  #define ARCADA_SD_CS                     4
+
+#define ARCADA_USE_QSPI_FS
+//  #define ARCADA_USE_SD_FS
+
+  #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_LIS3DH
+
 #endif
 
 #if defined(ARCADA_USE_SD_FS)
@@ -185,6 +228,10 @@
 
 #if defined(USE_TINYUSB)
   #include "Adafruit_TinyUSB.h"
+#endif
+
+#ifdef USE_JSON
+#include <ArduinoJson.h>
 #endif
 
 /**************************************************************************/
@@ -282,7 +329,10 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   bool hasAccel(void) { return _has_accel; }
 #endif
 
+#ifdef USE_JSON
   StaticJsonDocument<1024> configJSON;  ///< The object to store our various settings, you need to restore/save this with (load/save)ConfigurationFile
+#endif
+
  private:
   void _initAlertFonts(void);
 

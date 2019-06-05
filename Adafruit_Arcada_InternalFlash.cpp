@@ -131,11 +131,11 @@ void flash_write_words(uint32_t *dst, uint32_t *src, uint32_t n_words) {
 // flush the previously seen rows. Every row after will get written without
 // another erase.
 
-static bool block_erased[FLASH_SIZE / NVMCTRL_BLOCK_SIZE];
-static bool row_same[FLASH_SIZE / NVMCTRL_BLOCK_SIZE][NVMCTRL_BLOCK_SIZE / FLASH_ROW_SIZE];
 
 
 void flash_write_row(uint32_t *dst, uint32_t *src) {
+  bool block_erased[FLASH_SIZE / NVMCTRL_BLOCK_SIZE];
+  bool row_same[FLASH_SIZE / NVMCTRL_BLOCK_SIZE][NVMCTRL_BLOCK_SIZE / FLASH_ROW_SIZE];
     const uint32_t FLASH_ROW_SIZE_WORDS = FLASH_ROW_SIZE / 4;
 
     // The cache in Rev A isn't reliable when reading and writing to the NVM.

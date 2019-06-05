@@ -143,10 +143,12 @@ bool Adafruit_Arcada::setBacklight(uint8_t brightness, bool saveToDisk) {
     analogWrite(ARCADA_TFT_LITE, brightness);
   }
 #endif
+#ifdef USE_JSON
   configJSON["brightness"] = _brightness;
   if (saveToDisk) {
     return saveConfigurationFile();
   }
+#endif
   return true; 
 }
 
@@ -171,11 +173,12 @@ uint8_t Adafruit_Arcada::getBacklight(void) {
 /**************************************************************************/
 bool Adafruit_Arcada::setVolume(uint8_t volume, bool saveToDisk) {
   _volume = volume;
-
+#ifdef USE_JSON
   configJSON["volume"] = _volume;
   if (saveToDisk) {
     return saveConfigurationFile();
   }
+#endif
   return true; 
 }
 

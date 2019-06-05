@@ -327,7 +327,7 @@ bool Adafruit_Arcada::chooseFile(const char *path,
       line = 0;
       while (entry = dir.openNextFile()) {
 	char    filename[SD_MAX_FILENAME_SIZE];
-	filename[0] = NULL;
+	filename[0] = 0;
 
 #if defined(ARCADA_USE_QSPI_FS)
 	strncpy(filename, entry.name(), SD_MAX_FILENAME_SIZE-1);
