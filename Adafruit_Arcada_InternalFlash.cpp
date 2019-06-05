@@ -12,6 +12,8 @@ static void flash_write_row(uint32_t *dst, uint32_t *src);
 static void flash_erase_block(uint32_t *dst);
 static void flash_write_words(uint32_t *dst, uint32_t *src, uint32_t n_words);
 
+bool block_erased[FLASH_SIZE / NVMCTRL_BLOCK_SIZE];
+bool row_same[FLASH_SIZE / NVMCTRL_BLOCK_SIZE][NVMCTRL_BLOCK_SIZE / FLASH_ROW_SIZE];
 
 /**************************************************************************/
 /*!
@@ -67,6 +69,30 @@ uint8_t * Adafruit_Arcada::writeFileToFlash(const char *filename, uint32_t addre
     }
     Serial.println();
     flash_write_row((uint32_t *)(void *)(address+i), (uint32_t *)(void *)pageBuf);
+
+  }
+
+  f.rewind();
+  fileremaining=filesize;
+  Serial.println("Verifying!");
+  for (i = 0; i < filesize; i += FLASH_ROW_SIZE) {
+
+    memset(pageBuf, 0xFF, FLASH_ROW_SIZE);
+    int toRead = min(fileremaining, FLASH_ROW_SIZE);
+    if (f.read(pageBuf, toRead) != toRead) {
+      Serial.printf("File read %d bytes failed!", toRead);
+      return NULL;
+    }
+    fileremaining -= toRead;
+
+    Serial.printf("Verifying %d bytes: ", toRead);
+    for (int b=0; b<toRead; b++) {
+      if (pageBuf[b] != ((uint8_t *)(address+i))[b]) {
+	Serial.printf("Failed at address %x\n", address+i+b);
+	while (1);
+      }
+    }
+    Serial.println();
 
   }
 
@@ -134,8 +160,6 @@ void flash_write_words(uint32_t *dst, uint32_t *src, uint32_t n_words) {
 
 
 void flash_write_row(uint32_t *dst, uint32_t *src) {
-  bool block_erased[FLASH_SIZE / NVMCTRL_BLOCK_SIZE];
-  bool row_same[FLASH_SIZE / NVMCTRL_BLOCK_SIZE][NVMCTRL_BLOCK_SIZE / FLASH_ROW_SIZE];
     const uint32_t FLASH_ROW_SIZE_WORDS = FLASH_ROW_SIZE / 4;
 
     // The cache in Rev A isn't reliable when reading and writing to the NVM.
