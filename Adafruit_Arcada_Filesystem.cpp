@@ -480,7 +480,7 @@ static bool filenameValidityChecker(const char *filename, const char *extensionF
   // Check the last 3 (or 4?) characters to see if its the right filetype
   if (extensionFilter) {
     const char *p = filename + strlen(filename) - strlen(extensionFilter);
-    for (int i=0; i<strlen(extensionFilter); i++) {
+    for (uint16_t i=0; i<strlen(extensionFilter); i++) {
       if (toupper(p[i]) != toupper(extensionFilter[i])) {
 	return false;
       }

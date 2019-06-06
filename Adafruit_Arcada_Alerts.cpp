@@ -89,7 +89,7 @@ void Adafruit_Arcada::alertBox(const char *string, uint16_t boxColor, uint16_t t
   // pre-calculate # of lines!
   uint8_t lines = 1;
   uint16_t fontX = boxX + charWidth;
-  for (int c=0; c<strlen(string); c++) {
+  for (uint16_t c=0; c<strlen(string); c++) {
     const char *nextBreakStr = strpbrk(string+c, " \n");
     if (!nextBreakStr) {
       nextBreakStr = string + strlen(string);
@@ -117,7 +117,7 @@ void Adafruit_Arcada::alertBox(const char *string, uint16_t boxColor, uint16_t t
   setTextSize(fontSize);
   setTextColor(ARCADA_BLACK);
 
-  for (int c=0; c<strlen(string); c++) {
+  for (uint16_t c=0; c<strlen(string); c++) {
     const char *nextBreakStr = strpbrk(string+c, " \n");
     if (!nextBreakStr) {
       nextBreakStr = string + strlen(string);
@@ -169,8 +169,7 @@ void Adafruit_Arcada::alertBox(const char *string, uint16_t boxColor, uint16_t t
     print(buttonString);
 
     while (1) {
-      uint32_t b = readButtons();
-      //Serial.printf("Buttons = 0x%x\t", b);
+      readButtons();
       uint32_t released = justReleasedButtons();
       //Serial.printf("Released = 0x%x\n", released);
 
@@ -187,4 +186,79 @@ void Adafruit_Arcada::alertBox(const char *string, uint16_t boxColor, uint16_t t
       delay(10); 
     }
   }
+}
+
+
+
+uint8_t Adafruit_Arcada::menu(const char **menu_strings, uint8_t menu_num, 
+			      uint16_t boxColor, uint16_t textColor) {
+  _initAlertFonts();
+
+  uint16_t max_len = 0;
+  for (int i=0; i<menu_num; i++) {
+    //Serial.printf("#%d '%s' -> %d\n", i, menu_strings[i], strlen(menu_strings[i]));
+    max_len = max(max_len, strlen(menu_strings[i]));
+  }
+
+  uint16_t boxWidth = (max_len + 4) * charWidth;
+  uint16_t boxHeight = (menu_num + 2) * charHeight;
+  uint16_t boxX = (width() - boxWidth) / 2;
+  uint16_t boxY = (height() - boxHeight) / 2;
+
+  // draw the outline box
+  fillRoundRect(boxX, boxY, boxWidth, boxHeight, charWidth, boxColor);
+  drawRoundRect(boxX, boxY, boxWidth, boxHeight, charWidth, textColor);
+
+  // Print the selection hint
+  const char *buttonString = "A";
+  uint16_t fontX = boxX + boxWidth - (strlen(buttonString)+1)*charWidth + fontSize;
+  uint16_t fontY = boxY + boxHeight - charHeight;  
+  fillRoundRect(fontX, fontY, 
+		(strlen(buttonString)+2)*charWidth, charHeight*2, 
+		charWidth, textColor);
+  drawRoundRect(fontX, fontY, 
+		(strlen(buttonString)+2)*charWidth, charHeight*2,
+		charWidth, textColor);
+  setCursor(fontX+charWidth, fontY+charHeight/2);
+  setTextColor(boxColor);
+  print(buttonString);
+
+  // draw and select the menu
+  int8_t selected = 0;
+  fontX = boxX + charWidth/2;
+  fontY = boxY + charHeight;
+  while (1) {
+
+    for (int i=0; i<menu_num; i++) {
+      if (i == selected) {
+	setTextColor(boxColor, textColor);
+      } else {
+	setTextColor(textColor, boxColor);
+      }
+      setCursor(fontX, fontY+charHeight*i);
+      print(" ");
+      print(menu_strings[i]);
+      for (int j=strlen(menu_strings[i]); j<max_len+2; j++) {
+	print(" ");
+      }
+    }
+
+    while (1) {
+      delay(10);
+      readButtons();
+      uint32_t released = justReleasedButtons();
+      if (released & ARCADA_BUTTONMASK_UP) {
+	selected = max(0, selected-1);
+	break;
+      }
+      if (released & ARCADA_BUTTONMASK_DOWN) {
+	selected = min(menu_num-1, selected+1);
+	break;
+      }
+      if (released & ARCADA_BUTTONMASK_A) {
+	return selected;
+      }
+    }    
+  }
+  return selected;
 }

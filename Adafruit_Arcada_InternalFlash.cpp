@@ -1,9 +1,10 @@
 #include <Adafruit_Arcada.h>
 
 #define FLASH_ROW_SIZE (FLASH_PAGE_SIZE * 4)
+
 // Skip writing blocks that are identical to the existing block.
-// only disable for debugging/timing
-#define QUICK_FLASH 1
+#define QUICK_FLASH 1   // only disable for debugging/timing!
+
 #define QUAD_WORD (4 * 4)
 
 
