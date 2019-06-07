@@ -218,7 +218,7 @@ uint8_t Adafruit_Arcada::menu(const char **menu_strings, uint8_t menu_num,
 		charWidth, textColor);
   drawRoundRect(fontX, fontY, 
 		(strlen(buttonString)+2)*charWidth, charHeight*2,
-		charWidth, textColor);
+		charWidth, boxColor);
   setCursor(fontX+charWidth, fontY+charHeight/2);
   setTextColor(boxColor);
   print(buttonString);
