@@ -189,7 +189,16 @@ void Adafruit_Arcada::alertBox(const char *string, uint16_t boxColor, uint16_t t
 }
 
 
-
+/**************************************************************************/
+/*!
+    @brief  Draws a menu and lets a user select one of the menu items 
+    @param  menu_strings List of menu-item strings
+    @param  menu_num Number of menu items
+    @param  boxColor 16-bit color to use as menu-background
+    @param  textColor 16-bit color to use as outline and text 
+    @returns uint8_t, The selected menu item
+*/
+/**************************************************************************/
 uint8_t Adafruit_Arcada::menu(const char **menu_strings, uint8_t menu_num, 
 			      uint16_t boxColor, uint16_t textColor) {
   _initAlertFonts();
