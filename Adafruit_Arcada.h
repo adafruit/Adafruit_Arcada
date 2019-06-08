@@ -45,6 +45,7 @@
   #define ARCADA_BUTTONPIN_A            A13
 
   #define ARCADA_USE_SD_FS
+  #define ARCADA_USE_JSON
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_NONE
 
@@ -73,6 +74,7 @@
   #define ARCADA_SD_CS            32
   #define ARCADA_USE_QSPI_FS
   //#define ARCADA_USE_SD_FS
+  #define ARCADA_USE_JSON
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_NONE
   #define ARCADA_USE_TOUCHSCREEN
@@ -121,8 +123,7 @@
   #define ARCADA_RIGHT_AUDIO_PIN             A0
   #define ARCADA_LEFT_AUDIO_PIN              A1
 
-  #define ARCADA_MAX_VOLUME                  0.5
-
+  #define ARCADA_USE_JSON
   #define ARCADA_USE_QSPI_FS
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_LIS3DH
@@ -162,9 +163,9 @@
   #define ARCADA_RIGHT_AUDIO_PIN          A0
   #define ARCADA_LEFT_AUDIO_PIN           A1
 
-  #define ARCADA_MAX_VOLUME               0.2
   #define ARCADA_SD_CS                     4
 
+  #define ARCADA_USE_JSON
   #define ARCADA_USE_QSPI_FS
 //#define ARCADA_USE_SD_FS
 
@@ -205,7 +206,7 @@
   #define ARCADA_RIGHT_AUDIO_PIN          A0
   #define ARCADA_LEFT_AUDIO_PIN           A1
 
-  #define ARCADA_MAX_VOLUME               0.2
+  #define ARCADA_USE_JSON
   #define ARCADA_SD_CS                     4
 
 #define ARCADA_USE_QSPI_FS
@@ -230,7 +231,7 @@
   #include "Adafruit_TinyUSB.h"
 #endif
 
-#ifdef USE_JSON
+#ifdef ARCADA_USE_JSON
 #include <ArduinoJson.h>
 #endif
 
@@ -330,8 +331,8 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   bool hasAccel(void) { return _has_accel; }
 #endif
 
-#ifdef USE_JSON
-  StaticJsonDocument<1024> configJSON;  ///< The object to store our various settings, you need to restore/save this with (load/save)ConfigurationFile
+#ifdef ARCADA_USE_JSON
+  StaticJsonDocument<256> configJSON;  ///< The object to store our various settings, you need to restore/save this with (load/save)ConfigurationFile
 #endif
 
  private:
