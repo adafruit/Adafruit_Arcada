@@ -220,7 +220,7 @@ uint8_t Adafruit_Arcada::menu(const char **menu_strings, uint8_t menu_num,
 
   // Print the selection hint
   const char *buttonString = "A";
-  uint16_t fontX = boxX + boxWidth - (strlen(buttonString)+1)*charWidth + fontSize;
+  uint16_t fontX = boxX + boxWidth - (strlen(buttonString)+1)*charWidth + 2*fontSize;
   uint16_t fontY = boxY + boxHeight - charHeight;  
   fillRoundRect(fontX, fontY, 
 		(strlen(buttonString)+2)*charWidth, charHeight*2, 
@@ -236,8 +236,11 @@ uint8_t Adafruit_Arcada::menu(const char **menu_strings, uint8_t menu_num,
   int8_t selected = 0;
   fontX = boxX + charWidth/2;
   fontY = boxY + charHeight;
-  while (1) {
 
+  // wait for any buttons to be released
+  while (readButtons()) delay(10);
+
+  while (1) {
     for (int i=0; i<menu_num; i++) {
       if (i == selected) {
 	setTextColor(boxColor, textColor);
@@ -257,11 +260,15 @@ uint8_t Adafruit_Arcada::menu(const char **menu_strings, uint8_t menu_num,
       readButtons();
       uint32_t released = justReleasedButtons();
       if (released & ARCADA_BUTTONMASK_UP) {
-	selected = max(0, selected-1);
+	selected--;
+	if (selected < 0) 
+	  selected = menu_num-1;
 	break;
       }
       if (released & ARCADA_BUTTONMASK_DOWN) {
-	selected = min(menu_num-1, selected+1);
+	selected++;
+	if (selected > menu_num-1) 
+	  selected = 0;
 	break;
       }
       if (released & ARCADA_BUTTONMASK_A) {
