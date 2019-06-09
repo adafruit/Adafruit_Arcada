@@ -49,7 +49,11 @@ bool Adafruit_Arcada::begin(void) {
   pixels.updateLength(ARCADA_NEOPIXEL_NUM);
   pixels.setPin(ARCADA_NEOPIXEL_PIN);
   pixels.begin();
+  delay(10);
   pixels.setBrightness(20);
+  pixels.fill(0);
+  pixels.show();  // turn off
+  delay(10);
   pixels.show();  // turn off
 
   _touchscreen = NULL;
