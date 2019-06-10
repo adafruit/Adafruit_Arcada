@@ -28,6 +28,7 @@ install:
    - arduino --install-library "Adafruit LIS3DH"
    - arduino --install-library "Adafruit ZeroTimer Library"
    - arduino --install-library "Adafruit TouchScreen"
+   - arduino --install-library "Adafruit PixelDust"
    - arduino --install-library "SdFat"
    - arduino --install-library "ArduinoJson"
 
