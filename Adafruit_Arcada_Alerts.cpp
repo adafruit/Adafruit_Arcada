@@ -196,11 +196,12 @@ void Adafruit_Arcada::alertBox(const char *string, uint16_t boxColor, uint16_t t
     @param  menu_num Number of menu items
     @param  boxColor 16-bit color to use as menu-background
     @param  textColor 16-bit color to use as outline and text 
+    @param  cancellable setting this to true will enable the user to exit the menu by pressing "B"
     @returns uint8_t, The selected menu item
 */
 /**************************************************************************/
 uint8_t Adafruit_Arcada::menu(const char **menu_strings, uint8_t menu_num, 
-			      uint16_t boxColor, uint16_t textColor) {
+			      uint16_t boxColor, uint16_t textColor, bool cancellable) {
   _initAlertFonts();
 
   uint16_t max_len = 0;
@@ -273,6 +274,9 @@ uint8_t Adafruit_Arcada::menu(const char **menu_strings, uint8_t menu_num,
       }
       if (released & ARCADA_BUTTONMASK_A) {
 	return selected;
+      }
+      if (released & ARCADA_BUTTONMASK_B) {
+	return 255;
       }
     }    
   }
