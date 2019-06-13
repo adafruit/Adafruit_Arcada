@@ -275,7 +275,7 @@ uint8_t Adafruit_Arcada::menu(const char **menu_strings, uint8_t menu_num,
       if (released & ARCADA_BUTTONMASK_A) {
 	return selected;
       }
-      if (released & ARCADA_BUTTONMASK_B) {
+      if (cancellable && (released & ARCADA_BUTTONMASK_B)) {
 	return 255;
       }
     }    
