@@ -382,6 +382,7 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   void _initAlertFonts(void);
 
   bool _has_accel;
+  bool _has_wifi;
 
   int16_t _joyx_center = 512;
   int16_t _joyy_center = 512;
