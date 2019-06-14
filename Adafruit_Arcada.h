@@ -372,6 +372,12 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   bool hasAccel(void) { return _has_accel; }
 #endif
 
+  /**************************************************************************/
+  /*!
+    @brief  Gets the status of the ESP32 module connected via SPI.
+    @return True if the ESP32 module was detected, false otherwise.
+  */
+  /**************************************************************************/
   bool hasWiFi(void) { return _has_wifi; }
 
 #ifdef ARCADA_USE_JSON
