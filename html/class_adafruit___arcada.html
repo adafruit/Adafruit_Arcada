@@ -213,9 +213,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:aeeecd475390ead532a141442574286ae"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#aeeecd475390ead532a141442574286ae">haltBox</a> (const char *string)</td></tr>
 <tr class="memdesc:aeeecd475390ead532a141442574286ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Display an error box and halt operation.  <a href="#aeeecd475390ead532a141442574286ae">More...</a><br /></td></tr>
 <tr class="separator:aeeecd475390ead532a141442574286ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac67b46e3637df925bb9b06aca8befbce"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#ac67b46e3637df925bb9b06aca8befbce">menu</a> (const char **menu_strings, uint8_t menu_num, uint16_t boxColor, uint16_t textColor)</td></tr>
-<tr class="memdesc:ac67b46e3637df925bb9b06aca8befbce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a menu and lets a user select one of the menu items.  <a href="#ac67b46e3637df925bb9b06aca8befbce">More...</a><br /></td></tr>
-<tr class="separator:ac67b46e3637df925bb9b06aca8befbce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0e53d7c348765a660439e0cf4e10607"><td class="memItemLeft" align="right" valign="top">uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#aa0e53d7c348765a660439e0cf4e10607">menu</a> (const char **menu_strings, uint8_t menu_num, uint16_t boxColor, uint16_t textColor, bool cancellable=false)</td></tr>
+<tr class="memdesc:aa0e53d7c348765a660439e0cf4e10607"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a menu and lets a user select one of the menu items.  <a href="#aa0e53d7c348765a660439e0cf4e10607">More...</a><br /></td></tr>
+<tr class="separator:aa0e53d7c348765a660439e0cf4e10607"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ee0c4e1df9cd4567e807a580525786d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a7ee0c4e1df9cd4567e807a580525786d">loadConfigurationFile</a> (const char *filename=ARCADA_DEFAULT_CONFIGURATION_FILENAME)</td></tr>
 <tr class="memdesc:a7ee0c4e1df9cd4567e807a580525786d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads the configuration JSON from the filesystem (which must be initialized before this function is called) and stores parsed JSON data internally.  <a href="#a7ee0c4e1df9cd4567e807a580525786d">More...</a><br /></td></tr>
 <tr class="separator:a7ee0c4e1df9cd4567e807a580525786d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1522,8 +1522,8 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 
 </div>
 </div>
-<a id="ac67b46e3637df925bb9b06aca8befbce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac67b46e3637df925bb9b06aca8befbce">&#9670;&nbsp;</a></span>menu()</h2>
+<a id="aa0e53d7c348765a660439e0cf4e10607"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0e53d7c348765a660439e0cf4e10607">&#9670;&nbsp;</a></span>menu()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1550,7 +1550,13 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint16_t&#160;</td>
-          <td class="paramname"><em>textColor</em>&#160;</td>
+          <td class="paramname"><em>textColor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>cancellable</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1567,10 +1573,11 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
     <tr><td class="paramname">menu_num</td><td>Number of menu items </td></tr>
     <tr><td class="paramname">boxColor</td><td>16-bit color to use as menu-background </td></tr>
     <tr><td class="paramname">textColor</td><td>16-bit color to use as outline and text </td></tr>
+    <tr><td class="paramname">cancellable</td><td>setting this to true will enable the user to exit the menu by pressing "B" </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>uint8_t, The selected menu item </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>uint8_t, The selected menu item, returns 255 if the menu is canceled </dd></dl>
 
 </div>
 </div>
