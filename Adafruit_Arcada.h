@@ -275,6 +275,69 @@
 #include <ArduinoJson.h>
 #endif
 
+
+
+
+/** Status codes returned by drawBMP() and loadBMP() */
+enum ImageReturnCode {
+  IMAGE_SUCCESS,            // Successful load (or image clipped off screen)
+  IMAGE_ERR_FILE_NOT_FOUND, // Could not open file
+  IMAGE_ERR_FORMAT,         // Not a supported image format
+  IMAGE_ERR_MALLOC          // Could not allocate image (loadBMP() only)
+};
+
+/** Image formats returned by loadBMP() */
+enum ImageFormat {
+  IMAGE_NONE,               // No image was loaded; IMAGE_ERR_* condition
+  IMAGE_1,                  // GFXcanvas1 image (NOT YET SUPPORTED)
+  IMAGE_8,                  // GFXcanvas8 image (NOT YET SUPPORTED)
+  IMAGE_16                  // GFXcanvas16 image (SUPPORTED)
+};
+
+
+
+/*!
+   @brief  Data bundle returned with an image loaded to RAM. Used by
+           ImageReader.loadBMP() and Image.draw(), not ImageReader.drawBMP().
+*/
+class Adafruit_Arcada_Image {
+  public:
+    Adafruit_Arcada_Image(void);
+   ~Adafruit_Arcada_Image(void);
+    int16_t        width(void) const;  // Return image width in pixels
+    int16_t        height(void) const; // Return image height in pixels
+    void draw(Adafruit_SPITFT &tft, int16_t x, int16_t y);
+    /*!
+        @brief   Return canvas image format.
+        @return  An ImageFormat type: IMAGE_1 for a GFXcanvas1, IMAGE_8 for
+                 a GFXcanvas8, IMAGE_16 for a GFXcanvas16, IMAGE_NONE if no
+                 canvas currently allocated.
+    */
+    ImageFormat    getFormat(void) const { return (ImageFormat)format; }
+    void          *getCanvas(void) const;
+    /*!
+        @brief   Return pointer to 1bpp image mask canvas.
+        @return  GFXcanvas1* pointer (1-bit RAM-resident image) if present,
+                 NULL otherwise.
+    */
+    GFXcanvas1    *getMask(void) const { return mask; };
+  protected:
+    // MOST OF THESE ARE NOT SUPPORTED YET -- WIP
+    union {                       // Single pointer, only one variant is used:
+      GFXcanvas1  *canvas1;       ///< Canvas object if 1bpp format
+      GFXcanvas8  *canvas8;       ///< Canvas object if 8bpp format
+      GFXcanvas16 *canvas16;      ///< Canvas object if 16bpp
+    } canvas;                     ///< Union of different GFXcanvas types
+    GFXcanvas1    *mask;          ///< 1bpp image mask (or NULL)
+    uint16_t      *palette;       ///< Color palette for 8bpp image (or NULL)
+    uint8_t        format;        ///< Canvas bundle type in use
+    void           dealloc(void); ///< Free/deinitialize variables
+  friend class     Adafruit_Arcada; ///< Loading occurs here
+};
+#endif
+
+
+
 /**************************************************************************/
 /*!
     @brief  An abstraction class for something with a display, and possibly
@@ -375,6 +438,12 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   StaticJsonDocument<256> configJSON;  ///< The object to store our various settings, you need to restore/save this with (load/save)ConfigurationFile
 #endif
 
+  ImageReturnCode drawBMP(char *filename,
+			    int16_t x, int16_t y, boolean transact = true);
+  ImageReturnCode loadBMP(char *filename, Adafruit_Arcada_Image &img);
+  ImageReturnCode bmpDimensions(char *filename, int32_t *w, int32_t *h);
+  void            printImageStatus(ImageReturnCode stat, Stream &stream=Serial);
+
  private:
   void _initAlertFonts(void);
 
@@ -395,6 +464,16 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
 
   TouchScreen *_touchscreen;
   int16_t _ts_xmin = 0, _ts_xmax = 1023, _ts_ymin = 0, _ts_ymax = 1023;
+
+  // Bitmaps
+  File            bmpfile;
+  ImageReturnCode coreBMP(char *filename, 
+			  Adafruit_SPITFT *tft, 
+			  uint16_t *dest, 
+			  int16_t x, int16_t y, Adafruit_Arcada_Image *img,
+			  boolean transact);
+  uint16_t        readLE16(void);
+  uint32_t        readLE32(void);
 };
 
-#endif
+
