@@ -186,9 +186,6 @@ void Adafruit_Arcada_Image::draw(Adafruit_SPITFT &tft, int16_t x, int16_t y) {
     @brief   Loads BMP image file from SD card directly to SPITFT screen.
     @param   filename
              Name of BMP image file to load.
-    @param   tft
-             Adafruit_SPITFT object (e.g. one of the Adafruit TFT or OLED
-             displays that subclass Adafruit_SPITFT).
     @param   x
              Horizontal offset in pixels; left edge = 0, positive = right.
              Value is signed, image will be clipped if all or part is off
