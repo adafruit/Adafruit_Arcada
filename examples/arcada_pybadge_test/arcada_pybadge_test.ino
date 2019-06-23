@@ -89,6 +89,18 @@ void setup() {
     arcada.accel.setClick(1, 80);
   }
 
+  /********** Check WiFi*/
+  if (!arcada.hasWiFi())
+  {
+    Serial.println("ESP32 SPI mode not found");
+    arcada.setTextColor(ARCADA_YELLOW);
+    arcada.println("WiFi FAILED");
+  } else {
+    Serial.println("ESP32 SPI mode found!");
+    arcada.setTextColor(ARCADA_GREEN);
+    arcada.println("WiFi OK!");
+  }
+
   //arcada.writeFileToFlash("test.txt");
   buttons = last_buttons = 0;
 

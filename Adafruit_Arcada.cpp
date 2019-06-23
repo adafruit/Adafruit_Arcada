@@ -111,6 +111,19 @@ bool Adafruit_Arcada::begin(void) {
   }
 #endif
 
+#ifndef SPIWIFI
+  _has_wifi = false;
+#else
+  WiFi.status();
+  delay(100);
+  if (WiFi.status() == WL_NO_MODULE) {
+    _has_wifi = false;
+  }
+  else {
+    _has_wifi = true;
+  }
+#endif
+
   // we can keep track of buttons for ya
   last_buttons = curr_buttons = justpressed_buttons = justreleased_buttons = 0;
 
