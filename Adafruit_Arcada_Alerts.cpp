@@ -300,7 +300,7 @@ uint8_t Adafruit_Arcada::menu(const char **menu_strings, uint8_t menu_num,
     @returns uint8_t, The selected menu item, returns 255 if the menu is canceled
 */
 /**************************************************************************/
-uint8_t menu(const char *menu_title, const char **menu_strings, uint8_t menu_num, 
+uint8_t Adafruit_Arcada::menu(const char *menu_title, const char **menu_strings, uint8_t menu_num, 
 	uint16_t boxColor, uint16_t textColor, const char *menu_subtitle = "", bool cancellable = false)
 {
   _initAlertFonts();
