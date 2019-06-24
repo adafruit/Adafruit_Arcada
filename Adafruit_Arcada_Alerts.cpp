@@ -301,7 +301,7 @@ uint8_t Adafruit_Arcada::menu(const char **menu_strings, uint8_t menu_num,
 */
 /**************************************************************************/
 uint8_t Adafruit_Arcada::menu(const char *menu_title, const char **menu_strings, uint8_t menu_num, 
-	uint16_t boxColor, uint16_t textColor, const char *menu_subtitle = "", bool cancellable = false)
+	uint16_t boxColor, uint16_t textColor, const char *menu_subtitle, bool cancellable)
 {
   _initAlertFonts();
 
