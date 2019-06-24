@@ -399,8 +399,5 @@ uint8_t Adafruit_Arcada::menu(const char *menu_title, const char **menu_strings,
     }    
   }
   return selected;
-}
-
-	
 }	
 	
