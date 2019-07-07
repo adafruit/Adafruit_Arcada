@@ -71,6 +71,8 @@
   #define ARCADA_NEOPIXEL_PIN     2
   #define ARCADA_NEOPIXEL_NUM     1
 
+  #define ARCADA_LIGHT_SENSOR     A2
+
   #define ARCADA_SD_CS            32
   #define ARCADA_USE_JSON
 
