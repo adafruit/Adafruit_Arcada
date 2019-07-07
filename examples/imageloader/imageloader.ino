@@ -3,7 +3,7 @@ Adafruit_Arcada arcada;
 
 void setup(void) {
   arcada.begin();
-  // If we are using TinyUSB & QSPI we will have the filesystem show up!
+  // If we are using TinyUSB we will have the filesystem show up!
   arcada.filesysBeginMSD();
 
   Serial.begin(11500);
