@@ -194,7 +194,7 @@ bool Adafruit_Arcada::exists(const char *path) {
 bool Adafruit_Arcada::mkdir(const char *path) {
   Serial.printf("\tArcadaFileSys : Mkdir '%s'\n", path);
 
-  bool ret;
+  bool ret = false;
 
   if ((_filesys_type == ARCADA_FILESYS_SD) ||
       (_filesys_type == ARCADA_FILESYS_SD_AND_QSPI)) {
@@ -218,7 +218,7 @@ bool Adafruit_Arcada::mkdir(const char *path) {
 bool Adafruit_Arcada::remove(const char *path) {
   Serial.printf("\tArcadaFileSys : Removing '%s'\n", path);
 
-  bool ret;
+  bool ret = false;
 
   if ((_filesys_type == ARCADA_FILESYS_SD) ||
       (_filesys_type == ARCADA_FILESYS_SD_AND_QSPI)) {

@@ -4,7 +4,9 @@
 
 static uint32_t last_access_ms;
 
+#if defined(USE_TINYUSB)
 static Adafruit_USBD_MSC usb_msc;
+#endif
 
 extern FatFileSystem Arcada_QSPI_FileSys;
 extern Adafruit_SPIFlash Arcada_QSPI_Flash;
