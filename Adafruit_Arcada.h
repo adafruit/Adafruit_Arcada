@@ -358,7 +358,7 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   bool mkdir(const char *path);
   bool remove(const char *path);
   uint8_t *writeFileToFlash(const char *filename, uint32_t address);
-  bool filesysBeginMSD(void);
+  bool filesysBeginMSD(Arcada_FilesystemType desiredFilesys=ARCADA_FILESYS_SD_AND_QSPI);
   bool recentUSB(uint32_t timeout = 100);
   bool chooseFile(const char *path, char *filename, uint16_t filename_max, 
 		  const char *extensionFilter=NULL);

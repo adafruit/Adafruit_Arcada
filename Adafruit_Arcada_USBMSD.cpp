@@ -13,7 +13,11 @@ int32_t qspi_msc_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize);
 int32_t qspi_msc_read_cb (uint32_t lba, void* buffer, uint32_t bufsize);
 void qspi_msc_flush_cb (void);
 
-//extern SdFat Arcada_SD_FileSys;
+#if defined(ENABLE_EXTENDED_TRANSFER_CLASS)
+extern SdFatEX Arcada_SD_FileSys;
+#else
+extern SdFat Arcada_SD_FileSys;
+#endif
 
 int32_t sd_msc_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize);
 int32_t sd_msc_read_cb (uint32_t lba, void* buffer, uint32_t bufsize);
@@ -26,9 +30,37 @@ void sd_msc_flush_cb (void);
     @return True on success, false on failure
 */
 /**************************************************************************/
-bool Adafruit_Arcada::filesysBeginMSD(void) {
+bool Adafruit_Arcada::filesysBeginMSD(Arcada_FilesystemType desiredFilesys) {
+
 #if defined(USE_TINYUSB)
-  if (Arcada_QSPI_Flash.begin()) {
+  Arcada_FilesystemType found = filesysBegin(desiredFilesys);
+
+  if (found == ARCADA_FILESYS_NONE) { return false; }
+
+  if (found == ARCADA_FILESYS_SD || found == ARCADA_FILESYS_SD_AND_QSPI) {    // SD first
+    // Set disk vendor id, product id and revision with string up to 8, 16, 4 characters respectively
+    usb_msc.setID("Adafruit", "SD Card", "1.0");
+    
+    // Set callback
+    usb_msc.setReadWriteCallback(sd_msc_read_cb, sd_msc_write_cb, sd_msc_flush_cb);
+    usb_msc.setUnitReady(false);
+    usb_msc.begin();
+    
+    uint32_t block_count = Arcada_SD_FileSys.card()->cardSize();
+  #ifdef ARCADA_MSD_DEBUG
+    Serial.print("MSD for SD Card - Volume size (MB):  ");
+    Serial.println((block_count/2) / 1024);
+  #endif    
+    // Set disk size, SD block size is always 512
+    usb_msc.setCapacity(block_count, 512);
+    
+    // MSC is ready for read/write
+    usb_msc.setUnitReady(true);  
+    return true;
+  }
+
+  if (found == ARCADA_FILESYS_QSPI || 
+      found == ARCADA_FILESYS_SD_AND_QSPI) { // QSPI if not SD
   #ifdef ARCADA_MSD_DEBUG
     Serial.println("Found QSPI for MSD");
     Serial.print("JEDEC ID: "); Serial.println(Arcada_QSPI_Flash.getJEDECID(), HEX);
@@ -47,34 +79,10 @@ bool Adafruit_Arcada::filesysBeginMSD(void) {
     // MSC is ready for read/write
     usb_msc.setUnitReady(true);  
     usb_msc.begin();
-    Arcada_QSPI_FileSys.begin(&Arcada_QSPI_Flash);
     return true;
   }
-
-  #if defined(ARCADA_USE_SD_FS)
-  if (!filesysBegin()) {
-    return false;
-  }
-
- // Set disk vendor id, product id and revision with string up to 8, 16, 4 characters respectively
-  usb_msc.setID("Adafruit", "SD Card", "1.0");
-
-  // Set callback
-  usb_msc.setReadWriteCallback(msc_read_cb, msc_write_cb, msc_flush_cb);
-
-  uint32_t block_count = FileSys.vol()->blocksPerCluster()*FileSys.vol()->clusterCount();
-  Serial.print("Volume size (MB):  ");
-  Serial.println((block_count/2) / 1024);
-
-  // Set disk size, SD block size is always 512
-  usb_msc.setCapacity(block_count, 512);
-
-  // MSC is ready for read/write
-  usb_msc.setUnitReady(true);  
-  usb_msc.begin();
-  return true;
-  #endif
 #endif
+
   return false;
 }
 
@@ -105,7 +113,7 @@ bool Adafruit_Arcada::recentUSB(uint32_t timeout) {
 int32_t qspi_msc_read_cb (uint32_t lba, void* buffer, uint32_t bufsize)
 {
 #ifdef ARCADA_MSD_DEBUG
-  Serial.printf("Read block %08x\n", lba);
+  Serial.printf("QSPI Read block %08x\n", lba);
 #endif
   // Note: SPIFLash Bock API: readBlocks/writeBlocks/syncBlocks
   // already include 4K sector caching internally. We don't need to cache it, yahhhh!!
@@ -118,7 +126,7 @@ int32_t qspi_msc_read_cb (uint32_t lba, void* buffer, uint32_t bufsize)
 int32_t qspi_msc_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize)
 {
 #ifdef ARCADA_MSD_DEBUG
-  Serial.printf("Write block %08x\n", lba);
+  Serial.printf("QSPI Write block %08x\n", lba);
 #endif
   // Note: SPIFLash Bock API: readBlocks/writeBlocks/syncBlocks
   // already include 4K sector caching internally. We don't need to cache it, yahhhh!!
@@ -130,7 +138,7 @@ int32_t qspi_msc_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize)
 void qspi_msc_flush_cb (void)
 {
 #ifdef ARCADA_MSD_DEBUG
-  Serial.printf("Flush block\n");
+  Serial.printf("QSPI Flush block\n");
 #endif
 
   // sync with flash
@@ -139,5 +147,48 @@ void qspi_msc_flush_cb (void)
   // clear file system's cache to force refresh
   Arcada_QSPI_FileSys.cacheClear();
 
-  uint32_t last_access_ms = millis();
+  last_access_ms = millis();
+}
+
+
+
+
+// Callback invoked when received READ10 command.
+// Copy disk's data to buffer (up to bufsize) and
+// return number of copied bytes (must be multiple of block size)
+int32_t sd_msc_read_cb (uint32_t lba, void* buffer, uint32_t bufsize)
+{
+#ifdef ARCADA_MSD_DEBUG
+  Serial.printf("SD Read block %08x\n", lba);
+#endif
+
+  return Arcada_SD_FileSys.card()->readBlocks(lba, (uint8_t*) buffer, bufsize/512) ? bufsize : -1;
+}
+
+// Callback invoked when received WRITE10 command.
+// Process data in buffer to disk's storage and 
+// return number of written bytes (must be multiple of block size)
+int32_t sd_msc_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize)
+{
+#ifdef ARCADA_MSD_DEBUG
+  Serial.printf("SD Write block %08x\n", lba);
+#endif
+
+  return Arcada_SD_FileSys.card()->writeBlocks(lba, buffer, bufsize/512) ? bufsize : -1;
+}
+
+// Callback invoked when WRITE10 command is completed (status received and accepted by host).
+// used to flush any pending cache.
+void sd_msc_flush_cb (void)
+{
+#ifdef ARCADA_MSD_DEBUG
+  Serial.printf("SD Flush block\n");
+#endif
+
+  Arcada_SD_FileSys.card()->syncBlocks();
+
+  // clear file system's cache to force refresh
+  Arcada_SD_FileSys.cacheClear();
+
+  last_access_ms = millis();
 }
