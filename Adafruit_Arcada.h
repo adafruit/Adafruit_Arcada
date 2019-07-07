@@ -44,7 +44,6 @@
   #define ARCADA_BUTTONPIN_B            A12
   #define ARCADA_BUTTONPIN_A            A13
 
-  #define ARCADA_USE_SD_FS
   #define ARCADA_USE_JSON
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_NONE
@@ -72,8 +71,6 @@
   #define ARCADA_NEOPIXEL_NUM     1
 
   #define ARCADA_SD_CS            32
-  #define ARCADA_USE_QSPI_FS
-  //#define ARCADA_USE_SD_FS
   #define ARCADA_USE_JSON
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_NONE
@@ -166,8 +163,6 @@
   #define ARCADA_SD_CS                     4
 
   #define ARCADA_USE_JSON
-  #define ARCADA_USE_QSPI_FS
-//#define ARCADA_USE_SD_FS
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_LIS3DH
 
@@ -208,9 +203,6 @@
 
   #define ARCADA_USE_JSON
   #define ARCADA_SD_CS                     4
-
-  #define ARCADA_USE_QSPI_FS
-//  #define ARCADA_USE_SD_FS
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_LIS3DH
 
@@ -257,16 +249,8 @@
 #define ARCADA_ACCEL_TYPE ARCADA_ACCEL_LIS3DH
 #endif
 
-#if defined(ARCADA_USE_SD_FS)
-  #include <SdFat.h>
-#elif defined(ARCADA_USE_QSPI_FS)
-  #include <Adafruit_SPIFlash.h>
-  #include <Adafruit_SPIFlash_FatFs.h>
-  #include "Adafruit_QSPI_Flash.h"
-  typedef Adafruit_SPIFlash_FAT::File File;
-  #define   O_READ    FILE_READ
-  #define   O_WRITE   FILE_WRITE
-#endif
+#include <SdFat.h>
+#include <Adafruit_SPIFlash.h>
 
 #if defined(USE_TINYUSB)
   #include "Adafruit_TinyUSB.h"
@@ -277,6 +261,13 @@
 #endif
 
 
+/** Filesystems that are currently activated */
+typedef enum _FilesystemType { 
+  ARCADA_FILESYS_NONE, 
+  ARCADA_FILESYS_SD, 
+  ARCADA_FILESYS_QSPI, 
+  ARCADA_FILESYS_SD_AND_QSPI 
+} Arcada_FilesystemType;
 
 
 /** Status codes returned by drawBMP() and loadBMP() */
@@ -356,7 +347,7 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   void printf(const char *format, ...);
 
   // Filesystem stuff!
-  bool filesysBegin(void);
+  Arcada_FilesystemType filesysBegin(Arcada_FilesystemType desiredFilesys=ARCADA_FILESYS_SD_AND_QSPI);
   int16_t filesysListFiles(const char *path=NULL, const char *extensionFilter=NULL);
   bool chdir(const char *path);
   File open(const char *path=NULL, uint32_t flags = O_READ);
@@ -462,7 +453,7 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   int16_t _joyx_center = 512;
   int16_t _joyy_center = 512;
 
-  bool _filesys_begun = false;
+  Arcada_FilesystemType _filesys_type = ARCADA_FILESYS_NONE;
   char _cwd_path[255];
 
   GFXcanvas16 *_canvas = NULL;

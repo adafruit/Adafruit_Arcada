@@ -1,62 +1,75 @@
-#include <Adafruit_Arcada.h>
 #include <Adafruit_Arcada_Filesystem.h>
+#include <Adafruit_Arcada.h>
 
 static bool filenameValidityChecker(const char *filename, const char *extension);
 
-#if defined(ARCADA_USE_SD_FS)
-  #if defined(ARCADA_SD_SPI_PORT)
-    #if defined(ENABLE_EXTENDED_TRANSFER_CLASS)
-      SdFatEX FileSys(&ARCADA_SD_SPI_PORT);
-    #else
-      SdFat FileSys(&ARCADA_SD_SPI_PORT);
-    #endif
+#if defined(ARCADA_SD_SPI_PORT)
+  #if defined(ENABLE_EXTENDED_TRANSFER_CLASS)
+    SdFatEX Arcada_SD_FileSys(&ARCADA_SD_SPI_PORT);
   #else
-    #if defined(ENABLE_EXTENDED_TRANSFER_CLASS)
-      SdFatEX FileSys;
-    #else
-      SdFat FileSys;
-    #endif
+    SdFat Arcada_SD_FileSys(&ARCADA_SD_SPI_PORT);
   #endif
-#elif defined(ARCADA_USE_QSPI_FS)
-  Adafruit_QSPI_Flash arcada_qspi_flash;
-  static Adafruit_M0_Express_CircuitPython FileSys(arcada_qspi_flash);
+#else
+  #if defined(ENABLE_EXTENDED_TRANSFER_CLASS)
+    SdFatEX Arcada_SD_FileSys;
+  #else
+    SdFat Arcada_SD_FileSys;
+  #endif
 #endif
+
+Adafruit_FlashTransport_QSPI flashTransport(PIN_QSPI_SCK, PIN_QSPI_CS, PIN_QSPI_IO0, PIN_QSPI_IO1, PIN_QSPI_IO2, PIN_QSPI_IO3);
+Adafruit_SPIFlash Arcada_QSPI_Flash(&flashTransport);
+FatFileSystem Arcada_QSPI_FileSys;
 
 /**************************************************************************/
 /*!
     @brief  Initialize the filesystem, either SD or QSPI
-    @return True if a filesystem exists and was found
+    @params desiredFilesys The filesystem we'd prefer to use, can be  ARCADA_FILESYS_SD, ARCADA_FILESYS_QSPI, or ARCADA_FILESYS_SD_AND_QSPI
+    @return Filesystem type found, can be ARCADA_FILESYS_NONE (none found), ARCADA_FILESYS_SD (found SD card), ARCADA_FILESYS_QSPI (QSPI flash memory), or ARCADA_FILESYS_SD_AND_QSPI (both found)
 */
 /**************************************************************************/
-bool Adafruit_Arcada::filesysBegin(void) {
-#if defined(ARCADA_USE_SD_FS)
-  if (_filesys_begun) {
-    return true;
+Arcada_FilesystemType Adafruit_Arcada::filesysBegin(Arcada_FilesystemType desiredFilesys) {
+  if (_filesys_type != ARCADA_FILESYS_NONE) {
+    return _filesys_type;
   }
-  Serial.println("SD Card filesystem");
-  _filesys_begun = true;
-  return FileSys.begin(ARCADA_SD_CS);
-#elif defined(ARCADA_USE_QSPI_FS)
-  if (!arcada_qspi_flash.begin()) {
-    Serial.println("Error, failed to initialize arcada_qspi_flash!");
-    return false;
-  }
-  Serial.println("QSPI filesystem");
-  Serial.print("QSPI flash chip JEDEC ID: 0x"); Serial.println(arcada_qspi_flash.GetJEDECID(), HEX);
 
-  // First call begin to mount the filesystem.  Check that it returns true
-  // to make sure the filesystem was mounted.
-  if (!FileSys.begin()) {
-    Serial.println("Failed to mount filesystem!");
-    Serial.println("Was CircuitPython loaded on the board first to create the filesystem?");
-    return false;
+  if (desiredFilesys == ARCADA_FILESYS_SD || 
+      desiredFilesys == ARCADA_FILESYS_SD_AND_QSPI) {
+    Serial.println("Trying SD Card filesystem");
+    if (Arcada_SD_FileSys.begin(ARCADA_SD_CS)) {
+      Serial.println("SD card found");
+      _filesys_type = ARCADA_FILESYS_SD;
+    }
   }
-  Serial.println("Mounted filesystem!");
-  _filesys_begun = true;
-  return true;
-#else
-  return false;
-#endif
+  if (_filesys_type == desiredFilesys) {
+    // we wanted SD, and we got it!
+    return _filesys_type;
+  }
+
+  if (desiredFilesys == ARCADA_FILESYS_QSPI || 
+      desiredFilesys == ARCADA_FILESYS_SD_AND_QSPI) {
+    if (Arcada_QSPI_Flash.begin()) {
+      Serial.println("QSPI filesystem found");
+      Serial.print("QSPI flash chip JEDEC ID: 0x"); 
+      Serial.println(Arcada_QSPI_Flash.getJEDECID(), HEX);
+      
+      // First call begin to mount the filesystem.  Check that it returns true
+      // to make sure the filesystem was mounted.
+      if (!Arcada_QSPI_FileSys.begin(&Arcada_QSPI_Flash)) {
+	Serial.println("Failed to mount filesystem!");
+	Serial.println("Was CircuitPython loaded on the board first to create the filesystem?");
+	return _filesys_type;
+      }
+      if (_filesys_type == ARCADA_FILESYS_SD) {
+	_filesys_type = ARCADA_FILESYS_SD_AND_QSPI;
+      } else {
+	_filesys_type = ARCADA_FILESYS_QSPI;
+      }
+    }
+  }
+
+  Serial.println("Mounted filesystem(s)!");
+  return _filesys_type;
 }
 
 /**************************************************************************/
@@ -73,7 +86,19 @@ bool Adafruit_Arcada::chdir(const char *path) {
     return false;
   }
   strcpy(_cwd_path, path);
-  File dir = FileSys.open(_cwd_path);
+  
+  File dir;
+  if (_filesys_type == ARCADA_FILESYS_NONE) {
+    return false;
+  }
+
+  if ((_filesys_type == ARCADA_FILESYS_SD) ||
+      (_filesys_type == ARCADA_FILESYS_SD_AND_QSPI)) {
+    dir = Arcada_SD_FileSys.open(_cwd_path);
+  } else if ((_filesys_type == ARCADA_FILESYS_QSPI) ||
+	     (!dir && (_filesys_type == ARCADA_FILESYS_SD_AND_QSPI))) {
+    dir = Arcada_QSPI_FileSys.open(_cwd_path);
+  }
   if (! dir) {   // couldnt open?
     return false;
   }
@@ -101,10 +126,22 @@ int16_t Adafruit_Arcada::filesysListFiles(const char *path, const char *extensio
     path = _cwd_path;
   }
 
-  File dir = FileSys.open(path);
+  File dir;
   char filename[SD_MAX_FILENAME_SIZE];
   int16_t num_files = 0;
-    
+
+  if (_filesys_type == ARCADA_FILESYS_NONE) {
+    return -1;
+  }
+
+  if ((_filesys_type == ARCADA_FILESYS_SD) ||
+      (_filesys_type == ARCADA_FILESYS_SD_AND_QSPI)) {
+    dir = Arcada_SD_FileSys.open(_cwd_path);
+  } else if ((_filesys_type == ARCADA_FILESYS_QSPI) ||
+	     (!dir && (_filesys_type == ARCADA_FILESYS_SD_AND_QSPI))) {
+    dir = Arcada_QSPI_FileSys.open(_cwd_path);
+  }
+
   if (!dir) 
     return -1;
 
@@ -113,11 +150,7 @@ int16_t Adafruit_Arcada::filesysListFiles(const char *path, const char *extensio
     if (! entry) {
       return num_files; // no more files
     }
-#if defined(ARCADA_USE_QSPI_FS)
-    strncpy(filename, entry.name(), SD_MAX_FILENAME_SIZE);
-#else
     entry.getName(filename, SD_MAX_FILENAME_SIZE);
-#endif
     if (entry.isDirectory() || filenameValidityChecker(filename, extensionFilter)) {
       Serial.print(filename);
       if (entry.isDirectory()) {
@@ -160,7 +193,18 @@ bool Adafruit_Arcada::exists(const char *path) {
 /**************************************************************************/
 bool Adafruit_Arcada::mkdir(const char *path) {
   Serial.printf("\tArcadaFileSys : Mkdir '%s'\n", path);
-  return FileSys.mkdir(path);
+
+  bool ret;
+
+  if ((_filesys_type == ARCADA_FILESYS_SD) ||
+      (_filesys_type == ARCADA_FILESYS_SD_AND_QSPI)) {
+    ret = Arcada_SD_FileSys.mkdir(path);
+  } else if ((_filesys_type == ARCADA_FILESYS_QSPI) ||
+	     (!ret && (_filesys_type == ARCADA_FILESYS_SD_AND_QSPI))) {
+    ret = Arcada_QSPI_FileSys.mkdir(path);
+  }
+
+  return ret;
 }
 
 
@@ -173,7 +217,18 @@ bool Adafruit_Arcada::mkdir(const char *path) {
 /**************************************************************************/
 bool Adafruit_Arcada::remove(const char *path) {
   Serial.printf("\tArcadaFileSys : Removing '%s'\n", path);
-  return FileSys.remove(path);
+
+  bool ret;
+
+  if ((_filesys_type == ARCADA_FILESYS_SD) ||
+      (_filesys_type == ARCADA_FILESYS_SD_AND_QSPI)) {
+    ret = Arcada_SD_FileSys.remove(path);
+  } else if ((_filesys_type == ARCADA_FILESYS_QSPI) ||
+	     (!ret && (_filesys_type == ARCADA_FILESYS_SD_AND_QSPI))) {
+    ret = Arcada_QSPI_FileSys.remove(path);
+  }
+
+  return ret;
 }
 
 
@@ -186,23 +241,36 @@ bool Adafruit_Arcada::remove(const char *path) {
 */
 /**************************************************************************/
 File Adafruit_Arcada::open(const char *path, uint32_t flags) {
+  const char *the_path;
+
   if (!path) {    // Just the CWD then
     Serial.printf("\tArcadaFileSys : open no path '%s'\n", _cwd_path);
-    return FileSys.open(_cwd_path, flags);
-  }
-  if (path[0] == '/') { // absolute path
+    the_path = _cwd_path;
+  } else if (path[0] == '/') { // absolute path
     Serial.printf("\tArcadaFileSys : open abs path '%s'\n", path);
-    return FileSys.open(path, flags);
+    the_path = path;
+  } else {
+    // otherwise, merge CWD and path
+    String cwd(_cwd_path);
+    String subpath(path);
+    String combined = cwd + String("/") + subpath;
+    char totalpath[255];
+    combined.toCharArray(totalpath, 255);
+    Serial.printf("\tArcadaFileSys : open cwd '%s'\n", totalpath);
+    the_path = totalpath;
   }
-  // otherwise, merge CWD and path
-  String cwd(_cwd_path);
-  String subpath(path);
-  String combined = cwd + String("/") + subpath;
-  char totalpath[255];
-  combined.toCharArray(totalpath, 255);
-  Serial.printf("\tArcadaFileSys : open cwd '%s'\n", totalpath);
 
-  return FileSys.open(totalpath, flags);
+  File f;
+
+  if ((_filesys_type == ARCADA_FILESYS_SD) ||
+      (_filesys_type == ARCADA_FILESYS_SD_AND_QSPI)) {
+    f = Arcada_SD_FileSys.open(the_path, flags);
+  } else if ((_filesys_type == ARCADA_FILESYS_QSPI) ||
+	     (!f && (_filesys_type == ARCADA_FILESYS_SD_AND_QSPI))) {
+    f = Arcada_QSPI_FileSys.open(the_path, flags);
+  }
+
+  return f;
 }
 
 
@@ -223,7 +291,7 @@ File Adafruit_Arcada::openFileByIndex(const char *path, uint16_t index,
     path = _cwd_path;
   }
 
-  File dir = FileSys.open(path);
+  File dir = open(path);
   char filename[SD_MAX_FILENAME_SIZE];
   uint16_t file_number = 0;
   File tmpFile;
@@ -236,11 +304,7 @@ File Adafruit_Arcada::openFileByIndex(const char *path, uint16_t index,
     if (! tmpFile) {
       return tmpFile;
     }
-#if defined(ARCADA_USE_QSPI_FS)
-    strncpy(filename, tmpFile.name(), SD_MAX_FILENAME_SIZE);
-#else
     tmpFile.getName(filename, SD_MAX_FILENAME_SIZE);
-#endif
 
     if (!tmpFile.isDirectory() && filenameValidityChecker(filename, extensionFilter)) {
       if (file_number == index) {
@@ -292,7 +356,7 @@ bool Adafruit_Arcada::chooseFile(const char *path,
   while (1) {
     delay(10);
     if (redraw || chdir) {
-      File dir = FileSys.open(curr_path);
+      File dir = open(curr_path);
       if (!dir) {
 	Serial.println("Not a directory!");
 	return false;
