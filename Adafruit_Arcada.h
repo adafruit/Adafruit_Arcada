@@ -257,8 +257,8 @@
   #include "Adafruit_TinyUSB.h"
 #endif
 
-#ifdef ARCADA_USE_JSON
-#include <ArduinoJson.h>
+#if defined(ARCADA_USE_JSON)
+  #include <ArduinoJson.h>
 #endif
 
 
@@ -327,7 +327,6 @@ class Adafruit_Arcada_Image {
     void           dealloc(void); ///< Free/deinitialize variables
   friend class     Adafruit_Arcada; ///< Loading occurs here
 };
-#endif
 
 
 
@@ -479,3 +478,4 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
 };
 
 
+#endif
