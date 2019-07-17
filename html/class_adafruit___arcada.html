@@ -95,9 +95,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a23ffe085b412f29448f9137244ccb02c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a23ffe085b412f29448f9137244ccb02c">printf</a> (const char *format,...)</td></tr>
 <tr class="memdesc:a23ffe085b412f29448f9137244ccb02c"><td class="mdescLeft">&#160;</td><td class="mdescRight">printf wrapper to serial debug, handy for logging config, C inclusion  <a href="#a23ffe085b412f29448f9137244ccb02c">More...</a><br /></td></tr>
 <tr class="separator:a23ffe085b412f29448f9137244ccb02c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4dd5a2164bb35264382ad5977190adcf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a4dd5a2164bb35264382ad5977190adcf">filesysBegin</a> (void)</td></tr>
-<tr class="memdesc:a4dd5a2164bb35264382ad5977190adcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the filesystem, either SD or QSPI.  <a href="#a4dd5a2164bb35264382ad5977190adcf">More...</a><br /></td></tr>
-<tr class="separator:a4dd5a2164bb35264382ad5977190adcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfb5ef1ed4de1f35c84aa3b8e67ea2e4"><td class="memItemLeft" align="right" valign="top">Arcada_FilesystemType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#acfb5ef1ed4de1f35c84aa3b8e67ea2e4">filesysBegin</a> (Arcada_FilesystemType desiredFilesys=ARCADA_FILESYS_SD_AND_QSPI)</td></tr>
+<tr class="memdesc:acfb5ef1ed4de1f35c84aa3b8e67ea2e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the filesystem, either SD or QSPI.  <a href="#acfb5ef1ed4de1f35c84aa3b8e67ea2e4">More...</a><br /></td></tr>
+<tr class="separator:acfb5ef1ed4de1f35c84aa3b8e67ea2e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae04e74c0e37d5ec04d8cb7c61a9c1ab"><td class="memItemLeft" align="right" valign="top">int16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#aae04e74c0e37d5ec04d8cb7c61a9c1ab">filesysListFiles</a> (const char *path=NULL, const char *extensionFilter=NULL)</td></tr>
 <tr class="memdesc:aae04e74c0e37d5ec04d8cb7c61a9c1ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Debugging helper, prints to Serial a list of files in a path.  <a href="#aae04e74c0e37d5ec04d8cb7c61a9c1ab">More...</a><br /></td></tr>
 <tr class="separator:aae04e74c0e37d5ec04d8cb7c61a9c1ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -122,9 +122,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:acd141bcdad938c0ab400a1747e64f815"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#acd141bcdad938c0ab400a1747e64f815">writeFileToFlash</a> (const char *filename, uint32_t address)</td></tr>
 <tr class="memdesc:acd141bcdad938c0ab400a1747e64f815"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens a file and writes the data contents to the internal chip flash memory. NOT the QSPI flash but the actual chip memory! It will happily write over program memory being used so make sure the address is set to well past where the program ends!  <a href="#acd141bcdad938c0ab400a1747e64f815">More...</a><br /></td></tr>
 <tr class="separator:acd141bcdad938c0ab400a1747e64f815"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a66afe1c9631f0d3cd7ee9b1af87aca02"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a66afe1c9631f0d3cd7ee9b1af87aca02">filesysBeginMSD</a> (void)</td></tr>
-<tr class="memdesc:a66afe1c9631f0d3cd7ee9b1af87aca02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make the raw filesystem of the Arcada board available over USB.  <a href="#a66afe1c9631f0d3cd7ee9b1af87aca02">More...</a><br /></td></tr>
-<tr class="separator:a66afe1c9631f0d3cd7ee9b1af87aca02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a113a632aef4ec4ac09e0a113c0e71e8e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a113a632aef4ec4ac09e0a113c0e71e8e">filesysBeginMSD</a> (Arcada_FilesystemType desiredFilesys=ARCADA_FILESYS_SD_AND_QSPI)</td></tr>
+<tr class="memdesc:a113a632aef4ec4ac09e0a113c0e71e8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make the raw filesystem of the Arcada board available over USB.  <a href="#a113a632aef4ec4ac09e0a113c0e71e8e">More...</a><br /></td></tr>
+<tr class="separator:a113a632aef4ec4ac09e0a113c0e71e8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2eab16eb0b94b8edaab823d6b9973d25"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada.html#a2eab16eb0b94b8edaab823d6b9973d25">recentUSB</a> (uint32_t timeout=100)</td></tr>
 <tr class="memdesc:a2eab16eb0b94b8edaab823d6b9973d25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hints whether we're doing a bunch of USB stuff recently.  <a href="#a2eab16eb0b94b8edaab823d6b9973d25">More...</a><br /></td></tr>
 <tr class="separator:a2eab16eb0b94b8edaab823d6b9973d25"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -343,24 +343,30 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 
 </div>
 </div>
-<a id="a4dd5a2164bb35264382ad5977190adcf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4dd5a2164bb35264382ad5977190adcf">&#9670;&nbsp;</a></span>filesysBegin()</h2>
+<a id="acfb5ef1ed4de1f35c84aa3b8e67ea2e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acfb5ef1ed4de1f35c84aa3b8e67ea2e4">&#9670;&nbsp;</a></span>filesysBegin()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool Adafruit_Arcada::filesysBegin </td>
+          <td class="memname">Arcada_FilesystemType Adafruit_Arcada::filesysBegin </td>
           <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">Arcada_FilesystemType&#160;</td>
+          <td class="paramname"><em>desiredFilesys</em> = <code>ARCADA_FILESYS_SD_AND_QSPI</code></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Initialize the filesystem, either SD or QSPI. </p>
-<dl class="section return"><dt>Returns</dt><dd>True if a filesystem exists and was found </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">desiredFilesys</td><td>The filesystem we'd prefer to use, can be ARCADA_FILESYS_SD, ARCADA_FILESYS_QSPI, or ARCADA_FILESYS_SD_AND_QSPI </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Filesystem type found, can be ARCADA_FILESYS_NONE (none found), ARCADA_FILESYS_SD (found SD card), ARCADA_FILESYS_QSPI (QSPI flash memory), or ARCADA_FILESYS_SD_AND_QSPI (both found) </dd></dl>
 
 </div>
 </div>
@@ -638,8 +644,8 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 
 </div>
 </div>
-<a id="a66afe1c9631f0d3cd7ee9b1af87aca02"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a66afe1c9631f0d3cd7ee9b1af87aca02">&#9670;&nbsp;</a></span>filesysBeginMSD()</h2>
+<a id="a113a632aef4ec4ac09e0a113c0e71e8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a113a632aef4ec4ac09e0a113c0e71e8e">&#9670;&nbsp;</a></span>filesysBeginMSD()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -647,14 +653,20 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
         <tr>
           <td class="memname">bool Adafruit_Arcada::filesysBeginMSD </td>
           <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">Arcada_FilesystemType&#160;</td>
+          <td class="paramname"><em>desiredFilesys</em> = <code>ARCADA_FILESYS_SD_AND_QSPI</code></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Make the raw filesystem of the Arcada board available over USB. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">desiredFilesys</td><td>The filesystem we'd prefer to use, can be ARCADA_FILESYS_SD, ARCADA_FILESYS_QSPI, or ARCADA_FILESYS_SD_AND_QSPI </td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section return"><dt>Returns</dt><dd>True on success, false on failure </dd></dl>
 
 </div>

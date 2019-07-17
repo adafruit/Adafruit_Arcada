@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['filesysbegin',['filesysBegin',['../class_adafruit___arcada.html#a4dd5a2164bb35264382ad5977190adcf',1,'Adafruit_Arcada']]],
-  ['filesysbeginmsd',['filesysBeginMSD',['../class_adafruit___arcada.html#a66afe1c9631f0d3cd7ee9b1af87aca02',1,'Adafruit_Arcada']]],
+  ['filesysbegin',['filesysBegin',['../class_adafruit___arcada.html#acfb5ef1ed4de1f35c84aa3b8e67ea2e4',1,'Adafruit_Arcada']]],
+  ['filesysbeginmsd',['filesysBeginMSD',['../class_adafruit___arcada.html#a113a632aef4ec4ac09e0a113c0e71e8e',1,'Adafruit_Arcada']]],
   ['filesyslistfiles',['filesysListFiles',['../class_adafruit___arcada.html#aae04e74c0e37d5ec04d8cb7c61a9c1ab',1,'Adafruit_Arcada']]]
 ];
