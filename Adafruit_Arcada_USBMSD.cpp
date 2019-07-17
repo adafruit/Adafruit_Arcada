@@ -29,6 +29,7 @@ void sd_msc_flush_cb (void);
 /**************************************************************************/
 /*!
     @brief  Make the raw filesystem of the Arcada board available over USB
+    @param  desiredFilesys The filesystem we'd prefer to use, can be  ARCADA_FILESYS_SD, ARCADA_FILESYS_QSPI, or ARCADA_FILESYS_SD_AND_QSPI
     @return True on success, false on failure
 */
 /**************************************************************************/

@@ -24,7 +24,7 @@ FatFileSystem Arcada_QSPI_FileSys;
 /**************************************************************************/
 /*!
     @brief  Initialize the filesystem, either SD or QSPI
-    @params desiredFilesys The filesystem we'd prefer to use, can be  ARCADA_FILESYS_SD, ARCADA_FILESYS_QSPI, or ARCADA_FILESYS_SD_AND_QSPI
+    @param  desiredFilesys The filesystem we'd prefer to use, can be  ARCADA_FILESYS_SD, ARCADA_FILESYS_QSPI, or ARCADA_FILESYS_SD_AND_QSPI
     @return Filesystem type found, can be ARCADA_FILESYS_NONE (none found), ARCADA_FILESYS_SD (found SD card), ARCADA_FILESYS_QSPI (QSPI flash memory), or ARCADA_FILESYS_SD_AND_QSPI (both found)
 */
 /**************************************************************************/
