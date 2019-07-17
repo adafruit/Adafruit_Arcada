@@ -168,6 +168,25 @@
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_LIS3DH
 
+#elif defined(ADAFRUIT_ITSYBITSY_M4_EXPRESS) // same configuration as ITSYBITSY_M4_EXPRESS MakeCode Arcade project
+
+  #define ARCADA_TFT_SPI         SPI1
+  #define ARCADA_TFT_CS          16       // Display CS board pin A2
+  #define ARCADA_TFT_DC          17       // Display D/C board pin A3
+  #define ARCADA_TFT_RST         18       // Display reset board pin A4
+  #define ARCADA_TFT_LITE        19       // Displat lite board pin A5
+  #define ARCADA_TFT_ROTATION     1
+  #define ARCADA_TFT_DEFAULTFILL  0x7BEF
+  #define ARCADA_TFT_INIT         initR(INITR_BLACKTAB)
+  #define ARCADA_TFT_TYPE         Adafruit_ST7735
+  #define ARCADA_TFT_WIDTH        160
+  #define ARCADA_TFT_HEIGHT       128
+
+  #define ARCADA_USE_JSON
+  #define ARCADA_USE_QSPI_FS
+
+  #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_LIS3DH
+
 #elif defined(ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS)
 
   #define ARCADA_TFT_SPI         SPI1
