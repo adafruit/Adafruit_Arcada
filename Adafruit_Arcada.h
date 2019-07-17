@@ -44,12 +44,12 @@
   #define ARCADA_BUTTONPIN_B            A12
   #define ARCADA_BUTTONPIN_A            A13
 
-  #define ARCADA_USE_SD_FS
   #define ARCADA_USE_JSON
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_NONE
 
 #elif defined(ADAFRUIT_PYPORTAL)
+  #include <WiFiNINA.h>
   // 8 bit 320x240 TFT
   #define ARCADA_TFT_D0          34 // Data bit 0 pin (MUST be on PORT byte boundary)
   #define ARCADA_TFT_WR          26 // Write-strobe pin (CCL-inverted timer output)
@@ -71,9 +71,9 @@
   #define ARCADA_NEOPIXEL_PIN     2
   #define ARCADA_NEOPIXEL_NUM     1
 
+  #define ARCADA_LIGHT_SENSOR     A2
+
   #define ARCADA_SD_CS            32
-  #define ARCADA_USE_QSPI_FS
-  //#define ARCADA_USE_SD_FS
   #define ARCADA_USE_JSON
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_NONE
@@ -124,7 +124,6 @@
   #define ARCADA_LEFT_AUDIO_PIN              A1
 
   #define ARCADA_USE_JSON
-  #define ARCADA_USE_QSPI_FS
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_LIS3DH
   
@@ -166,8 +165,6 @@
   #define ARCADA_SD_CS                     4
 
   #define ARCADA_USE_JSON
-  #define ARCADA_USE_QSPI_FS
-//#define ARCADA_USE_SD_FS
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_LIS3DH
 
@@ -209,74 +206,69 @@
   #define ARCADA_USE_JSON
   #define ARCADA_SD_CS                     4
 
-  #define ARCADA_USE_QSPI_FS
-//  #define ARCADA_USE_SD_FS
-
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_LIS3DH
 
 #elif defined(ADAFRUIT_PYBADGE_AIRLIFT_M4)
-#include <WiFiNINA.h>
+  #include <WiFiNINA.h>
 
-#define ARCADA_TFT_SPI SPI1
-#define ARCADA_TFT_CS 44  // Display CS Arduino pin number
-#define ARCADA_TFT_DC 45  // Display D/C Arduino pin number
-#define ARCADA_TFT_RST 46 // Display reset Arduino pin number
-#define ARCADA_TFT_LITE 47
-#define ARCADA_TFT_ROTATION 3
-#define ARCADA_TFT_DEFAULTFILL 0xFFFF
-#define ARCADA_TFT_INIT init(320, 240)
-#define ARCADA_TFT_TYPE Adafruit_ST7789
-#define ARCADA_TFT_WIDTH 320
-#define ARCADA_TFT_HEIGHT 240
+  #define ARCADA_TFT_SPI SPI1
+  #define ARCADA_TFT_CS 44  // Display CS Arduino pin number
+  #define ARCADA_TFT_DC 45  // Display D/C Arduino pin number
+  #define ARCADA_TFT_RST 46 // Display reset Arduino pin number
+  #define ARCADA_TFT_LITE 47
+  #define ARCADA_TFT_ROTATION 3
+  #define ARCADA_TFT_DEFAULTFILL 0xFFFF
+  #define ARCADA_TFT_INIT init(320, 240)
+  #define ARCADA_TFT_TYPE Adafruit_ST7789
+  #define ARCADA_TFT_WIDTH 320
+  #define ARCADA_TFT_HEIGHT 240
 
-#define ARCADA_SPEAKER_ENABLE 51
-#define ARCADA_NEOPIXEL_PIN 8
-#define ARCADA_NEOPIXEL_NUM 5
-#define ARCADA_AUDIO_OUT A0
-#define ARCADA_BUTTON_CLOCK 48
-#define ARCADA_BUTTON_DATA 49
-#define ARCADA_BUTTON_LATCH 50
-#define ARCADA_BUTTON_SHIFTMASK_B 0x80
-#define ARCADA_BUTTON_SHIFTMASK_A 0x40
-#define ARCADA_BUTTON_SHIFTMASK_START 0x20
-#define ARCADA_BUTTON_SHIFTMASK_SELECT 0x10
-#define ARCADA_BUTTON_SHIFTMASK_LEFT 0x01
-#define ARCADA_BUTTON_SHIFTMASK_UP 0x02
-#define ARCADA_BUTTON_SHIFTMASK_DOWN 0x04
-#define ARCADA_BUTTON_SHIFTMASK_RIGHT 0x08
+  #define ARCADA_SPEAKER_ENABLE 51
+  #define ARCADA_NEOPIXEL_PIN 8
+  #define ARCADA_NEOPIXEL_NUM 5
+  #define ARCADA_AUDIO_OUT A0
+  #define ARCADA_BUTTON_CLOCK 48
+  #define ARCADA_BUTTON_DATA 49
+  #define ARCADA_BUTTON_LATCH 50
+  #define ARCADA_BUTTON_SHIFTMASK_B 0x80
+  #define ARCADA_BUTTON_SHIFTMASK_A 0x40
+  #define ARCADA_BUTTON_SHIFTMASK_START 0x20
+  #define ARCADA_BUTTON_SHIFTMASK_SELECT 0x10
+  #define ARCADA_BUTTON_SHIFTMASK_LEFT 0x01
+  #define ARCADA_BUTTON_SHIFTMASK_UP 0x02
+  #define ARCADA_BUTTON_SHIFTMASK_DOWN 0x04
+  #define ARCADA_BUTTON_SHIFTMASK_RIGHT 0x08
 
-#define ARCADA_LIGHT_SENSOR A7
-#define ARCADA_BATTERY_SENSOR A6
+  #define ARCADA_LIGHT_SENSOR A7
+  #define ARCADA_BATTERY_SENSOR A6
 
-#define ARCADA_RIGHT_AUDIO_PIN A0
-#define ARCADA_LEFT_AUDIO_PIN A1
+  #define ARCADA_RIGHT_AUDIO_PIN A0
+  #define ARCADA_LEFT_AUDIO_PIN A1
 
-#define ARCADA_USE_JSON
-#define ARCADA_USE_QSPI_FS
+  #define ARCADA_USE_JSON
 
-#define ARCADA_ACCEL_TYPE ARCADA_ACCEL_LIS3DH
+  #define ARCADA_ACCEL_TYPE ARCADA_ACCEL_LIS3DH
 #endif
 
-#if defined(ARCADA_USE_SD_FS)
-  #include <SdFat.h>
-#elif defined(ARCADA_USE_QSPI_FS)
-  #include <Adafruit_SPIFlash.h>
-  #include <Adafruit_SPIFlash_FatFs.h>
-  #include "Adafruit_QSPI_Flash.h"
-  typedef Adafruit_SPIFlash_FAT::File File;
-  #define   O_READ    FILE_READ
-  #define   O_WRITE   FILE_WRITE
-#endif
+#include <SdFat.h>
+#include <Adafruit_SPIFlash.h>
 
 #if defined(USE_TINYUSB)
   #include "Adafruit_TinyUSB.h"
 #endif
 
-#ifdef ARCADA_USE_JSON
-#include <ArduinoJson.h>
+#if defined(ARCADA_USE_JSON)
+  #include <ArduinoJson.h>
 #endif
 
 
+/** Filesystems that are currently activated */
+typedef enum _FilesystemType { 
+  ARCADA_FILESYS_NONE, 
+  ARCADA_FILESYS_SD, 
+  ARCADA_FILESYS_QSPI, 
+  ARCADA_FILESYS_SD_AND_QSPI 
+} Arcada_FilesystemType;
 
 
 /** Status codes returned by drawBMP() and loadBMP() */
@@ -335,7 +327,6 @@ class Adafruit_Arcada_Image {
     void           dealloc(void); ///< Free/deinitialize variables
   friend class     Adafruit_Arcada; ///< Loading occurs here
 };
-#endif
 
 
 
@@ -356,7 +347,7 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   void printf(const char *format, ...);
 
   // Filesystem stuff!
-  bool filesysBegin(void);
+  Arcada_FilesystemType filesysBegin(Arcada_FilesystemType desiredFilesys=ARCADA_FILESYS_SD_AND_QSPI);
   int16_t filesysListFiles(const char *path=NULL, const char *extensionFilter=NULL);
   bool chdir(const char *path);
   File open(const char *path=NULL, uint32_t flags = O_READ);
@@ -367,7 +358,7 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   bool mkdir(const char *path);
   bool remove(const char *path);
   uint8_t *writeFileToFlash(const char *filename, uint32_t address);
-  bool filesysBeginMSD(void);
+  bool filesysBeginMSD(Arcada_FilesystemType desiredFilesys=ARCADA_FILESYS_SD_AND_QSPI);
   bool recentUSB(uint32_t timeout = 100);
   bool chooseFile(const char *path, char *filename, uint16_t filename_max, 
 		  const char *extensionFilter=NULL);
@@ -462,7 +453,7 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   int16_t _joyx_center = 512;
   int16_t _joyy_center = 512;
 
-  bool _filesys_begun = false;
+  Arcada_FilesystemType _filesys_type = ARCADA_FILESYS_NONE;
   char _cwd_path[255];
 
   GFXcanvas16 *_canvas = NULL;
@@ -487,3 +478,4 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
 };
 
 
+#endif

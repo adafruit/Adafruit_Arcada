@@ -20,7 +20,7 @@ before_install:
 install:
    - arduino --install-library "Adafruit Unified Sensor"
    - arduino --install-library "Adafruit NeoPixel"
-   - arduino --install-library "Adafruit QSPI"
+   - arduino --install-library "Adafruit ADT7410 Library"
    - arduino --install-library "Adafruit GFX Library"
    - arduino --install-library "Adafruit ST7735 and ST7789 Library"
    - arduino --install-library "Adafruit ILI9341"
@@ -29,8 +29,9 @@ install:
    - arduino --install-library "Adafruit ZeroTimer Library"
    - arduino --install-library "Adafruit TouchScreen"
    - arduino --install-library "Adafruit PixelDust"
-   - arduino --install-library "SdFat"
    - arduino --install-library "ArduinoJson"
+   - git clone --quiet https://github.com/adafruit/SdFat.git $HOME/Arduino/libraries/SdFat
+   - git clone --quiet https://github.com/adafruit/WiFiNINA.git $HOME/Arduino/libraries/WiFiNINA
 
 script:
    - build_arcada_platforms

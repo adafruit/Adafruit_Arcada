@@ -2,14 +2,13 @@
 // Copyright (c) 2019 Ha Thach for Adafruit Industries
 
 /* This example demo how to expose on-board external Flash as USB Mass Storage.
- *  For Arcada boards with QSPI
+ *  Will default to SD card if inserted, or QSPI if no SD card
  */
 
 #include <Adafruit_Arcada.h>
 
 Adafruit_Arcada arcada;
 
-// the setup function runs once when you press reset or power the board
 void setup()
 {
   arcada.begin();
@@ -18,7 +17,7 @@ void setup()
   Serial.begin(115200);
   while ( !Serial ) delay(10);   // wait for native usb
 
-  Serial.println("Adafruit TinyUSB Mass Storage SPI Flash example");
+  Serial.println("Adafruit TinyUSB Mass Storage example");
 }
 
 void loop()

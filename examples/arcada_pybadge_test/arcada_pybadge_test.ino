@@ -1,11 +1,10 @@
 #include <Adafruit_Arcada.h>
-#include <Adafruit_QSPI.h>
-#include <Adafruit_QSPI_Flash.h>
-
+#include <Adafruit_SPIFlash.h>
 #include "audio.h"
 
 Adafruit_Arcada arcada;
-Adafruit_QSPI_Flash qspi_flash;
+extern Adafruit_FlashTransport_QSPI flashTransport;
+extern Adafruit_SPIFlash Arcada_QSPI_Flash;
 
 uint32_t buttons, last_buttons;
 uint8_t j = 0;  // neopixel counter for rainbow
@@ -48,20 +47,17 @@ void setup() {
   arcada.setTextWrap(true);
 
   /********** Check QSPI manually */
-  if (!qspi_flash.begin()){
+  if (!Arcada_QSPI_Flash.begin()){
     Serial.println("Could not find flash on QSPI bus!");
     arcada.setTextColor(ARCADA_RED);
     arcada.println("QSPI Flash FAIL");
   }
-  uint8_t manid, devid;
-  Serial.println("Reading Manuf ID");
-  qspi_flash.GetManufacturerInfo(&manid, &devid);
-  Serial.print("JEDEC ID: 0x"); Serial.println(qspi_flash.GetJEDECID(), HEX);
-  Serial.print("Manuf: 0x"); Serial.print(manid, HEX);
-  Serial.print(" Device: 0x"); Serial.println(devid, HEX);
-  arcada.setTextColor(ARCADA_GREEN);
-  arcada.print("QSPI Flash OK\nManuf: 0x"); arcada.print(manid, HEX);
-  arcada.print(" Dev: 0x"); arcada.println(devid, HEX);
+  uint32_t jedec;
+  
+  jedec = Arcada_QSPI_Flash.getJEDECID();
+  Serial.print("JEDEC ID: 0x"); Serial.println(jedec, HEX);
+    arcada.setTextColor(ARCADA_GREEN);
+  arcada.print("QSPI Flash OK\nJEDEC: 0x"); arcada.println(jedec, HEX);
 
    /********** Check filesystem next */
   if (!arcada.filesysBegin()) {

@@ -6,82 +6,86 @@ static uint32_t last_access_ms;
 
 #if defined(USE_TINYUSB)
 static Adafruit_USBD_MSC usb_msc;
+#endif
 
-#if defined(ARCADA_USE_QSPI_FS)
-  extern Adafruit_QSPI_Flash arcada_qspi_flash;
+extern FatFileSystem Arcada_QSPI_FileSys;
+extern Adafruit_SPIFlash Arcada_QSPI_Flash;
 
-  int32_t msc_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize);
-  int32_t msc_read_cb (uint32_t lba, void* buffer, uint32_t bufsize);
-  void msc_flush_cb (void);
-  void flash_cache_read (uint8_t* dst, uint32_t addr, uint32_t count);
-  uint32_t flash_cache_write (uint32_t dst, void const * src, uint32_t len);
-  void flash_cache_flush (void);
+int32_t qspi_msc_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize);
+int32_t qspi_msc_read_cb (uint32_t lba, void* buffer, uint32_t bufsize);
+void qspi_msc_flush_cb (void);
 
-  #define FLASH_CACHE_SIZE          4096        // must be a erasable page size
-  #define FLASH_CACHE_INVALID_ADDR  0xffffffff
+#if defined(ENABLE_EXTENDED_TRANSFER_CLASS)
+extern SdFatEX Arcada_SD_FileSys;
+#else
+extern SdFat Arcada_SD_FileSys;
+#endif
 
-  uint32_t cache_addr = FLASH_CACHE_INVALID_ADDR;
-  uint8_t  cache_buf[FLASH_CACHE_SIZE];
-#elif defined(ARCADA_USE_SD_FS)
-  extern SdFat FileSys;
+int32_t sd_msc_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize);
+int32_t sd_msc_read_cb (uint32_t lba, void* buffer, uint32_t bufsize);
+void sd_msc_flush_cb (void);
 
-  int32_t msc_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize);
-  int32_t msc_read_cb (uint32_t lba, void* buffer, uint32_t bufsize);
-  void msc_flush_cb (void);
-#endif // SD or QSPI
-#endif // TinyUSB
 
 /**************************************************************************/
 /*!
     @brief  Make the raw filesystem of the Arcada board available over USB
+    @param  desiredFilesys The filesystem we'd prefer to use, can be  ARCADA_FILESYS_SD, ARCADA_FILESYS_QSPI, or ARCADA_FILESYS_SD_AND_QSPI
     @return True on success, false on failure
 */
 /**************************************************************************/
-bool Adafruit_Arcada::filesysBeginMSD(void) {
-#if defined(USE_TINYUSB) && defined(ARCADA_USE_QSPI_FS)
-  if (!arcada_qspi_flash.begin()) {
-    return false;
+bool Adafruit_Arcada::filesysBeginMSD(Arcada_FilesystemType desiredFilesys) {
+
+#if defined(USE_TINYUSB)
+  Arcada_FilesystemType found = filesysBegin(desiredFilesys);
+
+  if (found == ARCADA_FILESYS_NONE) { return false; }
+
+  if (found == ARCADA_FILESYS_SD || found == ARCADA_FILESYS_SD_AND_QSPI) {    // SD first
+    // Set disk vendor id, product id and revision with string up to 8, 16, 4 characters respectively
+    usb_msc.setID("Adafruit", "SD Card", "1.0");
+    
+    // Set callback
+    usb_msc.setReadWriteCallback(sd_msc_read_cb, sd_msc_write_cb, sd_msc_flush_cb);
+    usb_msc.setUnitReady(false);
+    usb_msc.begin();
+    
+    uint32_t block_count = Arcada_SD_FileSys.card()->cardSize();
+  #ifdef ARCADA_MSD_DEBUG
+    Serial.print("MSD for SD Card - Volume size (MB):  ");
+    Serial.println((block_count/2) / 1024);
+  #endif    
+    // Set disk size, SD block size is always 512
+    usb_msc.setCapacity(block_count, 512);
+    
+    // MSC is ready for read/write
+    usb_msc.setUnitReady(true);  
+    return true;
   }
 
-  // Set disk vendor id, product id and revision with string up to 8, 16, 4 characters respectively
-  usb_msc.setID("Adafruit", "SPI Flash", "1.0");
+  if (found == ARCADA_FILESYS_QSPI || 
+      found == ARCADA_FILESYS_SD_AND_QSPI) { // QSPI if not SD
+  #ifdef ARCADA_MSD_DEBUG
+    Serial.println("Found QSPI for MSD");
+    Serial.print("JEDEC ID: "); Serial.println(Arcada_QSPI_Flash.getJEDECID(), HEX);
+    Serial.print("Flash size: "); Serial.println(Arcada_QSPI_Flash.size());
+  #endif
 
-  // Set callback
-  usb_msc.setReadWriteCallback(msc_read_cb, msc_write_cb, msc_flush_cb);
+    // Set disk vendor id, product id and revision with string up to 8, 16, 4 characters respectively
+    usb_msc.setID("Adafruit", "SPI Flash", "1.0");
+    
+    // Set callback
+    usb_msc.setReadWriteCallback(qspi_msc_read_cb, qspi_msc_write_cb, qspi_msc_flush_cb);
 
-  // Set disk size, block size should be 512 regardless of spi flash page size
-  usb_msc.setCapacity(arcada_qspi_flash.pageSize()*arcada_qspi_flash.numPages()/512, 512);
+    // Set disk size, block size should be 512 regardless of spi flash page size
+    usb_msc.setCapacity(Arcada_QSPI_Flash.pageSize()*Arcada_QSPI_Flash.numPages()/512, 512);
 
-  // MSC is ready for read/write
-  usb_msc.setUnitReady(true);  
-  usb_msc.begin();
-  return true;
-
-#elif defined(USE_TINYUSB) && defined(ARCADA_USE_SD_FS)
-  if (!filesysBegin()) {
-    return false;
+    // MSC is ready for read/write
+    usb_msc.setUnitReady(true);  
+    usb_msc.begin();
+    return true;
   }
-
- // Set disk vendor id, product id and revision with string up to 8, 16, 4 characters respectively
-  usb_msc.setID("Adafruit", "SD Card", "1.0");
-
-  // Set callback
-  usb_msc.setReadWriteCallback(msc_read_cb, msc_write_cb, msc_flush_cb);
-
-  uint32_t block_count = FileSys.vol()->blocksPerCluster()*FileSys.vol()->clusterCount();
-  Serial.print("Volume size (MB):  ");
-  Serial.println((block_count/2) / 1024);
-
-  // Set disk size, SD block size is always 512
-  usb_msc.setCapacity(block_count, 512);
-
-  // MSC is ready for read/write
-  usb_msc.setUnitReady(true);  
-  usb_msc.begin();
-  return true;
-#else
-  return false;
 #endif
+
   return false;
 }
 
@@ -106,169 +110,88 @@ bool Adafruit_Arcada::recentUSB(uint32_t timeout) {
   return false;
 }
 
-#if  defined(USE_TINYUSB) && defined(ARCADA_USE_QSPI_FS)
-
 // Callback invoked when received READ10 command.
 // Copy disk's data to buffer (up to bufsize) and 
 // return number of copied bytes (must be multiple of block size) 
-int32_t msc_read_cb (uint32_t lba, void* buffer, uint32_t bufsize)
+int32_t qspi_msc_read_cb (uint32_t lba, void* buffer, uint32_t bufsize)
 {
-  const uint32_t addr = lba*512;
-  flash_cache_read((uint8_t*) buffer, addr, bufsize);
 #ifdef ARCADA_MSD_DEBUG
-  Serial.printf("Read block %08x\n", lba);
+  Serial.printf("QSPI Read block %08x\n", lba);
 #endif
-  last_access_ms = millis();
-  return bufsize;
+  // Note: SPIFLash Bock API: readBlocks/writeBlocks/syncBlocks
+  // already include 4K sector caching internally. We don't need to cache it, yahhhh!!
+  return Arcada_QSPI_Flash.readBlocks(lba, (uint8_t*) buffer, bufsize/512) ? bufsize : -1;
 }
 
 // Callback invoked when received WRITE10 command.
 // Process data in buffer to disk's storage and 
 // return number of written bytes (must be multiple of block size)
-int32_t msc_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize)
+int32_t qspi_msc_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize)
 {
 #ifdef ARCADA_MSD_DEBUG
-  Serial.printf("Write block %08x\n", lba);
+  Serial.printf("QSPI Write block %08x\n", lba);
 #endif
-  // need to erase & caching write back
-  const uint32_t addr = lba*512;
-  flash_cache_write(addr, buffer, bufsize);
-  last_access_ms = millis();
-  return bufsize;
+  // Note: SPIFLash Bock API: readBlocks/writeBlocks/syncBlocks
+  // already include 4K sector caching internally. We don't need to cache it, yahhhh!!
+  return Arcada_QSPI_Flash.writeBlocks(lba, buffer, bufsize/512) ? bufsize : -1;
 }
 
 // Callback invoked when WRITE10 command is completed (status received and accepted by host).
 // used to flush any pending cache.
-void msc_flush_cb (void)
+void qspi_msc_flush_cb (void)
 {
 #ifdef ARCADA_MSD_DEBUG
-  Serial.printf("Flush block\n");
+  Serial.printf("QSPI Flush block\n");
 #endif
+
+  // sync with flash
+  Arcada_QSPI_Flash.syncBlocks();
+
+  // clear file system's cache to force refresh
+  Arcada_QSPI_FileSys.cacheClear();
+
   last_access_ms = millis();
-  flash_cache_flush();
 }
 
-//--------------------------------------------------------------------+
-// Flash Caching
-//--------------------------------------------------------------------+
-static inline uint32_t page_addr_of (uint32_t addr)
+
+
+
+// Callback invoked when received READ10 command.
+// Copy disk's data to buffer (up to bufsize) and
+// return number of copied bytes (must be multiple of block size)
+int32_t sd_msc_read_cb (uint32_t lba, void* buffer, uint32_t bufsize)
 {
-  return addr & ~(FLASH_CACHE_SIZE - 1);
-}
+#ifdef ARCADA_MSD_DEBUG
+  Serial.printf("SD Read block %08x\n", lba);
+#endif
 
-static inline uint32_t page_offset_of (uint32_t addr)
-{
-  return addr & (FLASH_CACHE_SIZE - 1);
-}
-
-void flash_cache_flush (void)
-{
-  if ( cache_addr == FLASH_CACHE_INVALID_ADDR ) return;
-
-  // indicator
-  digitalWrite(LED_BUILTIN, HIGH);
-
-  arcada_qspi_flash.eraseSector(cache_addr/FLASH_CACHE_SIZE);
-  arcada_qspi_flash.writeBuffer(cache_addr, cache_buf, FLASH_CACHE_SIZE);
-
-  digitalWrite(LED_BUILTIN, LOW);
-
-  cache_addr = FLASH_CACHE_INVALID_ADDR;
-}
-
-uint32_t flash_cache_write (uint32_t dst, void const * src, uint32_t len)
-{
-  uint8_t const * src8 = (uint8_t const *) src;
-  uint32_t remain = len;
-
-  // Program up to page boundary each loop
-  while ( remain )
-  {
-    uint32_t const page_addr = page_addr_of(dst);
-    uint32_t const offset = page_offset_of(dst);
-
-    uint32_t wr_bytes = FLASH_CACHE_SIZE - offset;
-    wr_bytes = min(remain, wr_bytes);
-
-    // Page changes, flush old and update new cache
-    if ( page_addr != cache_addr )
-    {
-      flash_cache_flush();
-      cache_addr = page_addr;
-
-      // read a whole page from flash
-      arcada_qspi_flash.readBuffer(page_addr, cache_buf, FLASH_CACHE_SIZE);
-    }
-
-    memcpy(cache_buf + offset, src8, wr_bytes);
-
-    // adjust for next run
-    src8 += wr_bytes;
-    remain -= wr_bytes;
-    dst += wr_bytes;
-  }
-
-  return len - remain;
-}
-
-void flash_cache_read (uint8_t* dst, uint32_t addr, uint32_t count)
-{
-  // overwrite with cache value if available
-  if ( (cache_addr != FLASH_CACHE_INVALID_ADDR) &&
-       !(addr < cache_addr && addr + count <= cache_addr) &&
-       !(addr >= cache_addr + FLASH_CACHE_SIZE) )
-  {
-    int dst_off = cache_addr - addr;
-    int src_off = 0;
-
-    if ( dst_off < 0 )
-    {
-      src_off = -dst_off;
-      dst_off = 0;
-    }
-
-    int cache_bytes = min(FLASH_CACHE_SIZE-src_off, count - dst_off);
-
-    // start to cached
-    if ( dst_off ) arcada_qspi_flash.readBuffer(addr, dst, dst_off);
-
-    // cached
-    memcpy(dst + dst_off, cache_buf + src_off, cache_bytes);
-
-    // cached to end
-    int copied = dst_off + cache_bytes;
-    if ( copied < count ) arcada_qspi_flash.readBuffer(addr + copied, dst + copied, count - copied);
-  }
-  else
-  {
-    arcada_qspi_flash.readBuffer(addr, dst, count);
-  }
-}
-
-#elif defined(USE_TINYUSB) && defined(ARCADA_USE_SD_FS)
-int32_t msc_read_cb (uint32_t lba, void* buffer, uint32_t bufsize)
-{
-  (void) bufsize;
-  last_access_ms = millis();
-  return FileSys.card()->readBlock(lba, (uint8_t*) buffer) ? 512 : -1;
+  return Arcada_SD_FileSys.card()->readBlocks(lba, (uint8_t*) buffer, bufsize/512) ? bufsize : -1;
 }
 
 // Callback invoked when received WRITE10 command.
 // Process data in buffer to disk's storage and 
 // return number of written bytes (must be multiple of block size)
-int32_t msc_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize)
+int32_t sd_msc_write_cb (uint32_t lba, uint8_t* buffer, uint32_t bufsize)
 {
-  last_access_ms = millis();
-  return FileSys.card()->writeBlock(lba, buffer) ? 512 : -1;
+#ifdef ARCADA_MSD_DEBUG
+  Serial.printf("SD Write block %08x\n", lba);
+#endif
+
+  return Arcada_SD_FileSys.card()->writeBlocks(lba, buffer, bufsize/512) ? bufsize : -1;
 }
 
 // Callback invoked when WRITE10 command is completed (status received and accepted by host).
 // used to flush any pending cache.
-void msc_flush_cb (void)
+void sd_msc_flush_cb (void)
 {
+#ifdef ARCADA_MSD_DEBUG
+  Serial.printf("SD Flush block\n");
+#endif
+
+  Arcada_SD_FileSys.card()->syncBlocks();
+
+  // clear file system's cache to force refresh
+  Arcada_SD_FileSys.cacheClear();
+
   last_access_ms = millis();
-  // nothing to do
 }
-
-#endif // QSPI or SD
-
