@@ -20,7 +20,7 @@ before_install:
 install:
    - arduino --install-library "Adafruit Unified Sensor"
    - arduino --install-library "Adafruit NeoPixel"
-   - arduino --install-library "Adafruit QSPI"
+   - arduino --install-library "Adafruit ADT7410 Library"
    - arduino --install-library "Adafruit GFX Library"
    - arduino --install-library "Adafruit ST7735 and ST7789 Library"
    - arduino --install-library "Adafruit ILI9341"
