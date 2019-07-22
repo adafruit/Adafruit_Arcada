@@ -422,7 +422,7 @@ class Adafruit_Arcada : public ARCADA_TFT_TYPE {
   void errorBox(const char *string, uint32_t continueButtonMask = ARCADA_BUTTONMASK_A);
   void haltBox(const char *string);
   uint8_t menu(const char **menu_strings, uint8_t menu_num, 
-	       uint16_t boxColor, uint16_t textColor, bool cancellable = false, const char *menu_subtitle = "");
+	       uint16_t boxColor, uint16_t textColor, bool cancellable = false, const char *menu_title = "", const char *menu_subtitle = "");
 
   // Configuration JSON files
   bool loadConfigurationFile(const char *filename = ARCADA_DEFAULT_CONFIGURATION_FILENAME);
