@@ -245,7 +245,7 @@ uint8_t Adafruit_Arcada::menu(const char **menu_strings, uint8_t menu_num,
 	
   if(HasTitle){
 	  //Print the title
-	  fontX = boxX;
+	  fontX = boxX + charWidth/2;;
 	  fontY = boxY;
 	  
 	  fillRoundRect(fontX, fontY, boxWidth, charHeight+2, 
@@ -258,7 +258,7 @@ uint8_t Adafruit_Arcada::menu(const char **menu_strings, uint8_t menu_num,
 	  
 	  //draw the sub-title (if available)
  	 if(HasSubtitle){
-	     fontX = boxX;
+	     fontX = boxX + charWidth/2;;
 	     fontY = boxY + charHeight + 2;
 	     fillRoundRect(fontX, fontY, boxWidth, charHeight+2, 
 		   charWidth, textColor);
