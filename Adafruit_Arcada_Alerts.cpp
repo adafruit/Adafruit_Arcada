@@ -205,15 +205,22 @@ void Adafruit_Arcada::alertBox(const char *string, uint16_t boxColor, uint16_t t
 uint8_t Adafruit_Arcada::menu(const char **menu_strings, uint8_t menu_num, 
 			      uint16_t boxColor, uint16_t textColor, bool cancellable, 
 			      const char *menu_title, const char *menu_subtitle) {
+  uint16_t max_len = 0;
+  
   bool HasTitle = false;
-  if(strlen(menu_title) > 0)HasTitle = true;
+  if(strlen(menu_title) > 0){
+	  HasTitle = true;
+	  max_len = max(max_len, strlen(menu_title));
+  }
   
   bool HasSubtitle = false;
-  if(strlen(menu_subtitle) > 0)HasSubtitle = true;
-	
+  if(strlen(menu_subtitle) > 0){
+	  HasSubtitle = true;
+	  max_len = max(max_len, strlen(menu_subtitle));
+  }
+  
   _initAlertFonts();
 	
-  uint16_t max_len = 0;
   for (int i=0; i<menu_num; i++) {
     //Serial.printf("#%d '%s' -> %d\n", i, menu_strings[i], strlen(menu_strings[i]));
     max_len = max(max_len, strlen(menu_strings[i]));
@@ -285,9 +292,9 @@ uint8_t Adafruit_Arcada::menu(const char **menu_strings, uint8_t menu_num,
 	
   // The title and subtitle will shift the selection menu down.
   if(HasTitle){
-	  fontY += 2;
+	  fontY += charHeight;
 	  if(HasSubtitle){
-		  fontY +=2;
+		  fontY += charHeight;
 	  }
   }
 	
@@ -335,4 +342,3 @@ uint8_t Adafruit_Arcada::menu(const char **menu_strings, uint8_t menu_num,
   }
   return selected;
 }
-	
