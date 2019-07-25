@@ -422,10 +422,6 @@ uint32_t Adafruit_Arcada::readButtons(void) {
 	 (p.y > height()/4) && (p.y < (height()*3.0/4.0)) ) {
        buttons |= ARCADA_BUTTONMASK_RIGHT;
     }
-    // left!
-    if ( (p.x < width()/4) && (p.y > height()/4) && (p.y < (height()*3.0/4.0)) ) {
-       buttons |= ARCADA_BUTTONMASK_LEFT;
-    }
     // B
     if ( (p.x > width()/4) && (p.x < width()/2) // 2nd quarter
 	 && (p.y > height()/4) && (p.y < (height()*3.0/4.0)) ) {
