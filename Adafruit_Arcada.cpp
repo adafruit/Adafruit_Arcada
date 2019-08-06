@@ -637,7 +637,6 @@ TSPoint Adafruit_Arcada::getTouchscreenPoint(void) {
   bool invalid = true;
   TSPoint p;
   for (int i=0; i<8; i++) {
-    Serial.println(i);
     if ((points[i].z > 100) && (points[i].z < 1000)) {
       p.x = points[i].x;
       p.y = points[i].y;

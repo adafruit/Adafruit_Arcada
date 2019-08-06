@@ -17,7 +17,7 @@
 #include "Adafruit_Arcada_PyBadge.h"
 #include "Adafruit_Arcada_PyGamer.h"
 #include "Adafruit_Arcada_PyPortal.h"
-
+#include "Adafruit_Arcada_MONSTERM4SK.h"
 
 #define SD_MAX_FILENAME_SIZE 80
 #define ARCADA_DEFAULT_CONFIGURATION_FILENAME  "/arcada_config.json"
@@ -249,7 +249,7 @@
   #define ARCADA_TOUCHSCREEN_CALIBX_MAX 1023
 #endif
 #ifndef ARCADA_TOUCHSCREEN_CALIBY_MAX
-  #define ARCADA_TOUCHSCREEN_CALIBX_MAX 1023
+  #define ARCADA_TOUCHSCREEN_CALIBY_MAX 1023
 #endif
 
 
