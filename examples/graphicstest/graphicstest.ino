@@ -5,11 +5,11 @@ float p = 3.1415926;
 
 void setup(void) {
   Serial.begin(9600);
-  Serial.print("Hello! pyBadge TFT Test");
+  Serial.print("Hello! Arcada TFT Test");
 
 
   // Start TFT and fill black
-  if (!arcada.begin()) {
+  if (!arcada.arcadaBegin()) {
     Serial.print("Failed to begin");
     while (1);
   }
@@ -19,8 +19,8 @@ void setup(void) {
   arcada.setBacklight(255);
 
   // large block of text
-  arcada.fillScreen(ST77XX_BLACK);
-  testdrawtext("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur adipiscing ante sed nibh tincidunt feugiat. Maecenas enim massa, fringilla sed malesuada et, malesuada sit amet turpis. Sed porttitor neque ut ante pretium vitae malesuada nunc bibendum. Nullam aliquet ultrices massa eu hendrerit. Ut sed nisi lorem. In vestibulum purus a tortor imperdiet posuere. ", ST77XX_WHITE);
+  arcada.fillScreen(ARCADA_BLACK);
+  testdrawtext("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur adipiscing ante sed nibh tincidunt feugiat. Maecenas enim massa, fringilla sed malesuada et, malesuada sit amet turpis. Sed porttitor neque ut ante pretium vitae malesuada nunc bibendum. Nullam aliquet ultrices massa eu hendrerit. Ut sed nisi lorem. In vestibulum purus a tortor imperdiet posuere. ", ARCADA_WHITE);
   delay(1000);
 
   // tft print function!
@@ -28,26 +28,26 @@ void setup(void) {
   delay(4000);
 
   // a single pixel
-  arcada.drawPixel(arcada.width()/2, arcada.height()/2, ST77XX_GREEN);
+  arcada.drawPixel(arcada.width()/2, arcada.height()/2, ARCADA_GREEN);
   delay(500);
 
   // line draw test
-  testlines(ST77XX_YELLOW);
+  testlines(ARCADA_YELLOW);
   delay(500);
 
   // optimized lines
-  testfastlines(ST77XX_RED, ST77XX_BLUE);
+  testfastlines(ARCADA_RED, ARCADA_BLUE);
   delay(500);
 
-  testdrawrects(ST77XX_GREEN);
+  testdrawrects(ARCADA_GREEN);
   delay(500);
 
-  testfillrects(ST77XX_YELLOW, ST77XX_MAGENTA);
+  testfillrects(ARCADA_YELLOW, ARCADA_MAGENTA);
   delay(500);
 
-  arcada.fillScreen(ST77XX_BLACK);
-  testfillcircles(10, ST77XX_BLUE);
-  testdrawcircles(10, ST77XX_WHITE);
+  arcada.fillScreen(ARCADA_BLACK);
+  testfillcircles(10, ARCADA_BLUE);
+  testdrawcircles(10, ARCADA_WHITE);
   delay(500);
 
   testroundrects();
@@ -70,7 +70,7 @@ void loop() {
   delay(500);
 }
 void testlines(uint16_t color) {
-  arcada.fillScreen(ST77XX_BLACK);
+  arcada.fillScreen(ARCADA_BLACK);
   for (int16_t x=0; x < arcada.width(); x+=6) {
     arcada.drawLine(0, 0, x, arcada.height()-1, color);
     delay(0);
@@ -80,7 +80,7 @@ void testlines(uint16_t color) {
     delay(0);
   }
 
-  arcada.fillScreen(ST77XX_BLACK);
+  arcada.fillScreen(ARCADA_BLACK);
   for (int16_t x=0; x < arcada.width(); x+=6) {
     arcada.drawLine(arcada.width()-1, 0, x, arcada.height()-1, color);
     delay(0);
@@ -90,7 +90,7 @@ void testlines(uint16_t color) {
     delay(0);
   }
 
-  arcada.fillScreen(ST77XX_BLACK);
+  arcada.fillScreen(ARCADA_BLACK);
   for (int16_t x=0; x < arcada.width(); x+=6) {
     arcada.drawLine(0, arcada.height()-1, x, 0, color);
     delay(0);
@@ -100,7 +100,7 @@ void testlines(uint16_t color) {
     delay(0);
   }
 
-  arcada.fillScreen(ST77XX_BLACK);
+  arcada.fillScreen(ARCADA_BLACK);
   for (int16_t x=0; x < arcada.width(); x+=6) {
     arcada.drawLine(arcada.width()-1, arcada.height()-1, x, 0, color);
     delay(0);
@@ -119,7 +119,7 @@ void testdrawtext(char *text, uint16_t color) {
 }
 
 void testfastlines(uint16_t color1, uint16_t color2) {
-  arcada.fillScreen(ST77XX_BLACK);
+  arcada.fillScreen(ARCADA_BLACK);
   for (int16_t y=0; y < arcada.height(); y+=5) {
     arcada.drawFastHLine(0, y, arcada.width(), color1);
   }
@@ -129,14 +129,14 @@ void testfastlines(uint16_t color1, uint16_t color2) {
 }
 
 void testdrawrects(uint16_t color) {
-  arcada.fillScreen(ST77XX_BLACK);
+  arcada.fillScreen(ARCADA_BLACK);
   for (int16_t x=0; x < arcada.width(); x+=6) {
     arcada.drawRect(arcada.width()/2 -x/2, arcada.height()/2 -x/2 , x, x, color);
   }
 }
 
 void testfillrects(uint16_t color1, uint16_t color2) {
-  arcada.fillScreen(ST77XX_BLACK);
+  arcada.fillScreen(ARCADA_BLACK);
   for (int16_t x=arcada.width()-1; x > 6; x-=6) {
     arcada.fillRect(arcada.width()/2 -x/2, arcada.height()/2 -x/2 , x, x, color1);
     arcada.drawRect(arcada.width()/2 -x/2, arcada.height()/2 -x/2 , x, x, color2);
@@ -160,7 +160,7 @@ void testdrawcircles(uint8_t radius, uint16_t color) {
 }
 
 void testtriangles() {
-  arcada.fillScreen(ST77XX_BLACK);
+  arcada.fillScreen(ARCADA_BLACK);
   int color = 0xF800;
   int t;
   int w = arcada.width()/2;
@@ -177,7 +177,7 @@ void testtriangles() {
 }
 
 void testroundrects() {
-  arcada.fillScreen(ST77XX_BLACK);
+  arcada.fillScreen(ARCADA_BLACK);
   int color = 100;
   int i;
   int t;
@@ -200,60 +200,60 @@ void testroundrects() {
 
 void tftPrintTest() {
   arcada.setTextWrap(false);
-  arcada.fillScreen(ST77XX_BLACK);
+  arcada.fillScreen(ARCADA_BLACK);
   arcada.setCursor(0, 30);
-  arcada.setTextColor(ST77XX_RED);
+  arcada.setTextColor(ARCADA_RED);
   arcada.setTextSize(1);
   arcada.println("Hello World!");
-  arcada.setTextColor(ST77XX_YELLOW);
+  arcada.setTextColor(ARCADA_YELLOW);
   arcada.setTextSize(2);
   arcada.println("Hello World!");
-  arcada.setTextColor(ST77XX_GREEN);
+  arcada.setTextColor(ARCADA_GREEN);
   arcada.setTextSize(3);
   arcada.println("Hello World!");
-  arcada.setTextColor(ST77XX_BLUE);
+  arcada.setTextColor(ARCADA_BLUE);
   arcada.setTextSize(4);
   arcada.print(1234.567);
   delay(1500);
   arcada.setCursor(0, 0);
-  arcada.fillScreen(ST77XX_BLACK);
-  arcada.setTextColor(ST77XX_WHITE);
+  arcada.fillScreen(ARCADA_BLACK);
+  arcada.setTextColor(ARCADA_WHITE);
   arcada.setTextSize(0);
   arcada.println("Hello World!");
   arcada.setTextSize(1);
-  arcada.setTextColor(ST77XX_GREEN);
+  arcada.setTextColor(ARCADA_GREEN);
   arcada.print(p, 6);
   arcada.println(" Want pi?");
   arcada.println(" ");
   arcada.print(8675309, HEX); // print 8,675,309 out in HEX!
   arcada.println(" Print HEX!");
   arcada.println(" ");
-  arcada.setTextColor(ST77XX_WHITE);
+  arcada.setTextColor(ARCADA_WHITE);
   arcada.println("Sketch has been");
   arcada.println("running for: ");
-  arcada.setTextColor(ST77XX_MAGENTA);
+  arcada.setTextColor(ARCADA_MAGENTA);
   arcada.print(millis() / 1000);
-  arcada.setTextColor(ST77XX_WHITE);
+  arcada.setTextColor(ARCADA_WHITE);
   arcada.print(" seconds.");
 }
 
 void mediabuttons() {
   // play
-  arcada.fillScreen(ST77XX_BLACK);
-  arcada.fillRoundRect(25, 10, 78, 60, 8, ST77XX_WHITE);
-  arcada.fillTriangle(42, 20, 42, 60, 90, 40, ST77XX_RED);
+  arcada.fillScreen(ARCADA_BLACK);
+  arcada.fillRoundRect(25, 10, 78, 60, 8, ARCADA_WHITE);
+  arcada.fillTriangle(42, 20, 42, 60, 90, 40, ARCADA_RED);
   delay(500);
   // pause
-  arcada.fillRoundRect(25, 90, 78, 60, 8, ST77XX_WHITE);
-  arcada.fillRoundRect(39, 98, 20, 45, 5, ST77XX_GREEN);
-  arcada.fillRoundRect(69, 98, 20, 45, 5, ST77XX_GREEN);
+  arcada.fillRoundRect(25, 90, 78, 60, 8, ARCADA_WHITE);
+  arcada.fillRoundRect(39, 98, 20, 45, 5, ARCADA_GREEN);
+  arcada.fillRoundRect(69, 98, 20, 45, 5, ARCADA_GREEN);
   delay(500);
   // play color
-  arcada.fillTriangle(42, 20, 42, 60, 90, 40, ST77XX_BLUE);
+  arcada.fillTriangle(42, 20, 42, 60, 90, 40, ARCADA_BLUE);
   delay(50);
   // pause color
-  arcada.fillRoundRect(39, 98, 20, 45, 5, ST77XX_RED);
-  arcada.fillRoundRect(69, 98, 20, 45, 5, ST77XX_RED);
+  arcada.fillRoundRect(39, 98, 20, 45, 5, ARCADA_RED);
+  arcada.fillRoundRect(69, 98, 20, 45, 5, ARCADA_RED);
   // play color
-  arcada.fillTriangle(42, 20, 42, 60, 90, 40, ST77XX_GREEN);
+  arcada.fillTriangle(42, 20, 42, 60, 90, 40, ARCADA_GREEN);
 }

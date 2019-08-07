@@ -104,11 +104,11 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
 
     uint32_t readButtons(void) {
       uint32_t buttons = 0;
-      if (! arcada.ss.digitalRead(SS_SWITCH1_PIN))
+      if (! ss.digitalRead(SS_SWITCH1_PIN))
 	buttons |= ARCADA_BUTTONMASK_UP;
-      if (! arcada.ss.digitalRead(SS_SWITCH2_PIN)) 
+      if (! ss.digitalRead(SS_SWITCH2_PIN)) 
 	buttons |= ARCADA_BUTTONMASK_A;
-      if (! arcada.ss.digitalRead(SS_SWITCH3_PIN)) 
+      if (! ss.digitalRead(SS_SWITCH3_PIN)) 
 	buttons |= ARCADA_BUTTONMASK_DOWN;
 
       last_buttons = curr_buttons;
