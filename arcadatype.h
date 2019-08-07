@@ -157,7 +157,7 @@ class Adafruit_Arcada_SPITFT : public Adafruit_SPITFT {
   uint16_t *getFrameBuffer(void) {
     return _canvas ? _canvas->getBuffer() : NULL; }
   bool blitFrameBuffer(uint16_t x, uint16_t y,
-    bool blocking=false, bool bigEndian=false);
+		       bool blocking=false, bool bigEndian=false, Adafruit_SPITFT *display=NULL);
   uint16_t ColorHSV565(int16_t H, uint8_t S, uint8_t V);
 
   bool setBacklight(uint8_t brightness, bool saveToDisk=false);

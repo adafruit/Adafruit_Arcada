@@ -20,7 +20,7 @@ void setup(void) {
   Serial.print("Mandelbrot demo");
 
   // Start TFT and fill black
-  if (!arcada.begin()) {
+  if (!arcada.arcadaBegin()) {
     Serial.print("Failed to begin");
     while (1);
   }
@@ -68,7 +68,10 @@ void loop() {
     }
     posImag -= incImag;
   }
-  arcada.blitFrameBuffer(0, 0, true); // block on blit
+#if defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
+  arcada.blitFrameBuffer(0, 0, false, false, arcada.left_tft); // do the other eye too!
+#endif
+  arcada.blitFrameBuffer(0, 0, true, false); // block on blit
   elapsedTime = millis()-startTime;
   Serial.print("Took "); Serial.print(elapsedTime); Serial.println(" ms");
 

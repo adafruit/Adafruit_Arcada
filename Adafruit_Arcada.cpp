@@ -566,18 +566,21 @@ bool Adafruit_Arcada_SPITFT::createFrameBuffer(uint16_t width, uint16_t height) 
 */
 /**************************************************************************/
 bool Adafruit_Arcada_SPITFT::blitFrameBuffer(uint16_t x, uint16_t y, bool blocking,
-  bool bigEndian) {
+					     bool bigEndian, Adafruit_SPITFT *display) {
+  if (! display) {
+    display = this;
+  }
   if(_canvas) {
     if (! _first_frame) {
-      dmaWait();  // Wait for prior DMA transfer to complete
-      endWrite(); // End transaction from any prior call
+      display->dmaWait();  // Wait for prior DMA transfer to complete
+      display->endWrite(); // End transaction from any prior call
     } else {
       _first_frame = false;
     }
-    startWrite(); // Start new display transaction
-    setAddrWindow(x, y, _canvas->width(), _canvas->height());
-    writePixels(_canvas->getBuffer(), _canvas->width() * _canvas->height(),
-      blocking, bigEndian);
+    display->startWrite(); // Start new display transaction
+    display->setAddrWindow(x, y, _canvas->width(), _canvas->height());
+    display->writePixels(_canvas->getBuffer(), _canvas->width() * _canvas->height(),
+			 blocking, bigEndian);
     return true;
   }
 
