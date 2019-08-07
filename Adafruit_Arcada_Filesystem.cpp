@@ -28,7 +28,7 @@ FatFileSystem Arcada_QSPI_FileSys;
     @return Filesystem type found, can be ARCADA_FILESYS_NONE (none found), ARCADA_FILESYS_SD (found SD card), ARCADA_FILESYS_QSPI (QSPI flash memory), or ARCADA_FILESYS_SD_AND_QSPI (both found)
 */
 /**************************************************************************/
-Arcada_FilesystemType Adafruit_Arcada::filesysBegin(Arcada_FilesystemType desiredFilesys) {
+Arcada_FilesystemType Adafruit_Arcada_SPITFT::filesysBegin(Arcada_FilesystemType desiredFilesys) {
   if (_filesys_type != ARCADA_FILESYS_NONE) {
     return _filesys_type;
   }
@@ -82,7 +82,7 @@ Arcada_FilesystemType Adafruit_Arcada::filesysBegin(Arcada_FilesystemType desire
     @return True if was able to find a directory at that path
 */
 /**************************************************************************/
-bool Adafruit_Arcada::chdir(const char *path) {
+bool Adafruit_Arcada_SPITFT::chdir(const char *path) {
   Serial.printf("\tArcadaFileSys : chdir '%s'\n", path);
 
   if (strlen(path) >= sizeof(_cwd_path)) {    // too long!
@@ -124,7 +124,7 @@ bool Adafruit_Arcada::chdir(const char *path) {
     @return -1 if was not able to open, or the number of files
 */
 /**************************************************************************/
-int16_t Adafruit_Arcada::filesysListFiles(const char *path, const char *extensionFilter) {
+int16_t Adafruit_Arcada_SPITFT::filesysListFiles(const char *path, const char *extensionFilter) {
   if (! path) {   // use CWD!
     path = _cwd_path;
   }
@@ -178,7 +178,7 @@ int16_t Adafruit_Arcada::filesysListFiles(const char *path, const char *extensio
     @return true or false if we can open the file
 */
 /**************************************************************************/
-bool Adafruit_Arcada::exists(const char *path) {
+bool Adafruit_Arcada_SPITFT::exists(const char *path) {
   Serial.printf("\tArcadaFileSys : Exists? '%s'\n", path);
   File f = open(path);
   if (!f) return false;
@@ -194,7 +194,7 @@ bool Adafruit_Arcada::exists(const char *path) {
     @return true or false if we succeeded
 */
 /**************************************************************************/
-bool Adafruit_Arcada::mkdir(const char *path) {
+bool Adafruit_Arcada_SPITFT::mkdir(const char *path) {
   Serial.printf("\tArcadaFileSys : Mkdir '%s'\n", path);
 
   bool ret = false;
@@ -218,7 +218,7 @@ bool Adafruit_Arcada::mkdir(const char *path) {
     @return true or false if we succeeded
 */
 /**************************************************************************/
-bool Adafruit_Arcada::remove(const char *path) {
+bool Adafruit_Arcada_SPITFT::remove(const char *path) {
   Serial.printf("\tArcadaFileSys : Removing '%s'\n", path);
 
   bool ret = false;
@@ -243,7 +243,7 @@ bool Adafruit_Arcada::remove(const char *path) {
     @return A File object, for whatever filesystem we're using
 */
 /**************************************************************************/
-File Adafruit_Arcada::open(const char *path, uint32_t flags) {
+File Adafruit_Arcada_SPITFT::open(const char *path, uint32_t flags) {
   const char *the_path;
 
   if (!path) {    // Just the CWD then
@@ -288,7 +288,7 @@ File Adafruit_Arcada::open(const char *path, uint32_t flags) {
     @return A File object, for whatever filesystem we're using
 */
 /**************************************************************************/
-File Adafruit_Arcada::openFileByIndex(const char *path, uint16_t index, 
+File Adafruit_Arcada_SPITFT::openFileByIndex(const char *path, uint16_t index, 
 				      uint32_t flags, const char *extensionFilter) {
   if (! path) {   // use CWD!
     path = _cwd_path;
@@ -333,7 +333,7 @@ File Adafruit_Arcada::openFileByIndex(const char *path, uint16_t index,
     @return true on success, false on some sort of failure
 */
 /**************************************************************************/
-bool Adafruit_Arcada::chooseFile(const char *path,
+bool Adafruit_Arcada_SPITFT::chooseFile(const char *path,
 				 char *selected_filename, uint16_t selected_filename_maxlen,
 				 const char *extensionFilter) {
   int8_t  selected_line = 0;        // the line # that we have selected

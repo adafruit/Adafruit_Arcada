@@ -24,7 +24,7 @@ bool row_same[FLASH_SIZE / NVMCTRL_BLOCK_SIZE][NVMCTRL_BLOCK_SIZE / FLASH_ROW_SI
     @return A pointer to the flash memory address, or NULL on failure
 */
 /**************************************************************************/
-uint8_t * Adafruit_Arcada::writeFileToFlash(const char *filename, uint32_t address) {
+uint8_t * Adafruit_Arcada_SPITFT::writeFileToFlash(const char *filename, uint32_t address) {
   File f = open(filename);
   if (!f) return NULL;
 

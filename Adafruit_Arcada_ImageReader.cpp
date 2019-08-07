@@ -199,7 +199,7 @@ void Adafruit_Arcada_Image::draw(Adafruit_SPITFT &tft, int16_t x, int16_t y) {
     @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
              completion, other values on failure).
 */
-ImageReturnCode Adafruit_Arcada::drawBMP(char *filename,
+ImageReturnCode Adafruit_Arcada_SPITFT::drawBMP(char *filename,
   int16_t x, int16_t y, boolean transact) {
   uint16_t tftbuf[DRAWPIXELS]; // Temp space for buffering TFT data
   // Call core BMP-reading function, passing address to TFT object,
@@ -222,7 +222,7 @@ ImageReturnCode Adafruit_Arcada::drawBMP(char *filename,
     @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
              completion, other values on failure).
 */
-ImageReturnCode Adafruit_Arcada::loadBMP(char *filename, Adafruit_Arcada_Image &img) {
+ImageReturnCode Adafruit_Arcada_SPITFT::loadBMP(char *filename, Adafruit_Arcada_Image &img) {
   // Call core BMP-reading function. TFT and working buffer are NULL
   // (unused and allocated in function, respectively), X & Y position are
   // always 0 because full image is loaded (RAM permitting). Adafruit_Image
@@ -258,7 +258,7 @@ ImageReturnCode Adafruit_Arcada::loadBMP(char *filename, Adafruit_Arcada_Image &
     @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
              completion, other values on failure).
 */
-ImageReturnCode Adafruit_Arcada::coreBMP(
+ImageReturnCode Adafruit_Arcada_SPITFT::coreBMP(
   char            *filename,   // SD file to load
   Adafruit_SPITFT *tft,        // Pointer to TFT object, or NULL if to image
   uint16_t        *dest,       // TFT working buffer, or NULL if to canvas
@@ -447,7 +447,7 @@ ImageReturnCode Adafruit_Arcada::coreBMP(
     @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
              completion, other values on failure).
 */
-ImageReturnCode Adafruit_Arcada::bmpDimensions(
+ImageReturnCode Adafruit_Arcada_SPITFT::bmpDimensions(
   char *filename, int32_t *width, int32_t *height) {
 
   ImageReturnCode status = IMAGE_ERR_FILE_NOT_FOUND; // Guilty until innocent
@@ -481,7 +481,7 @@ ImageReturnCode Adafruit_Arcada::bmpDimensions(
              native endianism. (BMP files use little-endian values.)
     @return  Unsigned 16-bit value, native endianism.
 */
-uint16_t Adafruit_Arcada::readLE16(void) {
+uint16_t Adafruit_Arcada_SPITFT::readLE16(void) {
 #if !defined(ESP32) && !defined(ESP8266) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
   // Read directly into result -- BMP data and variable both little-endian.
   uint16_t result;
@@ -499,7 +499,7 @@ uint16_t Adafruit_Arcada::readLE16(void) {
              native endianism. (BMP files use little-endian values.)
     @return  Unsigned 32-bit value, native endianism.
 */
-uint32_t Adafruit_Arcada::readLE32(void) {
+uint32_t Adafruit_Arcada_SPITFT::readLE32(void) {
 #if !defined(ESP32) && !defined(ESP8266) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
   // Read directly into result -- BMP data and variable both little-endian.
   uint32_t result;
@@ -523,7 +523,7 @@ uint32_t Adafruit_Arcada::readLE32(void) {
              Output stream (Serial default if unspecified).
     @return  None (void).
 */
-void Adafruit_Arcada::printImageStatus(ImageReturnCode stat, Stream &stream) {
+void Adafruit_Arcada_SPITFT::printImageStatus(ImageReturnCode stat, Stream &stream) {
   if(stat == IMAGE_SUCCESS)
     stream.println(F("Success!"));
   else if(stat == IMAGE_ERR_FILE_NOT_FOUND)

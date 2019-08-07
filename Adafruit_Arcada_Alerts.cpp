@@ -6,7 +6,7 @@
 static uint8_t maxCharPerLine, fontSize;
 static uint16_t charHeight, charWidth;
 
-void Adafruit_Arcada::_initAlertFonts(void) {
+void Adafruit_Arcada_SPITFT::_initAlertFonts(void) {
   fontSize = 1;
   if (width() > 160) {
     fontSize = 2;
@@ -24,7 +24,7 @@ void Adafruit_Arcada::_initAlertFonts(void) {
     immediate return. Default is ARCADA_BUTTONMASK_A 
 */
 /**************************************************************************/
-void Adafruit_Arcada::infoBox(const char *string, uint32_t continueButtonMask) {
+void Adafruit_Arcada_SPITFT::infoBox(const char *string, uint32_t continueButtonMask) {
   alertBox(string, ARCADA_WHITE, ARCADA_BLACK, continueButtonMask);
 }
 
@@ -37,7 +37,7 @@ void Adafruit_Arcada::infoBox(const char *string, uint32_t continueButtonMask) {
     immediate return. Default is ARCADA_BUTTONMASK_A 
 */
 /**************************************************************************/
-void Adafruit_Arcada::warnBox(const char *string, uint32_t continueButtonMask) {
+void Adafruit_Arcada_SPITFT::warnBox(const char *string, uint32_t continueButtonMask) {
   alertBox(string, ARCADA_YELLOW, ARCADA_WHITE, continueButtonMask);
 }
 
@@ -50,7 +50,7 @@ void Adafruit_Arcada::warnBox(const char *string, uint32_t continueButtonMask) {
     immediate return. Default is ARCADA_BUTTONMASK_A 
 */
 /**************************************************************************/
-void Adafruit_Arcada::errorBox(const char *string, uint32_t continueButtonMask) {
+void Adafruit_Arcada_SPITFT::errorBox(const char *string, uint32_t continueButtonMask) {
   alertBox(string, ARCADA_RED, ARCADA_WHITE, continueButtonMask);
 }
 
@@ -60,7 +60,7 @@ void Adafruit_Arcada::errorBox(const char *string, uint32_t continueButtonMask) 
     @param  string The message to display
 */
 /**************************************************************************/
-void Adafruit_Arcada::haltBox(const char *string) {
+void Adafruit_Arcada_SPITFT::haltBox(const char *string) {
   alertBox(string, ARCADA_RED, ARCADA_WHITE, 0);
   while (1) {
     delay(10);
@@ -79,7 +79,7 @@ void Adafruit_Arcada::haltBox(const char *string) {
     immediate return.
 */
 /**************************************************************************/
-void Adafruit_Arcada::alertBox(const char *string, uint16_t boxColor, uint16_t textColor,
+void Adafruit_Arcada_SPITFT::alertBox(const char *string, uint16_t boxColor, uint16_t textColor,
 			       uint32_t continueButtonMask) {
   _initAlertFonts();
 
@@ -200,7 +200,7 @@ void Adafruit_Arcada::alertBox(const char *string, uint16_t boxColor, uint16_t t
     @returns uint8_t, The selected menu item, returns 255 if the menu is canceled
 */
 /**************************************************************************/
-uint8_t Adafruit_Arcada::menu(const char **menu_strings, uint8_t menu_num, 
+uint8_t Adafruit_Arcada_SPITFT::menu(const char **menu_strings, uint8_t menu_num, 
 			      uint16_t boxColor, uint16_t textColor, bool cancellable) {
   _initAlertFonts();
 
