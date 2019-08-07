@@ -205,6 +205,9 @@ class Adafruit_Arcada_SPITFT : public Adafruit_SPITFT {
   ImageReturnCode bmpDimensions(char *filename, int32_t *w, int32_t *h);
   void            printImageStatus(ImageReturnCode stat, Stream &stream=Serial);
 
+ protected:
+  uint32_t last_buttons, curr_buttons, justpressed_buttons, justreleased_buttons;
+  
  private:
   void _initAlertFonts(void);
 
@@ -217,10 +220,8 @@ class Adafruit_Arcada_SPITFT : public Adafruit_SPITFT {
   Arcada_FilesystemType _filesys_type = ARCADA_FILESYS_NONE;
   char _cwd_path[255];
 
-  GFXcanvas16 *_canvas = NULL;
-  bool _first_frame = true;
+  GFXcanvas16 *_canvas = NULL;  bool _first_frame = true;
 
-  uint32_t last_buttons, curr_buttons, justpressed_buttons, justreleased_buttons;
 
   uint8_t _volume = 255, _brightness = 255;
 
