@@ -128,10 +128,7 @@ class Adafruit_Arcada_SPITFT {
 
   Adafruit_NeoPixel pixels;     ///<  The neopixel strip, of length ARCADA_NEOPIXEL_NUM
 
-#if (ARCADA_ACCEL_TYPE == ARCADA_ACCEL_LIS3DH)
-  Adafruit_LIS3DH accel = Adafruit_LIS3DH();
   bool hasAccel(void) { return _has_accel; }
-#endif
 
   /**************************************************************************/
   /*!
@@ -149,12 +146,11 @@ class Adafruit_Arcada_SPITFT {
 
  protected:
   uint32_t last_buttons, curr_buttons, justpressed_buttons, justreleased_buttons;
+  bool _has_accel = false;
+  bool _has_wifi = false;
   
  private:
   void _initAlertFonts(void);
-
-  bool _has_accel;
-  bool _has_wifi;
 
   int16_t _joyx_center = 512;
   int16_t _joyy_center = 512;
@@ -163,7 +159,6 @@ class Adafruit_Arcada_SPITFT {
   char _cwd_path[255];
 
   GFXcanvas16 *_canvas = NULL;  bool _first_frame = true;
-
 
   uint8_t _volume = 255, _brightness = 255;
 

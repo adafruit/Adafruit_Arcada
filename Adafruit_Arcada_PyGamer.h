@@ -35,19 +35,21 @@
 
   #define ARCADA_USE_JSON
 
-  #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_LIS3DH
-
-
   #include "arcadatype.h"
 
 class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
  public:
+  Adafruit_LIS3DH accel = Adafruit_LIS3DH();
   
   Adafruit_Arcada(void) {
+    _has_accel = true;
   };
 
   bool variantBegin(void) {
-    // Nothing special needed for this variant
+    if (! accel.begin(0x18) && ! accel.begin(0x19)) {
+      return false;  // couldn't find accelerometer
+    }
+    accel.setRange(LIS3DH_RANGE_4_G);   // 2, 4, 8 or 16 G!
     return true;
   }
   

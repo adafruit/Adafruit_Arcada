@@ -139,16 +139,6 @@ bool Adafruit_Arcada_SPITFT::arcadaBegin(void) {
     pinMode(_button_data, INPUT);
   }
 
-#if (ARCADA_ACCEL_TYPE == ARCADA_ACCEL_LIS3DH)
-  if (! accel.begin(0x18) && ! accel.begin(0x19)) {
-    _has_accel = false;  // no biggie, we may be a pybadge LC
-  } else {
-    _has_accel = true;
-  }
-  if (hasAccel()) {
-    accel.setRange(LIS3DH_RANGE_4_G);   // 2, 4, 8 or 16 G!
-  }
-#endif
 
 #ifndef SPIWIFI
   _has_wifi = false;

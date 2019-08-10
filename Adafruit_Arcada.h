@@ -53,10 +53,6 @@ class Adafruit_Arcada_SPITFT;
 
   #define ARCADA_USE_JSON
 
-  #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_NONE
-
-
-
 #elif defined(ADAFRUIT_PYGAMER_ADVANCE_M4_EXPRESS)
 
   #define ARCADA_TFT_SPI         SPI1
@@ -94,8 +90,6 @@ class Adafruit_Arcada_SPITFT;
 
   #define ARCADA_USE_JSON
   #define ARCADA_SD_CS                     4
-
-  #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_LIS3DH
 
 #elif defined(ADAFRUIT_PYBADGE_AIRLIFT_M4)
   #include <WiFiNINA.h>
@@ -136,7 +130,6 @@ class Adafruit_Arcada_SPITFT;
 
   #define ARCADA_USE_JSON
 
-  #define ARCADA_ACCEL_TYPE ARCADA_ACCEL_LIS3DH
 #endif
 
 #ifndef ARCADA_SD_CS 
