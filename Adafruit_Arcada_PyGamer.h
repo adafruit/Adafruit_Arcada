@@ -7,8 +7,6 @@
   #define ARCADA_TFT_LITE        47
   #define ARCADA_TFT_ROTATION     1
   #define ARCADA_TFT_DEFAULTFILL  0xFFFF
-  #define ARCADA_TFT_INIT         initR(INITR_BLACKTAB)
-  #define ARCADA_TFT_TYPE         Adafruit_ST7735
   #define ARCADA_TFT_WIDTH        160
   #define ARCADA_TFT_HEIGHT       128
 
@@ -38,5 +36,28 @@
   #define ARCADA_USE_JSON
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_LIS3DH
+
+
+  #include "arcadatype.h"
+
+class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
+ public:
+  
+  Adafruit_Arcada(void) {
+  };
+
+  bool variantBegin(void) {
+    // Nothing special needed for this variant
+    return true;
+  }
+  
+  void displayBegin(void) {
+    Adafruit_ST7735 *tft = new Adafruit_ST7735(&ARCADA_TFT_SPI, ARCADA_TFT_CS, ARCADA_TFT_DC, ARCADA_TFT_RST); 
+    tft->initR(INITR_BLACKTAB);
+    tft->setRotation(ARCADA_TFT_ROTATION);
+    tft->fillScreen(ARCADA_TFT_DEFAULTFILL);
+    display = tft;
+  }
+};
 
 #endif
