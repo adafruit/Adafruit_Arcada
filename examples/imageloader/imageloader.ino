@@ -8,7 +8,7 @@ void setup(void) {
   // If we are using TinyUSB we will have the filesystem show up!
   arcada.filesysBeginMSD();
 
-  Serial.begin(11500);
+  Serial.begin(115200);
   //while(!Serial) delay(10);       // Wait for Serial Monitor before continuing
 
   // Start TFT and fill blue
