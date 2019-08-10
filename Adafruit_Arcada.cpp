@@ -98,7 +98,7 @@ bool Adafruit_Arcada_SPITFT::arcadaBegin(void) {
   _touchscreen = NULL;
   if (_touch_xp >= 0) {
     _touchscreen = new TouchScreen(_touch_xp, _touch_yp,
-				   _touch_xm, _touch_xm, 300);
+				   _touch_xm, _touch_ym, 300);
     setTouchscreenCalibration(_ts_xmin, _ts_xmax, _ts_ymin, _ts_ymax);
   }
 

@@ -14,21 +14,24 @@ void setup(void) {
   Serial.begin(9600);
   Serial.println(F("Touch Paint!"));
 
-  arcada.begin();
+  if (!arcada.arcadaBegin()) {
+    Serial.print("Failed to begin");
+    while (1);
+  }
   arcada.displayBegin();
-  arcada.fillScreen(ILI9341_BLACK);
+  arcada.display->fillScreen(ARCADA_BLACK);
   
   // make the color selection boxes
-  arcada.fillRect(0, 0, BOXSIZE, BOXSIZE, ILI9341_RED);
-  arcada.fillRect(0, BOXSIZE, BOXSIZE, BOXSIZE, ILI9341_YELLOW);
-  arcada.fillRect(0, BOXSIZE*2, BOXSIZE, BOXSIZE, ILI9341_GREEN);
-  arcada.fillRect(0, BOXSIZE*3, BOXSIZE, BOXSIZE, ILI9341_CYAN);
-  arcada.fillRect(0, BOXSIZE*4, BOXSIZE, BOXSIZE, ILI9341_BLUE);
-  arcada.fillRect(0, BOXSIZE*5, BOXSIZE, BOXSIZE, ILI9341_MAGENTA);
+  arcada.display->fillRect(0, 0, BOXSIZE, BOXSIZE, ARCADA_RED);
+  arcada.display->fillRect(0, BOXSIZE, BOXSIZE, BOXSIZE, ARCADA_YELLOW);
+  arcada.display->fillRect(0, BOXSIZE*2, BOXSIZE, BOXSIZE, ARCADA_GREEN);
+  arcada.display->fillRect(0, BOXSIZE*3, BOXSIZE, BOXSIZE, ARCADA_CYAN);
+  arcada.display->fillRect(0, BOXSIZE*4, BOXSIZE, BOXSIZE, ARCADA_BLUE);
+  arcada.display->fillRect(0, BOXSIZE*5, BOXSIZE, BOXSIZE, ARCADA_MAGENTA);
  
   // select the current color 'red'
-  arcada.drawRect(0, 0, BOXSIZE, BOXSIZE, ILI9341_WHITE);
-  currentcolor = ILI9341_RED;
+  arcada.display->drawRect(0, 0, BOXSIZE, BOXSIZE, ARCADA_WHITE);
+  currentcolor = ARCADA_RED;
 
   arcada.setBacklight(255);
 }
@@ -50,41 +53,41 @@ void loop()
      oldcolor = currentcolor;
 
      if (p.y < BOXSIZE) { 
-       currentcolor = ILI9341_RED; 
-       arcada.drawRect(0, 0, BOXSIZE, BOXSIZE, ILI9341_WHITE);
+       currentcolor = ARCADA_RED; 
+       arcada.display->drawRect(0, 0, BOXSIZE, BOXSIZE, ARCADA_WHITE);
      } else if (p.y < BOXSIZE*2) {
-       currentcolor = ILI9341_YELLOW;
-       arcada.drawRect(0, BOXSIZE, BOXSIZE, BOXSIZE, ILI9341_WHITE);
+       currentcolor = ARCADA_YELLOW;
+       arcada.display->drawRect(0, BOXSIZE, BOXSIZE, BOXSIZE, ARCADA_WHITE);
      } else if (p.y < BOXSIZE*3) {
-       currentcolor = ILI9341_GREEN;
-       arcada.drawRect(0, BOXSIZE*2, BOXSIZE, BOXSIZE, ILI9341_WHITE);
+       currentcolor = ARCADA_GREEN;
+       arcada.display->drawRect(0, BOXSIZE*2, BOXSIZE, BOXSIZE, ARCADA_WHITE);
      } else if (p.y < BOXSIZE*4) {
-       currentcolor = ILI9341_CYAN;
-       arcada.drawRect(0, BOXSIZE*3, BOXSIZE, BOXSIZE, ILI9341_WHITE);
+       currentcolor = ARCADA_CYAN;
+       arcada.display->drawRect(0, BOXSIZE*3, BOXSIZE, BOXSIZE, ARCADA_WHITE);
      } else if (p.y < BOXSIZE*5) {
-       currentcolor = ILI9341_BLUE;
-       arcada.drawRect(0, BOXSIZE*4, BOXSIZE, BOXSIZE, ILI9341_WHITE);
+       currentcolor = ARCADA_BLUE;
+       arcada.display->drawRect(0, BOXSIZE*4, BOXSIZE, BOXSIZE, ARCADA_WHITE);
      } else if (p.y < BOXSIZE*6) {
-       currentcolor = ILI9341_MAGENTA;
-       arcada.drawRect(0, BOXSIZE*5, BOXSIZE, BOXSIZE, ILI9341_WHITE);
+       currentcolor = ARCADA_MAGENTA;
+       arcada.display->drawRect(0, BOXSIZE*5, BOXSIZE, BOXSIZE, ARCADA_WHITE);
      }
 
      if (oldcolor != currentcolor) {
-        if (oldcolor == ILI9341_RED) 
-          arcada.fillRect(0, 0, BOXSIZE, BOXSIZE, ILI9341_RED);
-        if (oldcolor == ILI9341_YELLOW) 
-          arcada.fillRect(0, BOXSIZE, BOXSIZE, BOXSIZE, ILI9341_YELLOW);
-        if (oldcolor == ILI9341_GREEN) 
-          arcada.fillRect(0, BOXSIZE*2, BOXSIZE, BOXSIZE, ILI9341_GREEN);
-        if (oldcolor == ILI9341_CYAN) 
-          arcada.fillRect(0, BOXSIZE*3, BOXSIZE, BOXSIZE, ILI9341_CYAN);
-        if (oldcolor == ILI9341_BLUE) 
-          arcada.fillRect(0, BOXSIZE*4, BOXSIZE, BOXSIZE, ILI9341_BLUE);
-        if (oldcolor == ILI9341_MAGENTA) 
-          arcada.fillRect(0, BOXSIZE*5, BOXSIZE, BOXSIZE, ILI9341_MAGENTA);
+        if (oldcolor == ARCADA_RED) 
+          arcada.display->fillRect(0, 0, BOXSIZE, BOXSIZE, ARCADA_RED);
+        if (oldcolor == ARCADA_YELLOW) 
+          arcada.display->fillRect(0, BOXSIZE, BOXSIZE, BOXSIZE, ARCADA_YELLOW);
+        if (oldcolor == ARCADA_GREEN) 
+          arcada.display->fillRect(0, BOXSIZE*2, BOXSIZE, BOXSIZE, ARCADA_GREEN);
+        if (oldcolor == ARCADA_CYAN) 
+          arcada.display->fillRect(0, BOXSIZE*3, BOXSIZE, BOXSIZE, ARCADA_CYAN);
+        if (oldcolor == ARCADA_BLUE) 
+          arcada.display->fillRect(0, BOXSIZE*4, BOXSIZE, BOXSIZE, ARCADA_BLUE);
+        if (oldcolor == ARCADA_MAGENTA) 
+          arcada.display->fillRect(0, BOXSIZE*5, BOXSIZE, BOXSIZE, ARCADA_MAGENTA);
      }
   }
-  if (((p.x-PENRADIUS) > BOXSIZE) && ((p.x+PENRADIUS) < arcada.width())) {
-    arcada.fillCircle(p.x, p.y, PENRADIUS, currentcolor);
+  if (((p.x-PENRADIUS) > BOXSIZE) && ((p.x+PENRADIUS) < arcada.display->width())) {
+    arcada.display->fillCircle(p.x, p.y, PENRADIUS, currentcolor);
   }
 }
