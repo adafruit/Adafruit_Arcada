@@ -7,7 +7,6 @@ void setup(void) {
   Serial.begin(9600);
   Serial.print("Hello! Arcada TFT Test");
 
-
   // Start TFT and fill black
   if (!arcada.arcadaBegin()) {
     Serial.print("Failed to begin");

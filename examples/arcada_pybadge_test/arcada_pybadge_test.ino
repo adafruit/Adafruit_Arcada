@@ -21,32 +21,33 @@ void timercallback() {
 }
 
 void setup() {
-  while (!Serial);
+  Serial.begin(9600);
+  //while (!Serial);
 
   Serial.println("Hello! Arcada PyBadge test");
   if (!arcada.arcadaBegin()) {
     Serial.print("Failed to begin");
+    while (1);
   }
   arcada.displayBegin();
   Serial.println("Arcada display begin");
 
   for (int i=0; i<250; i++) {
-    Serial.printf("lite = %d\n", i);
+    //Serial.printf("lite = %d\n", i);
     arcada.setBacklight(i);
     delay(1);
   }
 
-  /*
-  Serial.printf("color fills");
-  arcada.fillScreen(ARCADA_RED);
+  //Serial.printf("color fills");
+  arcada.display->fillScreen(ARCADA_RED);
   delay(100);
-  arcada.fillScreen(ARCADA_GREEN);
+  arcada.display->fillScreen(ARCADA_GREEN);
   delay(100);
-  arcada.fillScreen(ARCADA_BLUE);
+  arcada.display->fillScreen(ARCADA_BLUE);
   delay(100);
-  arcada.fillScreen(ARCADA_BLACK);
+  arcada.display->fillScreen(ARCADA_BLACK);
   delay(100);
-*/
+
   arcada.display->setCursor(0, 0);
   arcada.display->setTextWrap(true);
 

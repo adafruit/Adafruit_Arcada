@@ -9,9 +9,15 @@
 
 Adafruit_Arcada arcada;
 
+#if !defined(USE_TINYUSB)
+  #error "Compile with TinyUSB selected!"
+#endif
+
 void setup()
 {
-  arcada.begin();
+  if (!arcada.arcadaBegin()) {
+    while (1);
+  }
   arcada.filesysBeginMSD();
 
   Serial.begin(115200);
