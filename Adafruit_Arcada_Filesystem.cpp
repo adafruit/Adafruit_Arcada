@@ -39,6 +39,7 @@ Arcada_FilesystemType Adafruit_Arcada_SPITFT::filesysBegin(Arcada_FilesystemType
     Serial.println("Trying SD Card filesystem");
     if (Arcada_SD_FileSys.begin(ARCADA_SD_CS)) {
       Serial.println("SD card found");
+      SD_imagereader = new Adafruit_ImageReader(Arcada_SD_FileSys);
       _filesys_type = ARCADA_FILESYS_SD;
     }
   }
@@ -68,6 +69,7 @@ Arcada_FilesystemType Adafruit_Arcada_SPITFT::filesysBegin(Arcada_FilesystemType
       } else {
 	_filesys_type = ARCADA_FILESYS_QSPI;
       }
+      QSPI_imagereader = new Adafruit_ImageReader(Arcada_QSPI_FileSys);
     }
   }
 
@@ -395,12 +397,8 @@ bool Adafruit_Arcada_SPITFT::chooseFile(const char *path,
       while (entry = dir.openNextFile()) {
 	char    filename[SD_MAX_FILENAME_SIZE];
 	filename[0] = 0;
-
-#if defined(ARCADA_USE_QSPI_FS)
-	strncpy(filename, entry.name(), SD_MAX_FILENAME_SIZE-1);
-#else
 	entry.getName(filename, SD_MAX_FILENAME_SIZE-1);
-#endif
+
 	if (entry.isDirectory() || filenameValidityChecker(filename, extensionFilter)) {
 	  if (line == selected_line) {
 	    display->setTextColor(ARCADA_YELLOW, ARCADA_RED);

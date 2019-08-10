@@ -10,7 +10,7 @@
 Adafruit_Arcada arcada;
 
 #if !defined(USE_TINYUSB)
-  #error "Compile with TinyUSB selected!"
+  #warning "Compile with TinyUSB selected!"
 #endif
 
 void setup()

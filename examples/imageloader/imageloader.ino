@@ -2,7 +2,9 @@
 Adafruit_Arcada arcada;
 
 void setup(void) {
-  arcada.begin();
+  if (!arcada.arcadaBegin()) {
+    while (1);
+  }
   // If we are using TinyUSB we will have the filesystem show up!
   arcada.filesysBeginMSD();
 
@@ -11,7 +13,7 @@ void setup(void) {
 
   // Start TFT and fill blue
   arcada.displayBegin();
-  arcada.fillScreen(ARCADA_BLUE);
+  arcada.display->fillScreen(ARCADA_BLUE);
   arcada.setBacklight(255);
 
   if (arcada.filesysBegin()) {
@@ -25,7 +27,7 @@ void setup(void) {
 
   // Load full-screen BMP file 'purple.bmp' at position (0,0) (top left).
   Serial.print("Loading purple.bmp to screen...");
-  ImageReturnCode stat = arcada.drawBMP("/purple.bmp", 0, 0);
+  ImageReturnCode stat = arcada.drawBMP((char *)"/purple.bmp", 0, 0);
   if(stat == IMAGE_ERR_FILE_NOT_FOUND) {
     arcada.haltBox("File not found");
   } else if(stat == IMAGE_ERR_FORMAT) {
