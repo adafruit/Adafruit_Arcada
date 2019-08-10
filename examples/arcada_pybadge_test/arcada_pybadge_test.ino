@@ -21,19 +21,23 @@ void timercallback() {
 }
 
 void setup() {
-  //while (!Serial);
+  while (!Serial);
 
   Serial.println("Hello! Arcada PyBadge test");
-  if (!arcada.begin()) {
+  if (!arcada.arcadaBegin()) {
     Serial.print("Failed to begin");
   }
   arcada.displayBegin();
   Serial.println("Arcada display begin");
 
   for (int i=0; i<250; i++) {
+    Serial.printf("lite = %d\n", i);
     arcada.setBacklight(i);
     delay(1);
   }
+
+  /*
+  Serial.printf("color fills");
   arcada.fillScreen(ARCADA_RED);
   delay(100);
   arcada.fillScreen(ARCADA_GREEN);
@@ -42,45 +46,46 @@ void setup() {
   delay(100);
   arcada.fillScreen(ARCADA_BLACK);
   delay(100);
-
-  arcada.setCursor(0, 0);
-  arcada.setTextWrap(true);
+*/
+  arcada.display->setCursor(0, 0);
+  arcada.display->setTextWrap(true);
 
   /********** Check QSPI manually */
   if (!Arcada_QSPI_Flash.begin()){
     Serial.println("Could not find flash on QSPI bus!");
-    arcada.setTextColor(ARCADA_RED);
-    arcada.println("QSPI Flash FAIL");
+    arcada.display->setTextColor(ARCADA_RED);
+    arcada.display->println("QSPI Flash FAIL");
+  } else {
+    uint32_t jedec;
+    
+    jedec = Arcada_QSPI_Flash.getJEDECID();
+    Serial.print("JEDEC ID: 0x"); Serial.println(jedec, HEX);
+    arcada.display->setTextColor(ARCADA_GREEN);
+    arcada.display->print("QSPI Flash OK\nJEDEC: 0x"); arcada.display->println(jedec, HEX);
   }
-  uint32_t jedec;
   
-  jedec = Arcada_QSPI_Flash.getJEDECID();
-  Serial.print("JEDEC ID: 0x"); Serial.println(jedec, HEX);
-    arcada.setTextColor(ARCADA_GREEN);
-  arcada.print("QSPI Flash OK\nJEDEC: 0x"); arcada.println(jedec, HEX);
-
    /********** Check filesystem next */
   if (!arcada.filesysBegin()) {
     Serial.println("Failed to load filesys");
-    arcada.setTextColor(ARCADA_RED);
-    arcada.println("Filesystem failure");
+    arcada.display->setTextColor(ARCADA_RED);
+    arcada.display->println("Filesystem failure");
   } else {
     Serial.println("Filesys OK!");
-    arcada.setTextColor(ARCADA_GREEN);
-    arcada.print("Filesystem OK: ");
-    arcada.print(arcada.filesysListFiles("/"));
-    arcada.println(" files");
+    arcada.display->setTextColor(ARCADA_GREEN);
+    arcada.display->print("Filesystem OK: ");
+    arcada.display->print(arcada.filesysListFiles("/"));
+    arcada.display->println(" files");
   }
 
   /********** Check LIS3DH */
   if (!arcada.hasAccel()) {
     Serial.println("No accelerometer found");
-    arcada.setTextColor(ARCADA_YELLOW);
-    arcada.println("Accelerometer not found");
+    arcada.display->setTextColor(ARCADA_YELLOW);
+    arcada.display->println("Accelerometer not found");
   } else {
     Serial.println("Accelerometer OK!");
-    arcada.setTextColor(ARCADA_GREEN);
-    arcada.println("Accelerometer OK!");
+    arcada.display->setTextColor(ARCADA_GREEN);
+    arcada.display->println("Accelerometer OK!");
     arcada.accel.setRange(LIS3DH_RANGE_4_G);   // 2, 4, 8 or 16 G!
     arcada.accel.setClick(1, 80);
   }
@@ -88,13 +93,13 @@ void setup() {
   /********** Check WiFi*/
   if (!arcada.hasWiFi())
   {
-    Serial.println("ESP32 SPI mode not found");
-    arcada.setTextColor(ARCADA_YELLOW);
-    arcada.println("WiFi FAILED");
+    Serial.println("AirLift WiFi module not found");
+    arcada.display->setTextColor(ARCADA_YELLOW);
+    arcada.display->println("WiFi FAILED");
   } else {
-    Serial.println("ESP32 SPI mode found!");
-    arcada.setTextColor(ARCADA_GREEN);
-    arcada.println("WiFi OK!");
+    Serial.println("AirLift WiFi module found!");
+    arcada.display->setTextColor(ARCADA_GREEN);
+    arcada.display->println("WiFi OK!");
   }
 
   //arcada.writeFileToFlash("test.txt");
@@ -138,41 +143,41 @@ void loop() {
     Serial.print(" \tY: "); Serial.print(event.acceleration.y); 
     Serial.print(" \tZ: "); Serial.print(event.acceleration.z); 
     Serial.println(" m/s^2 ");
-    arcada.fillRect(0, 40, 160, 8, ARCADA_BLACK);
-    arcada.setTextColor(ARCADA_WHITE);
-    arcada.setCursor(0, 40);
-    arcada.print("X:"); arcada.print(event.acceleration.x, 1);
-    arcada.setCursor(50, 40);
-    arcada.print("Y:"); arcada.print(event.acceleration.y, 1);
-    arcada.setCursor(100, 40);
-    arcada.print("Z:"); arcada.print(event.acceleration.z, 1);
+    arcada.display->fillRect(0, 40, 160, 8, ARCADA_BLACK);
+    arcada.display->setTextColor(ARCADA_WHITE);
+    arcada.display->setCursor(0, 40);
+    arcada.display->print("X:"); arcada.display->print(event.acceleration.x, 1);
+    arcada.display->setCursor(50, 40);
+    arcada.display->print("Y:"); arcada.display->print(event.acceleration.y, 1);
+    arcada.display->setCursor(100, 40);
+    arcada.display->print("Z:"); arcada.display->print(event.acceleration.z, 1);
   }
 
   // Read light sensor
   Serial.print("Light: "); Serial.println(arcada.readLightSensor());
-  arcada.fillRect(0, 50, 160, 8, ARCADA_BLACK);
-  arcada.setCursor(0, 50);
-  arcada.setTextColor(ARCADA_WHITE);
-  arcada.print("Light: "); arcada.print(arcada.readLightSensor());
+  arcada.display->fillRect(0, 50, 160, 8, ARCADA_BLACK);
+  arcada.display->setCursor(0, 50);
+  arcada.display->setTextColor(ARCADA_WHITE);
+  arcada.display->print("Light: "); arcada.display->print(arcada.readLightSensor());
 
   // Read battery
-  arcada.setCursor(80, 50);
-  arcada.setTextColor(ARCADA_WHITE);
+  arcada.display->setCursor(80, 50);
+  arcada.display->setTextColor(ARCADA_WHITE);
   float vbat = arcada.readBatterySensor();
   Serial.print("Battery: "); Serial.print(vbat); Serial.println("V");
-  arcada.print("Batt: "); arcada.print(vbat); arcada.println("V");
+  arcada.display->print("Batt: "); arcada.display->print(vbat); arcada.display->println("V");
 
   // Read the 2 Stemma connectors (these are not in ARCADA because they're external hardware)
-  arcada.fillRect(0, 60, 160, 16, ARCADA_BLACK);
-  arcada.setCursor(0, 60);
-  arcada.setTextColor(ARCADA_BLUE);
+  arcada.display->fillRect(0, 60, 160, 16, ARCADA_BLACK);
+  arcada.display->setCursor(0, 60);
+  arcada.display->setTextColor(ARCADA_BLUE);
   float vsense = analogRead(A8)*3.3/1024;
   Serial.print("D2/A8: "); Serial.print(vsense); Serial.println("V");
-  arcada.print("D2/A8: "); arcada.print(vsense); arcada.println("V");
+  arcada.display->print("D2/A8: "); arcada.display->print(vsense); arcada.display->println("V");
   vsense = analogRead(A9)*3.3/1024;
-  arcada.setCursor(80, 60);
+  arcada.display->setCursor(80, 60);
   Serial.print("D3/A9: "); Serial.print(vsense); Serial.println("V");
-  arcada.print("D3/A9: "); arcada.print(vsense); arcada.println("V");
+  arcada.display->print("D3/A9: "); arcada.display->print(vsense); arcada.display->println("V");
 
   Serial.printf("Drawing %d NeoPixels", arcada.pixels.numPixels());  
   for(int32_t i=0; i< arcada.pixels.numPixels(); i++) {
@@ -182,38 +187,38 @@ void loop() {
   j++;
 
   uint8_t pressed_buttons = arcada.readButtons();
-  arcada.fillRect(0, 70, 160, 60, ARCADA_BLACK);
+  arcada.display->fillRect(0, 70, 160, 60, ARCADA_BLACK);
   
   if (pressed_buttons & ARCADA_BUTTONMASK_A) {
     Serial.print("A");
-    arcada.drawCircle(145, 100, 10, ARCADA_WHITE);
+    arcada.display->drawCircle(145, 100, 10, ARCADA_WHITE);
   }
   if (pressed_buttons & ARCADA_BUTTONMASK_B) {
     Serial.print("B");
-    arcada.drawCircle(120, 100, 10, ARCADA_WHITE);
+    arcada.display->drawCircle(120, 100, 10, ARCADA_WHITE);
   }
   if (pressed_buttons & ARCADA_BUTTONMASK_SELECT) {
     Serial.print("Sel");
-    arcada.drawRoundRect(60, 100, 20, 10, 5, ARCADA_WHITE);
+    arcada.display->drawRoundRect(60, 100, 20, 10, 5, ARCADA_WHITE);
   }
   if (pressed_buttons & ARCADA_BUTTONMASK_START) {
     Serial.print("Sta");
-    arcada.drawRoundRect(85, 100, 20, 10, 5, ARCADA_WHITE);
+    arcada.display->drawRoundRect(85, 100, 20, 10, 5, ARCADA_WHITE);
   }
   if (pressed_buttons & ARCADA_BUTTONMASK_UP) {  
     Serial.print("^");
-    arcada.drawTriangle(15, 86, 35, 86, 25, 76, ARCADA_WHITE);
+    arcada.display->drawTriangle(15, 86, 35, 86, 25, 76, ARCADA_WHITE);
   }
   if (pressed_buttons & ARCADA_BUTTONMASK_DOWN) {
     Serial.print("v");
-    arcada.drawTriangle(15, 113, 35, 113, 25, 123, ARCADA_WHITE);
+    arcada.display->drawTriangle(15, 113, 35, 113, 25, 123, ARCADA_WHITE);
   }
   if (pressed_buttons & ARCADA_BUTTONMASK_LEFT) {
     Serial.print("<");
-    arcada.drawTriangle(10, 90, 10, 110, 0, 100, ARCADA_WHITE);
+    arcada.display->drawTriangle(10, 90, 10, 110, 0, 100, ARCADA_WHITE);
   }
   if (pressed_buttons & ARCADA_BUTTONMASK_RIGHT) {
-    arcada.drawTriangle(40, 90, 40, 110, 50, 100, ARCADA_WHITE);
+    arcada.display->drawTriangle(40, 90, 40, 110, 50, 100, ARCADA_WHITE);
     Serial.print(">");
   }
   Serial.println();

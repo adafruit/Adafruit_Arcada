@@ -350,8 +350,8 @@ bool Adafruit_Arcada_SPITFT::chooseFile(const char *path,
 
   strncpy(curr_path, path, 255);
 
-  setTextSize(FILECHOOSEMENU_TEXT_SIZE);
-  setTextWrap(false);
+  display->setTextSize(FILECHOOSEMENU_TEXT_SIZE);
+  display->setTextWrap(false);
 
   bool redraw = true; // we need to redraw the filenames/selection
   bool chdir  = true; // changed dir, we need to redraw everything!
@@ -368,29 +368,29 @@ bool Adafruit_Arcada_SPITFT::chooseFile(const char *path,
       if (chdir) {
 	Serial.println("\nRedrawing menu");
 	starting_line = selected_line = 0;
-	fillScreen(ARCADA_BLACK);
-	fillRect(0, 0, ARCADA_TFT_WIDTH, FILECHOOSEMENU_TEXT_HEIGHT*2, ARCADA_BLUE);
-	setTextColor(ARCADA_WHITE);
+	display->fillScreen(ARCADA_BLACK);
+	display->fillRect(0, 0, ARCADA_TFT_WIDTH, FILECHOOSEMENU_TEXT_HEIGHT*2, ARCADA_BLUE);
+	display->setTextColor(ARCADA_WHITE);
 	
 	// figure out how to display the directory at the top
 	int dirlen = strlen(curr_path);
 	if (dirlen != 1) dirlen++;        // if not '/'
 	if (extensionFilter) dirlen += 2+strlen(extensionFilter);   // if we'll be displaying *.txt
-	setCursor((ARCADA_TFT_WIDTH - dirlen*FILECHOOSEMENU_TEXT_WIDTH)/2, 0);
-	print(curr_path);
+	display->setCursor((ARCADA_TFT_WIDTH - dirlen*FILECHOOSEMENU_TEXT_WIDTH)/2, 0);
+	display->print(curr_path);
 	if (strcmp(curr_path, "/") != 0) {
-	  print("/");
+	  display->print("/");
 	}
 	if (extensionFilter) {
-	  print("*.");
-	  print(extensionFilter);
+	  display->print("*.");
+	  display->print(extensionFilter);
 	}
-	setCursor(0, FILECHOOSEMENU_TEXT_HEIGHT);
-	print("A to select & B to go back");
+	display->setCursor(0, FILECHOOSEMENU_TEXT_HEIGHT);
+	display->print("A to select & B to go back");
 	chdir = false;
       }
 
-      setCursor(0, FILECHOOSEMENU_TEXT_HEIGHT*2);
+      display->setCursor(0, FILECHOOSEMENU_TEXT_HEIGHT*2);
       line = 0;
       while (entry = dir.openNextFile()) {
 	char    filename[SD_MAX_FILENAME_SIZE];
@@ -403,7 +403,7 @@ bool Adafruit_Arcada_SPITFT::chooseFile(const char *path,
 #endif
 	if (entry.isDirectory() || filenameValidityChecker(filename, extensionFilter)) {
 	  if (line == selected_line) {
-	    setTextColor(ARCADA_YELLOW, ARCADA_RED);
+	    display->setTextColor(ARCADA_YELLOW, ARCADA_RED);
 	    int maxlen = selected_filename_maxlen-1;
 	    char *fn_ptr = selected_filename;
 	    strncpy(fn_ptr, curr_path, maxlen);
@@ -422,18 +422,18 @@ bool Adafruit_Arcada_SPITFT::chooseFile(const char *path,
 	    Serial.print("Select -> "); Serial.println(selected_filename);
 	    selected_isdir = entry.isDirectory();
 	  } else {
-	    setTextColor(ARCADA_WHITE, ARCADA_BLACK);
+	    display->setTextColor(ARCADA_WHITE, ARCADA_BLACK);
 	  }
 	  //Serial.printf("line %d, starting %d\n", line, starting_line);
 	  if (line >= starting_line) {
-	    print(filename);
+	    display->print(filename);
 	    if (entry.isDirectory()) {
-	      print("/");
+	      display->print("/");
 	    }
 	    for (int x=strlen(filename); x<FILECHOOSEMENU_MAX_LINELENGTH+1; x++) {
-	      print(" ");
+	      display->print(" ");
 	    }
-	    println();
+	    display->println();
 	  }
 	  line++;
 	}
@@ -465,11 +465,11 @@ bool Adafruit_Arcada_SPITFT::chooseFile(const char *path,
 	int scrollnum = strlen(fn_ptr) - FILECHOOSEMENU_MAX_LINELENGTH;
 	if (scrollnum > 0) {
 	  int ypos = ((selected_line - starting_line) + 2) * FILECHOOSEMENU_TEXT_HEIGHT;
-	  setTextColor(ARCADA_YELLOW, ARCADA_RED);
-	  setCursor(0, ypos);
-	  print(fn_ptr+selected_scroll_idx);
+	  display->setTextColor(ARCADA_YELLOW, ARCADA_RED);
+	  display->setCursor(0, ypos);
+	  display->print(fn_ptr+selected_scroll_idx);
 	  for (int s=strlen(fn_ptr+selected_scroll_idx); s<FILECHOOSEMENU_MAX_LINELENGTH+2; s++) {
-	    print(' ');
+	    display->print(' ');
 	  }
 	  selected_scroll_idx++;
 	  if (selected_scroll_idx > scrollnum) {
@@ -533,7 +533,7 @@ bool Adafruit_Arcada_SPITFT::chooseFile(const char *path,
     }
   }
 
-  fillScreen(ARCADA_BLACK);
+  display->fillScreen(ARCADA_BLACK);
   return true;
 }
 

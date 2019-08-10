@@ -206,7 +206,7 @@ ImageReturnCode Adafruit_Arcada_SPITFT::drawBMP(char *filename,
   // TFT working buffer, and X & Y position of top-left corner (image
   // will be cropped on load if necessary). Image pointer is NULL when
   // reading to TFT, and transact argument is passed through.
-  return coreBMP(filename, this, tftbuf, x, y, NULL, transact);
+  return coreBMP(filename, display, tftbuf, x, y, NULL, transact);
 }
 
 /*!

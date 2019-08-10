@@ -11,17 +11,7 @@ void TC4_Handler(){
     @brief  Instantiator for Arcada class, will allso inistantiate (but not init) the TFT
 */
 /**************************************************************************/
-Adafruit_Arcada_SPITFT::Adafruit_Arcada_SPITFT(uint16_t w, uint16_t h, int8_t cs,
-					       int8_t dc, int8_t rst) : Adafruit_SPITFT(w, h, cs, dc, rst)
-  /*
-#if defined(ARCADA_TFT_SPI)
-  ARCADA_TFT_TYPE(&ARCADA_TFT_SPI, ARCADA_TFT_CS, ARCADA_TFT_DC, ARCADA_TFT_RST)
-#elif defined(ARCADA_TFT_D0)
-  ARCADA_TFT_TYPE(tft8bitbus, ARCADA_TFT_D0, ARCADA_TFT_WR, ARCADA_TFT_DC, ARCADA_TFT_CS, ARCADA_TFT_RST, ARCADA_TFT_RD)
-#else // default SPI
-  ARCADA_TFT_TYPE(ARCADA_TFT_CS, ARCADA_TFT_DC, ARCADA_TFT_RST)
-#endif
-  */
+Adafruit_Arcada_SPITFT::Adafruit_Arcada_SPITFT()
 {
   _sd_cs = ARCADA_SD_CS;
   _speaker_en = ARCADA_SPEAKER_ENABLE;
@@ -429,35 +419,35 @@ uint32_t Adafruit_Arcada_SPITFT::readButtons(void) {
     if (p.z > 100) {
       //Serial.printf("(%d, %d)\n", p.x, p.y);
       // up!
-      if ( (p.y < height()/4) && (p.x > width()/4) && (p.x < (width()*3.0/4.0)) ) {
+      if ( (p.y < display->height()/4) && (p.x > display->width()/4) && (p.x < (display->width()*3.0/4.0)) ) {
 	buttons |= ARCADA_BUTTONMASK_UP;
       }
       // down!
-      if ( (p.y > (height()*3.0/4.0)) && 
-	   (p.x > width()/3) && (p.x < (width()*3.0/4.0)) ) {
+      if ( (p.y > (display->height()*3.0/4.0)) && 
+	   (p.x > display->width()/3) && (p.x < (display->width()*3.0/4.0)) ) {
 	buttons |= ARCADA_BUTTONMASK_DOWN;
       }
       // left!
-      if ( (p.x < width()/4) && (p.y > height()/4) && (p.y < (height()*3.0/4.0)) ) {
+      if ( (p.x < display->width()/4) && (p.y > display->height()/4) && (p.y < (display->height()*3.0/4.0)) ) {
 	buttons |= ARCADA_BUTTONMASK_LEFT;
       }
       // right!
-      if ( (p.x > (width()*3.0/4.0)) &&  
-	   (p.y > height()/4) && (p.y < (height()*3.0/4.0)) ) {
+      if ( (p.x > (display->width()*3.0/4.0)) &&  
+	   (p.y > display->height()/4) && (p.y < (display->height()*3.0/4.0)) ) {
 	buttons |= ARCADA_BUTTONMASK_RIGHT;
       }
       // left!
-      if ( (p.x < width()/4) && (p.y > height()/4) && (p.y < (height()*3.0/4.0)) ) {
+      if ( (p.x < display->width()/4) && (p.y > display->height()/4) && (p.y < (display->height()*3.0/4.0)) ) {
 	buttons |= ARCADA_BUTTONMASK_LEFT;
       }
       // B
-      if ( (p.x > width()/4) && (p.x < width()/2) // 2nd quarter
-	   && (p.y > height()/4) && (p.y < (height()*3.0/4.0)) ) {
+      if ( (p.x > display->width()/4) && (p.x < display->width()/2) // 2nd quarter
+	   && (p.y > display->height()/4) && (p.y < (display->height()*3.0/4.0)) ) {
 	buttons |= ARCADA_BUTTONMASK_B;
       }
       // A
-      if ( (p.x > width()/2) && (p.x < (width()*3.0/4.0)) // 3rd quarter
-	   && (p.y > height()/4) && (p.y < (height()*3.0/4.0)) ) {
+      if ( (p.x > display->width()/2) && (p.x < (display->width()*3.0/4.0)) // 3rd quarter
+	   && (p.y > display->height()/4) && (p.y < (display->height()*3.0/4.0)) ) {
 	buttons |= ARCADA_BUTTONMASK_A;
       }
     }
@@ -566,21 +556,21 @@ bool Adafruit_Arcada_SPITFT::createFrameBuffer(uint16_t width, uint16_t height) 
 */
 /**************************************************************************/
 bool Adafruit_Arcada_SPITFT::blitFrameBuffer(uint16_t x, uint16_t y, bool blocking,
-					     bool bigEndian, Adafruit_SPITFT *display) {
-  if (! display) {
-    display = this;
+					     bool bigEndian, Adafruit_SPITFT *blitdisplay) {
+  if (! blitdisplay) {
+    blitdisplay = display;
   }
   if(_canvas) {
     if (! _first_frame) {
-      display->dmaWait();  // Wait for prior DMA transfer to complete
-      display->endWrite(); // End transaction from any prior call
+      blitdisplay->dmaWait();  // Wait for prior DMA transfer to complete
+      blitdisplay->endWrite(); // End transaction from any prior call
     } else {
       _first_frame = false;
     }
-    display->startWrite(); // Start new display transaction
-    display->setAddrWindow(x, y, _canvas->width(), _canvas->height());
-    display->writePixels(_canvas->getBuffer(), _canvas->width() * _canvas->height(),
-			 blocking, bigEndian);
+    blitdisplay->startWrite(); // Start new display transaction
+    blitdisplay->setAddrWindow(x, y, _canvas->width(), _canvas->height());
+    blitdisplay->writePixels(_canvas->getBuffer(), _canvas->width() * _canvas->height(),
+			     blocking, bigEndian);
     return true;
   }
 
@@ -649,27 +639,27 @@ TSPoint Adafruit_Arcada_SPITFT::getTouchscreenPoint(void) {
 
   //Serial.printf("rot: %d (%d, %d) \t", getRotation(), p.x, p.y);
 
-  if (getRotation() == 0) {
-    int _y = map(p.y, _ts_ymin, _ts_ymax, 0, height());
-    int _x = map(p.x, _ts_xmin, _ts_xmax, 0, width());
+  if (display->getRotation() == 0) {
+    int _y = map(p.y, _ts_ymin, _ts_ymax, 0, display->height());
+    int _x = map(p.x, _ts_xmin, _ts_xmax, 0, display->width());
     p.x = _x;
     p.y = _y;
   }
-  if (getRotation() == 1) {
-    int _x = map(p.y, _ts_ymin, _ts_ymax, 0, width());
-    int _y = map(p.x, _ts_xmax, _ts_xmin, 0, height());
+  if (display->getRotation() == 1) {
+    int _x = map(p.y, _ts_ymin, _ts_ymax, 0, display->width());
+    int _y = map(p.x, _ts_xmax, _ts_xmin, 0, display->height());
     p.x = _x;
     p.y = _y;
   }
-  if (getRotation() == 2) {
-    int _y = map(p.y, _ts_ymax, _ts_ymin, 0, height());
-    int _x = map(p.x, _ts_xmax, _ts_xmin, 0, width());
+  if (display->getRotation() == 2) {
+    int _y = map(p.y, _ts_ymax, _ts_ymin, 0, display->height());
+    int _x = map(p.x, _ts_xmax, _ts_xmin, 0, display->width());
     p.x = _x;
     p.y = _y;
   }
-  if (getRotation() == 3) {
-    int _x = map(p.y, _ts_ymax, _ts_ymin, 0, width());
-    int _y = map(p.x, _ts_xmin, _ts_xmax, 0, height());
+  if (display->getRotation() == 3) {
+    int _x = map(p.y, _ts_ymax, _ts_ymin, 0, display->width());
+    int _y = map(p.x, _ts_xmin, _ts_xmax, 0, display->height());
     p.x = _x;
     p.y = _y;
   }
@@ -744,5 +734,5 @@ uint16_t Adafruit_Arcada_SPITFT::ColorHSV565(int16_t H, uint8_t S, uint8_t V) {
   uint8_t red = (Rs + m) * 255;
   uint8_t green = (Gs + m) * 255;
   uint8_t blue = (Bs + m) * 255;
-  return color565(red, green, blue);
+  return display->color565(red, green, blue);
 }

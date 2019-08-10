@@ -8,7 +8,7 @@ static uint16_t charHeight, charWidth;
 
 void Adafruit_Arcada_SPITFT::_initAlertFonts(void) {
   fontSize = 1;
-  if (width() > 160) {
+  if (display->width() > 160) {
     fontSize = 2;
   }
   charHeight = 8 * fontSize;
@@ -84,7 +84,7 @@ void Adafruit_Arcada_SPITFT::alertBox(const char *string, uint16_t boxColor, uin
   _initAlertFonts();
 
   uint16_t boxWidth = (maxCharPerLine + 2) * charWidth;
-  uint16_t boxX = (width() - boxWidth) / 2;
+  uint16_t boxX = (display->width() - boxWidth) / 2;
 
   // pre-calculate # of lines!
   uint8_t lines = 1;
@@ -106,16 +106,16 @@ void Adafruit_Arcada_SPITFT::alertBox(const char *string, uint16_t boxColor, uin
   }
 
   uint16_t boxHeight = (lines + 2) * charHeight;
-  uint16_t boxY = (height() - boxHeight) / 2;
+  uint16_t boxY = (display->height() - boxHeight) / 2;
 
-  fillRoundRect(boxX, boxY, boxWidth, boxHeight, charWidth, boxColor);
-  drawRoundRect(boxX, boxY, boxWidth, boxHeight, charWidth, textColor);
+  display->fillRoundRect(boxX, boxY, boxWidth, boxHeight, charWidth, boxColor);
+  display->drawRoundRect(boxX, boxY, boxWidth, boxHeight, charWidth, textColor);
 
   fontX = boxX + charWidth;
   uint16_t fontY = boxY + charHeight;
-  setFont(); // default
-  setTextSize(fontSize);
-  setTextColor(ARCADA_BLACK);
+  display->setFont(); // default
+  display->setTextSize(fontSize);
+  display->setTextColor(ARCADA_BLACK);
 
   for (uint16_t c=0; c<strlen(string); c++) {
     const char *nextBreakStr = strpbrk(string+c, " \n");
@@ -130,9 +130,9 @@ void Adafruit_Arcada_SPITFT::alertBox(const char *string, uint16_t boxColor, uin
       fontY += charHeight;
       fontX = boxX + charWidth;
     }
-    setCursor(fontX, fontY);
+    display->setCursor(fontX, fontY);
     if (isprint(string[c]) && string[c] != '\n') {
-      print(string[c]);
+      display->print(string[c]);
     }
     fontX += charWidth;
   }
@@ -158,15 +158,15 @@ void Adafruit_Arcada_SPITFT::alertBox(const char *string, uint16_t boxColor, uin
     fontX = boxX + boxWidth - (strlen(buttonString)+1)*charWidth;
     fontY = boxY + boxHeight - charHeight;
 
-    fillRoundRect(fontX, fontY, 
-		  (strlen(buttonString)+2)*charWidth, charHeight*2, 
-		  charWidth, textColor);
-    drawRoundRect(fontX, fontY, 
-		  (strlen(buttonString)+2)*charWidth, charHeight*2,
-		  charWidth, textColor);
-    setCursor(fontX+charWidth, fontY+charHeight/2);
-    setTextColor(boxColor);
-    print(buttonString);
+    display->fillRoundRect(fontX, fontY, 
+			   (strlen(buttonString)+2)*charWidth, charHeight*2, 
+			   charWidth, textColor);
+    display->drawRoundRect(fontX, fontY, 
+			   (strlen(buttonString)+2)*charWidth, charHeight*2,
+			   charWidth, textColor);
+    display->setCursor(fontX+charWidth, fontY+charHeight/2);
+    display->setTextColor(boxColor);
+    display->print(buttonString);
 
     while (1) {
       readButtons();
@@ -212,26 +212,26 @@ uint8_t Adafruit_Arcada_SPITFT::menu(const char **menu_strings, uint8_t menu_num
 
   uint16_t boxWidth = (max_len + 4) * charWidth;
   uint16_t boxHeight = (menu_num + 2) * charHeight;
-  uint16_t boxX = (width() - boxWidth) / 2;
-  uint16_t boxY = (height() - boxHeight) / 2;
+  uint16_t boxX = (display->width() - boxWidth) / 2;
+  uint16_t boxY = (display->height() - boxHeight) / 2;
 
   // draw the outline box
-  fillRoundRect(boxX, boxY, boxWidth, boxHeight, charWidth, boxColor);
-  drawRoundRect(boxX, boxY, boxWidth, boxHeight, charWidth, textColor);
+  display->fillRoundRect(boxX, boxY, boxWidth, boxHeight, charWidth, boxColor);
+  display->drawRoundRect(boxX, boxY, boxWidth, boxHeight, charWidth, textColor);
 
   // Print the selection hint
   const char *buttonString = "A";
   uint16_t fontX = boxX + boxWidth - (strlen(buttonString)+1)*charWidth + 2*fontSize;
   uint16_t fontY = boxY + boxHeight - charHeight;  
-  fillRoundRect(fontX, fontY, 
-		(strlen(buttonString)+2)*charWidth, charHeight*2, 
-		charWidth, textColor);
-  drawRoundRect(fontX, fontY, 
-		(strlen(buttonString)+2)*charWidth, charHeight*2,
-		charWidth, boxColor);
-  setCursor(fontX+charWidth, fontY+charHeight/2);
-  setTextColor(boxColor);
-  print(buttonString);
+  display->fillRoundRect(fontX, fontY, 
+			 (strlen(buttonString)+2)*charWidth, charHeight*2, 
+			 charWidth, textColor);
+  display->drawRoundRect(fontX, fontY, 
+			 (strlen(buttonString)+2)*charWidth, charHeight*2,
+			 charWidth, boxColor);
+  display->setCursor(fontX+charWidth, fontY+charHeight/2);
+  display->setTextColor(boxColor);
+  display->print(buttonString);
 
   // draw and select the menu
   int8_t selected = 0;
@@ -244,15 +244,15 @@ uint8_t Adafruit_Arcada_SPITFT::menu(const char **menu_strings, uint8_t menu_num
   while (1) {
     for (int i=0; i<menu_num; i++) {
       if (i == selected) {
-	setTextColor(boxColor, textColor);
+	display->setTextColor(boxColor, textColor);
       } else {
-	setTextColor(textColor, boxColor);
+	display->setTextColor(textColor, boxColor);
       }
-      setCursor(fontX, fontY+charHeight*i);
-      print(" ");
-      print(menu_strings[i]);
+      display->setCursor(fontX, fontY+charHeight*i);
+      display->print(" ");
+      display->print(menu_strings[i]);
       for (int j=strlen(menu_strings[i]); j<max_len+2; j++) {
-	print(" ");
+	display->print(" ");
       }
     }
 

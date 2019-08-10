@@ -27,8 +27,6 @@
 
   #define ARCADA_ACCEL_TYPE       ARCADA_ACCEL_LIS3DH
 
-  #include "arcadatype.h"
-
   #define SS_LIGHTSENSOR_PIN 2 
   #define SS_VCCSENSOR_PIN   3 
   #define SS_BACKLIGHT_PIN   5
@@ -36,6 +34,8 @@
   #define SS_SWITCH1_PIN     9
   #define SS_SWITCH2_PIN     10
   #define SS_SWITCH3_PIN     11
+
+  #include "arcadatype.h"
 
 
 class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {

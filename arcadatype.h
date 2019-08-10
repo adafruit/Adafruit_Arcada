@@ -91,10 +91,13 @@ class Adafruit_Arcada_Image {
     designs easier
 */
 /**************************************************************************/
-class Adafruit_Arcada_SPITFT : public Adafruit_SPITFT {
+class Adafruit_Arcada_SPITFT {
 
  public:
-  Adafruit_Arcada_SPITFT(uint16_t w, uint16_t h, int8_t cs, int8_t dc, int8_t rst);
+  Adafruit_SPITFT *display = 0;
+
+
+  Adafruit_Arcada_SPITFT(void);
 
   bool arcadaBegin(void);
   virtual bool variantBegin(void) = 0;
