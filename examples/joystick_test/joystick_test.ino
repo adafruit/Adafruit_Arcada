@@ -3,15 +3,17 @@
 Adafruit_Arcada arcada;
 
 void setup(void) {
-  //while (!Serial) delay(10);     // used for leonardo debugging
+  while (!Serial) delay(10);     // wait till serial port is ready!
 
-  delay(100);
-  Serial.begin(9600);
-  Serial.println(F("Controls Test"));
+  Serial.begin(115200);
+  Serial.println("Controls Test");
 
-  arcada.begin();
+  if (!arcada.arcadaBegin()) {
+    Serial.print("Failed to begin");
+    while (1);
+  }
   arcada.displayBegin();
-  arcada.fillScreen(ILI9341_BLACK);
+  arcada.display->fillScreen(ARCADA_BLACK);
   arcada.setBacklight(0);
 }
 
