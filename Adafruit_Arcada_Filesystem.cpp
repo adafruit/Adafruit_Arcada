@@ -17,7 +17,12 @@ static bool filenameValidityChecker(const char *filename, const char *extension)
   #endif
 #endif
 
-Adafruit_FlashTransport_QSPI flashTransport(PIN_QSPI_SCK, PIN_QSPI_CS, PIN_QSPI_IO0, PIN_QSPI_IO1, PIN_QSPI_IO2, PIN_QSPI_IO3);
+#if defined(PIN_QSPI_SCK)
+  Adafruit_FlashTransport_QSPI flashTransport(PIN_QSPI_SCK, PIN_QSPI_CS, PIN_QSPI_IO0, PIN_QSPI_IO1, PIN_QSPI_IO2, PIN_QSPI_IO3);
+#elif defined(ARCADA_SPIFLASH_CS)
+  Adafruit_FlashTransport_SPI flashTransport(ARCADA_SPIFLASH_CS, &ARCADA_SPIFLASH_SPI);
+#endif
+
 Adafruit_SPIFlash Arcada_QSPI_Flash(&flashTransport);
 FatFileSystem Arcada_QSPI_FileSys;
 
