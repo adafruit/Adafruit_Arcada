@@ -201,6 +201,7 @@ void Adafruit_Arcada_SPITFT::alertBox(const char *string, uint16_t boxColor, uin
 uint8_t Adafruit_Arcada_SPITFT::menu(const char **menu_strings, uint8_t menu_num, 
 			      uint16_t boxColor, uint16_t textColor, bool cancellable) {
   _initAlertFonts();
+  display->setTextSize(fontSize);
 
   uint16_t max_len = 0;
   for (int i=0; i<menu_num; i++) {
