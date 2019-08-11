@@ -36,13 +36,18 @@ typedef enum _FilesystemType {
 class Adafruit_Arcada_SPITFT {
 
  public:
-  Adafruit_SPITFT *display = 0;
-  Adafruit_ImageReader *QSPI_imagereader = 0, *SD_imagereader = 0;
-
+  Adafruit_SPITFT *display = 0;  ///< The Adafruit_GFX subclass display which the variant must create
 
   Adafruit_Arcada_SPITFT(void);
 
   bool arcadaBegin(void);
+
+  /**************************************************************************/
+  /*!
+    @brief  Perform any specialized variant setup such as initializing accelerometers, seesaw, etc
+    @returns True on variant setup success
+  */
+  /**************************************************************************/
   virtual bool variantBegin(void) = 0;
 
   bool timerCallback(uint32_t freq, void (*callback)());
@@ -128,6 +133,13 @@ class Adafruit_Arcada_SPITFT {
 
   Adafruit_NeoPixel pixels;     ///<  The neopixel strip, of length ARCADA_NEOPIXEL_NUM
 
+  /**************************************************************************/
+  /*!
+    @brief  Getter for accelerometer existance
+    @returns True if an accelerometer exists
+  */
+  /**************************************************************************/
+
   bool hasAccel(void) { return _has_accel; }
 
   /**************************************************************************/
@@ -145,10 +157,15 @@ class Adafruit_Arcada_SPITFT {
   ImageReturnCode drawBMP(char *filename, int16_t x, int16_t y, boolean transact = true);
 
  protected:
-  uint32_t last_buttons, curr_buttons, justpressed_buttons, justreleased_buttons;
-  bool _has_accel = false;
-  bool _has_wifi = false;
-  
+  uint32_t last_buttons, ///< After readButtons() is called, this has the previous button states
+    curr_buttons,  ///< After readButtons() is called, this has the current button states
+    justpressed_buttons,  ///< After readButtons() is called, this has what buttons were pressed since the call
+    justreleased_buttons; ///< After readButtons() is called, this has what buttons were released since the call
+  bool _has_accel = false; ///< Internally tracked variable if accelerometer was found
+  bool _has_wifi = false;  ///< Internally tracked variable if wifi module was found
+  Adafruit_ImageReader *QSPI_imagereader = 0,  ///< If initalized, the imagereader for the QSPI filesystem
+    *SD_imagereader = 0; ///< If initalized, the imagereader for the SD card filesystem
+
  private:
   void _initAlertFonts(void);
 

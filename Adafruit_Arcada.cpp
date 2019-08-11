@@ -526,6 +526,8 @@ bool Adafruit_Arcada_SPITFT::createFrameBuffer(uint16_t width, uint16_t height) 
     @param  bigEndian If true, frame buffer data is already in big-endian
     order (which is NOT SAMD-native order) and an actual background DMA blit
     can take place (SEE NOTE BELOW)
+    @param blitdisplay The pointer to display we'll blit to. If not passed in,
+    we'll use the 'internal' default of 'display' that the variant creates
     @return True on success, failure if no canvas exists yet
     @note Even if blocking is 'false,' this function may still block.
     For starters, DMA must be enabled in Adafruit_SPITFT.h. If bigEndian is
