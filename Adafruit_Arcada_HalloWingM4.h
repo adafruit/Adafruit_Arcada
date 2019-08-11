@@ -13,7 +13,7 @@
   #define ARCADA_TFT_HEIGHT       240
 
   #define ARCADA_TOUCHOUT_PIN    48
-  #define ARCADA_SPEAKER_ENABLE  29
+  #define ARCADA_SPEAKER_ENABLE  49
   #define ARCADA_NEOPIXEL_PIN     8
   #define ARCADA_NEOPIXEL_NUM     4
   #define ARCADA_AUDIO_OUT       A0
