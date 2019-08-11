@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['haltbox',['haltBox',['../class_adafruit___arcada.html#aeeecd475390ead532a141442574286ae',1,'Adafruit_Arcada']]],
-  ['hascontrolpad',['hasControlPad',['../class_adafruit___arcada.html#ad3fc21ab83e48bfb63c0ee1542bca435',1,'Adafruit_Arcada']]],
-  ['hastouchscreen',['hasTouchscreen',['../class_adafruit___arcada.html#aa660ac3c75c3fb959c97b37e6b1c0bbd',1,'Adafruit_Arcada']]],
-  ['haswifi',['hasWiFi',['../class_adafruit___arcada.html#a61668988409fa0fd7e9d329b9758830e',1,'Adafruit_Arcada']]],
-  ['height',['height',['../class_adafruit___arcada___image.html#a251e91f7ca962e10b0af94c7f5f0961a',1,'Adafruit_Arcada_Image']]]
+  ['getbacklight',['getBacklight',['../class_adafruit___arcada___s_p_i_t_f_t.html#aecfebcea505c3c7475f137e8a8f430a8',1,'Adafruit_Arcada_SPITFT']]],
+  ['getcanvas',['getCanvas',['../class_adafruit___arcada___s_p_i_t_f_t.html#a5368e7d0b9ec18a05df66f34be7be8e4',1,'Adafruit_Arcada_SPITFT']]],
+  ['getframebuffer',['getFrameBuffer',['../class_adafruit___arcada___s_p_i_t_f_t.html#a02b2621db86c94e0bd0cf14525e66600',1,'Adafruit_Arcada_SPITFT']]],
+  ['gettouchscreenpoint',['getTouchscreenPoint',['../class_adafruit___arcada___s_p_i_t_f_t.html#ab1260b72f857a2bb95b49fc82c1e66fd',1,'Adafruit_Arcada_SPITFT']]],
+  ['getvolume',['getVolume',['../class_adafruit___arcada___s_p_i_t_f_t.html#a5c88fe786f882f3e096aa9b20d75025e',1,'Adafruit_Arcada_SPITFT']]]
 ];

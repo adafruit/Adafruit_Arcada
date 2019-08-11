@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['adafruit_5farcada',['Adafruit_Arcada',['../class_adafruit___arcada.html#a686c0714b7484711f38ff02753969b41',1,'Adafruit_Arcada']]],
-  ['adafruit_5farcada_5fimage',['Adafruit_Arcada_Image',['../class_adafruit___arcada___image.html#a691035ff91425db83064338ca5ae90ab',1,'Adafruit_Arcada_Image']]],
-  ['alertbox',['alertBox',['../class_adafruit___arcada.html#aaccfecf2fd68e3e3a9681306d4fd0966',1,'Adafruit_Arcada']]]
+  ['adafruit_5farcada_5fspitft',['Adafruit_Arcada_SPITFT',['../class_adafruit___arcada___s_p_i_t_f_t.html#aed36639ae8ee400dcd62591b536670de',1,'Adafruit_Arcada_SPITFT']]],
+  ['alertbox',['alertBox',['../class_adafruit___arcada___s_p_i_t_f_t.html#aa4ab82ab00330377076d7665ed947966',1,'Adafruit_Arcada_SPITFT']]],
+  ['arcadabegin',['arcadaBegin',['../class_adafruit___arcada___s_p_i_t_f_t.html#a3a78e22b6b1d224b09567e7cfe7f9242',1,'Adafruit_Arcada_SPITFT']]]
 ];

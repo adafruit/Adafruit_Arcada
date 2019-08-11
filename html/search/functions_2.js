@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['chdir',['chdir',['../class_adafruit___arcada.html#adcaf9c1fb9f338911b9b2f941c10bf67',1,'Adafruit_Arcada']]],
-  ['choosefile',['chooseFile',['../class_adafruit___arcada.html#a8d6d7b4327106dcf5836e8a98d8e10b4',1,'Adafruit_Arcada']]],
-  ['colorhsv565',['ColorHSV565',['../class_adafruit___arcada.html#ae4afdb2b8f9836f9dcd88f823b1c979b',1,'Adafruit_Arcada']]],
-  ['createframebuffer',['createFrameBuffer',['../class_adafruit___arcada.html#adb0abb1174b8b764322a9988477a1a31',1,'Adafruit_Arcada']]]
+  ['chdir',['chdir',['../class_adafruit___arcada___s_p_i_t_f_t.html#a84f9a3b611764dbe0197f49d55c66a3d',1,'Adafruit_Arcada_SPITFT']]],
+  ['choosefile',['chooseFile',['../class_adafruit___arcada___s_p_i_t_f_t.html#ad76e46f6af3e2f59366c04826a37841a',1,'Adafruit_Arcada_SPITFT']]],
+  ['colorhsv565',['ColorHSV565',['../class_adafruit___arcada___s_p_i_t_f_t.html#a204ae8e206fac9b5e1b6957c0ade6478',1,'Adafruit_Arcada_SPITFT']]],
+  ['createframebuffer',['createFrameBuffer',['../class_adafruit___arcada___s_p_i_t_f_t.html#a4ef4a84ea854ced4f290c416fe50a51a',1,'Adafruit_Arcada_SPITFT']]]
 ];

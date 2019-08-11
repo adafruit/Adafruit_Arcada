@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['open',['open',['../class_adafruit___arcada.html#ae402406595840f5c1ecfc0f06835a6c9',1,'Adafruit_Arcada']]],
-  ['openfilebyindex',['openFileByIndex',['../class_adafruit___arcada.html#a1df48fc07c5e195d1df8fd193357d710',1,'Adafruit_Arcada']]]
+  ['menu',['menu',['../class_adafruit___arcada___s_p_i_t_f_t.html#a3db176c33a196a2259e88432a3ee8ce5',1,'Adafruit_Arcada_SPITFT']]],
+  ['mkdir',['mkdir',['../class_adafruit___arcada___s_p_i_t_f_t.html#acaa6c00ccfb2aa3d94ff1babcc7f02ef',1,'Adafruit_Arcada_SPITFT']]]
 ];

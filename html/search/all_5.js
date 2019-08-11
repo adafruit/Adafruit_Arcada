@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['filesysbegin',['filesysBegin',['../class_adafruit___arcada.html#acfb5ef1ed4de1f35c84aa3b8e67ea2e4',1,'Adafruit_Arcada']]],
-  ['filesysbeginmsd',['filesysBeginMSD',['../class_adafruit___arcada.html#a113a632aef4ec4ac09e0a113c0e71e8e',1,'Adafruit_Arcada']]],
-  ['filesyslistfiles',['filesysListFiles',['../class_adafruit___arcada.html#aae04e74c0e37d5ec04d8cb7c61a9c1ab',1,'Adafruit_Arcada']]],
-  ['format',['format',['../class_adafruit___arcada___image.html#a281b44b79322b7a00d6f21bddfbf26d3',1,'Adafruit_Arcada_Image']]]
+  ['enablespeaker',['enableSpeaker',['../class_adafruit___arcada___s_p_i_t_f_t.html#ada497071cca871bd0d745f8dc7ba0a3a',1,'Adafruit_Arcada_SPITFT']]],
+  ['errorbox',['errorBox',['../class_adafruit___arcada___s_p_i_t_f_t.html#a0844a7d3ca3450cff212ba2b85b46b51',1,'Adafruit_Arcada_SPITFT']]],
+  ['exists',['exists',['../class_adafruit___arcada___s_p_i_t_f_t.html#a941329756394057589660091789ecc24',1,'Adafruit_Arcada_SPITFT']]]
 ];

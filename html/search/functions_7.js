@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['haltbox',['haltBox',['../class_adafruit___arcada.html#aeeecd475390ead532a141442574286ae',1,'Adafruit_Arcada']]],
-  ['hascontrolpad',['hasControlPad',['../class_adafruit___arcada.html#ad3fc21ab83e48bfb63c0ee1542bca435',1,'Adafruit_Arcada']]],
-  ['hastouchscreen',['hasTouchscreen',['../class_adafruit___arcada.html#aa660ac3c75c3fb959c97b37e6b1c0bbd',1,'Adafruit_Arcada']]],
-  ['haswifi',['hasWiFi',['../class_adafruit___arcada.html#a61668988409fa0fd7e9d329b9758830e',1,'Adafruit_Arcada']]],
-  ['height',['height',['../class_adafruit___arcada___image.html#a251e91f7ca962e10b0af94c7f5f0961a',1,'Adafruit_Arcada_Image']]]
+  ['haltbox',['haltBox',['../class_adafruit___arcada___s_p_i_t_f_t.html#a3e1126a9de1a5756d82d24e2dc5a53d9',1,'Adafruit_Arcada_SPITFT']]],
+  ['hasaccel',['hasAccel',['../class_adafruit___arcada___s_p_i_t_f_t.html#af3d966ac4720a0eeae9188466cf2f21a',1,'Adafruit_Arcada_SPITFT']]],
+  ['hascontrolpad',['hasControlPad',['../class_adafruit___arcada___s_p_i_t_f_t.html#a8ce2166891e0b51b7caf51a535123844',1,'Adafruit_Arcada_SPITFT']]],
+  ['hastouchscreen',['hasTouchscreen',['../class_adafruit___arcada___s_p_i_t_f_t.html#a4033b28efd6efbdbb409454ba15b2aa7',1,'Adafruit_Arcada_SPITFT']]],
+  ['haswifi',['hasWiFi',['../class_adafruit___arcada___s_p_i_t_f_t.html#a9f856abe82e8afebf6d2d9cc9d345dc2',1,'Adafruit_Arcada_SPITFT']]]
 ];
