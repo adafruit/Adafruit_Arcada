@@ -9,11 +9,7 @@ class Adafruit_Arcada_SPITFT;
 #include <Adafruit_NeoPixel.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SPITFT.h>
-#include <Adafruit_ST7735.h>
-#include <Adafruit_ST7789.h>
-#include <Adafruit_ILI9341.h>
 #include <Adafruit_ZeroTimer.h>
-#include <Adafruit_LIS3DH.h>
 #include <TouchScreen.h>
 
 
@@ -23,6 +19,7 @@ class Adafruit_Arcada_SPITFT;
 #include "Adafruit_Arcada_PyGamerAdvance.h"
 #include "Adafruit_Arcada_PyPortal.h"
 #include "Adafruit_Arcada_MONSTERM4SK.h"
+#include "Adafruit_Arcada_HalloWingM4.h"
 
 
 #if defined(ARDUINO_GRAND_CENTRAL_M4) // w/TFT Shield

@@ -1,5 +1,7 @@
 #if defined(ADAFRUIT_PYPORTAL)
   #include <WiFiNINA.h>
+  #include <Adafruit_ILI9341.h>
+
   // 8 bit 320x240 TFT
   #define ARCADA_TFT_D0          34 // Data bit 0 pin (MUST be on PORT byte boundary)
   #define ARCADA_TFT_WR          26 // Write-strobe pin (CCL-inverted timer output)

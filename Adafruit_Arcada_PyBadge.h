@@ -1,4 +1,7 @@
 #if defined(ADAFRUIT_PYBADGE_M4_EXPRESS)
+  #include <Adafruit_LIS3DH.h>
+  #include <Adafruit_ST7735.h>
+
   #define ARCADA_TFT_SPI         SPI1
   #define ARCADA_TFT_CS          44       // Display CS Arduino pin number
   #define ARCADA_TFT_DC          45       // Display D/C Arduino pin number
