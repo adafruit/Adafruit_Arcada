@@ -52,6 +52,41 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
     tft->fillScreen(ARCADA_TFT_DEFAULTFILL);
     display = tft;
   }
+
+  uint32_t variantReadButtons(void) {
+    uint32_t buttons = 0;
+    if (capRead(ARCADA_TOUCHOUT_PIN, A2) > 700) {
+      buttons |= ARCADA_BUTTONMASK_UP;
+    }
+    if (capRead(ARCADA_TOUCHOUT_PIN, A3) > 700) {
+      buttons |= ARCADA_BUTTONMASK_DOWN;
+    }
+    if (capRead(ARCADA_TOUCHOUT_PIN, A4) > 700) {
+      buttons |= ARCADA_BUTTONMASK_LEFT | ARCADA_BUTTONMASK_B;
+    }
+    if (capRead(ARCADA_TOUCHOUT_PIN, A5) > 700) {
+      buttons |= ARCADA_BUTTONMASK_RIGHT | ARCADA_BUTTONMASK_A;
+    }
+    return buttons;
+  }
+
+ private:
+  uint16_t capRead(uint8_t outpin, uint8_t inpin, uint8_t num_readings=10) {
+    pinMode(outpin, OUTPUT);
+    pinMode(inpin, INPUT);
+    
+    uint16_t counter = 0;
+    for (int r=0; r<num_readings; r++) {
+      digitalWrite(outpin, HIGH);
+      while (!digitalRead(inpin)) {
+	counter++;
+	if (counter == 65535) { return 0; } // timed out
+      }
+      digitalWrite(outpin, LOW);
+      delay(1);
+    }
+    return counter;
+  }
 };
 
 #endif

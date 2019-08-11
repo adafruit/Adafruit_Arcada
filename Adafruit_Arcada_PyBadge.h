@@ -54,6 +54,8 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
     }
     return true;
   }
+
+  uint32_t variantReadButtons(void) { return 0; }
   
   void displayBegin(void) {
     Adafruit_ST7735 *tft = new Adafruit_ST7735(&ARCADA_TFT_SPI, ARCADA_TFT_CS, ARCADA_TFT_DC, ARCADA_TFT_RST); 

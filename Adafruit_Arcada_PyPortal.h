@@ -46,6 +46,8 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
   bool variantBegin(void) {
     return true;
   }
+
+  uint32_t variantReadButtons(void) { return 0; }
   
   void displayBegin(void) {
     Adafruit_ILI9341 *tft = new Adafruit_ILI9341(tft8bitbus, ARCADA_TFT_D0, ARCADA_TFT_WR, ARCADA_TFT_DC, ARCADA_TFT_CS, ARCADA_TFT_RST, ARCADA_TFT_RD);

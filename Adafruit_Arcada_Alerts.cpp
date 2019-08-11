@@ -8,12 +8,12 @@ static uint16_t charHeight, charWidth;
 
 void Adafruit_Arcada_SPITFT::_initAlertFonts(void) {
   fontSize = 1;
-  if (display->width() > 160) {
+  if (display->width() > 200) {
     fontSize = 2;
   }
   charHeight = 8 * fontSize;
   charWidth = 6 * fontSize;
-  maxCharPerLine = 20;
+  maxCharPerLine = display->width() / (6 * fontSize) - 6;
 }
 
 /**************************************************************************/
@@ -171,18 +171,16 @@ void Adafruit_Arcada_SPITFT::alertBox(const char *string, uint16_t boxColor, uin
     while (1) {
       readButtons();
       uint32_t released = justReleasedButtons();
-      //Serial.printf("Released = 0x%x\n", released);
 
-      if (hasControlPad()) {
-	if (released & continueButtonMask) {
-	  break;
-	}
-      } else if (hasTouchscreen()) {
+      if (hasTouchscreen()) {
 	if (released) {     // anything
 	  break;
 	}
-      }
-      
+      } else {
+	if (released & continueButtonMask) {
+	  break;
+	}
+      }      
       delay(10); 
     }
   }

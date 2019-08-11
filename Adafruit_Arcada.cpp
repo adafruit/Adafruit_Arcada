@@ -332,7 +332,7 @@ int16_t Adafruit_Arcada_SPITFT::readJoystickY(uint8_t sampling) {
 */
 /**************************************************************************/
 uint32_t Adafruit_Arcada_SPITFT::readButtons(void) {
-  uint32_t buttons = 0;
+  uint32_t buttons = variantReadButtons(); // start with whatever the variant can do
 
   // Use a latch to read 8 bits
   if (_button_clock >= 0) {

@@ -102,7 +102,7 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
     }
 
 
-    uint32_t readButtons(void) {
+    uint32_t variantReadButtons(void) {
       uint32_t buttons = 0;
       if (! ss.digitalRead(SS_SWITCH1_PIN))
 	buttons |= ARCADA_BUTTONMASK_UP;

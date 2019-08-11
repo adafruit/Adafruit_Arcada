@@ -55,6 +55,8 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
     accel.setRange(LIS3DH_RANGE_4_G);   // 2, 4, 8 or 16 G!
     return true;
   }
+
+  uint32_t variantReadButtons(void) { return 0; }
   
   void displayBegin(void) {
     Adafruit_ST7789 *tft = new Adafruit_ST7789(&ARCADA_TFT_SPI, ARCADA_TFT_CS, ARCADA_TFT_DC, ARCADA_TFT_RST); 
