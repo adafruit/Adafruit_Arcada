@@ -40,6 +40,10 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
       return false;  // couldn't find accelerometer
     }
     accel.setRange(LIS3DH_RANGE_4_G);   // 2, 4, 8 or 16 G!
+
+    if (!qt_1.begin() || !qt_2.begin() || !qt_3.begin() || !qt_4.begin()) {
+      return false;
+    }
     return true;
   }
   
@@ -53,16 +57,16 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
 
   uint32_t variantReadButtons(void) {
     uint32_t buttons = 0;
-    if (qt_1.measure() > 700) {
+    if (qt_4.measure() > 700) {
       buttons |= ARCADA_BUTTONMASK_UP;
     }
-    if (qt_2.measure() > 700) {
+    if (qt_3.measure() > 700) {
       buttons |= ARCADA_BUTTONMASK_DOWN;
     }
-    if (qt_3.measure() > 700) {
+    if (qt_2.measure() > 700) {
       buttons |= ARCADA_BUTTONMASK_LEFT | ARCADA_BUTTONMASK_B;
     }
-    if (qt_4.measure() > 700) {
+    if (qt_1.measure() > 700) {
       buttons |= ARCADA_BUTTONMASK_RIGHT | ARCADA_BUTTONMASK_A;
     }
     return buttons;
