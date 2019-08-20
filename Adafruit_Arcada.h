@@ -21,6 +21,7 @@ class Adafruit_Arcada_SPITFT;
 #include "Adafruit_Arcada_MONSTERM4SK.h"
 #include "Adafruit_Arcada_HalloWingM4.h"
 #include "Adafruit_Arcada_HalloWingM0.h"
+#include "Adafruit_Arcada_CircuitPlaygroundExpress.h"
 
 
 #if defined(ARDUINO_GRAND_CENTRAL_M4) // w/TFT Shield
