@@ -1,10 +1,14 @@
 #include <Adafruit_Arcada.h>
 
-static Adafruit_ZeroTimer zerotimer = Adafruit_ZeroTimer(4);
 
-void TC4_Handler(){
-  Adafruit_ZeroTimer::timerHandler(4);
+
+#if defined(__SAMD51__)
+static Adafruit_ZeroTimer zerotimer = Adafruit_ZeroTimer(ARCADA_CALLBACKTIMER);
+
+void ARCADA_CALLBACKTIMER_HANDLER() {
+  Adafruit_ZeroTimer::timerHandler(ARCADA_CALLBACKTIMER);
 }
+#endif
 
 /**************************************************************************/
 /*!

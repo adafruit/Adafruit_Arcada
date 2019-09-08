@@ -38,22 +38,22 @@ Arcada_FilesystemType Adafruit_Arcada_SPITFT::filesysBegin(Arcada_FilesystemType
     return _filesys_type;
   }
 
-#ifdef ARCADA_SD_CS
-  if (desiredFilesys == ARCADA_FILESYS_SD || 
-      desiredFilesys == ARCADA_FILESYS_SD_AND_QSPI) {
-    Serial.println("Trying SD Card filesystem");
-    if (Arcada_SD_FileSys.begin(ARCADA_SD_CS)) {
-      Serial.println("SD card found");
-      SD_imagereader = new Adafruit_ImageReader(Arcada_SD_FileSys);
-      _filesys_type = ARCADA_FILESYS_SD;
+  if (ARCADA_SD_CS >= 0) {
+    if (desiredFilesys == ARCADA_FILESYS_SD || 
+	desiredFilesys == ARCADA_FILESYS_SD_AND_QSPI) {
+      Serial.println("Trying SD Card filesystem");
+      if (Arcada_SD_FileSys.begin(ARCADA_SD_CS)) {
+	Serial.println("SD card found");
+	SD_imagereader = new Adafruit_ImageReader(Arcada_SD_FileSys);
+	_filesys_type = ARCADA_FILESYS_SD;
+      }
+    }
+    
+    if (_filesys_type == desiredFilesys) {
+      // we wanted SD, and we got it!
+      return _filesys_type;
     }
   }
-
-  if (_filesys_type == desiredFilesys) {
-    // we wanted SD, and we got it!
-    return _filesys_type;
-  }
-#endif
 
   if (desiredFilesys == ARCADA_FILESYS_QSPI || 
       desiredFilesys == ARCADA_FILESYS_SD_AND_QSPI) {

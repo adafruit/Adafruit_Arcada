@@ -1,3 +1,5 @@
+#ifndef __ARCADA_PYBADGE_M4__
+#define __ARCADA_PYBADGE_M4__
 #if defined(ADAFRUIT_PYBADGE_M4_EXPRESS)
   #include <Adafruit_LIS3DH.h>
   #include <Adafruit_ST7735.h>
@@ -36,7 +38,10 @@
 
   #define ARCADA_USE_JSON
 
+  #define ARCADA_CALLBACKTIMER               4
+  #define ARCADA_CALLBACKTIMER_HANDLER       TC4_Handler
   #include "arcadatype.h"
+
 
 class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
  public:
@@ -66,4 +71,5 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
   }
 };
 
+#endif
 #endif
