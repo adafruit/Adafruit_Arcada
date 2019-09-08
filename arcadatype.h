@@ -49,6 +49,13 @@ class Adafruit_Arcada_SPITFT {
   */
   /**************************************************************************/
   virtual bool variantBegin(void) = 0;
+
+  /**************************************************************************/
+  /*!
+    @brief  Perform any variant input reading (say if we use seesaw or whatnot)
+    @returns Bitmask of pressed buttons
+  */
+  /**************************************************************************/
   virtual uint32_t variantReadButtons(void) = 0;
 
   bool timerCallback(uint32_t freq, void (*callback)());
