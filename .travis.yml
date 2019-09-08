@@ -30,7 +30,8 @@ install:
    - arduino --install-library "Adafruit TouchScreen"
    - arduino --install-library "Adafruit PixelDust"
    - arduino --install-library "ArduinoJson"
-   - git clone --quiet https://github.com/adafruit/SdFat.git $HOME/Arduino/libraries/SdFat
+   - arduino --install-library "Adafruit ImageReader Library"
+   - arduino --install-library "SdFat - Adafruit Fork"
    - git clone --quiet https://github.com/adafruit/WiFiNINA.git $HOME/Arduino/libraries/WiFiNINA
 
 script:

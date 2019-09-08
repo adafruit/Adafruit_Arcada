@@ -17,6 +17,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#include <Arduino.h>
+
 bool isBigEndian() {
   uint32_t test = 0x11223344;
   uint8_t *pTest = reinterpret_cast<uint8_t *>(&test);

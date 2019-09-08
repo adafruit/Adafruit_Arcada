@@ -17,7 +17,12 @@ static bool filenameValidityChecker(const char *filename, const char *extension)
   #endif
 #endif
 
-Adafruit_FlashTransport_QSPI flashTransport(PIN_QSPI_SCK, PIN_QSPI_CS, PIN_QSPI_IO0, PIN_QSPI_IO1, PIN_QSPI_IO2, PIN_QSPI_IO3);
+#if defined(PIN_QSPI_SCK)
+  Adafruit_FlashTransport_QSPI flashTransport(PIN_QSPI_SCK, PIN_QSPI_CS, PIN_QSPI_IO0, PIN_QSPI_IO1, PIN_QSPI_IO2, PIN_QSPI_IO3);
+#elif defined(ARCADA_SPIFLASH_CS)
+  Adafruit_FlashTransport_SPI flashTransport(ARCADA_SPIFLASH_CS, &ARCADA_SPIFLASH_SPI);
+#endif
+
 Adafruit_SPIFlash Arcada_QSPI_Flash(&flashTransport);
 FatFileSystem Arcada_QSPI_FileSys;
 
@@ -28,26 +33,27 @@ FatFileSystem Arcada_QSPI_FileSys;
     @return Filesystem type found, can be ARCADA_FILESYS_NONE (none found), ARCADA_FILESYS_SD (found SD card), ARCADA_FILESYS_QSPI (QSPI flash memory), or ARCADA_FILESYS_SD_AND_QSPI (both found)
 */
 /**************************************************************************/
-Arcada_FilesystemType Adafruit_Arcada::filesysBegin(Arcada_FilesystemType desiredFilesys) {
+Arcada_FilesystemType Adafruit_Arcada_SPITFT::filesysBegin(Arcada_FilesystemType desiredFilesys) {
   if (_filesys_type != ARCADA_FILESYS_NONE) {
     return _filesys_type;
   }
 
-#ifdef ARCADA_SD_CS
-  if (desiredFilesys == ARCADA_FILESYS_SD || 
-      desiredFilesys == ARCADA_FILESYS_SD_AND_QSPI) {
-    Serial.println("Trying SD Card filesystem");
-    if (Arcada_SD_FileSys.begin(ARCADA_SD_CS)) {
-      Serial.println("SD card found");
-      _filesys_type = ARCADA_FILESYS_SD;
+  if (ARCADA_SD_CS >= 0) {
+    if (desiredFilesys == ARCADA_FILESYS_SD || 
+	desiredFilesys == ARCADA_FILESYS_SD_AND_QSPI) {
+      Serial.println("Trying SD Card filesystem");
+      if (Arcada_SD_FileSys.begin(ARCADA_SD_CS)) {
+	Serial.println("SD card found");
+	SD_imagereader = new Adafruit_ImageReader(Arcada_SD_FileSys);
+	_filesys_type = ARCADA_FILESYS_SD;
+      }
+    }
+    
+    if (_filesys_type == desiredFilesys) {
+      // we wanted SD, and we got it!
+      return _filesys_type;
     }
   }
-
-  if (_filesys_type == desiredFilesys) {
-    // we wanted SD, and we got it!
-    return _filesys_type;
-  }
-#endif
 
   if (desiredFilesys == ARCADA_FILESYS_QSPI || 
       desiredFilesys == ARCADA_FILESYS_SD_AND_QSPI) {
@@ -68,6 +74,7 @@ Arcada_FilesystemType Adafruit_Arcada::filesysBegin(Arcada_FilesystemType desire
       } else {
 	_filesys_type = ARCADA_FILESYS_QSPI;
       }
+      QSPI_imagereader = new Adafruit_ImageReader(Arcada_QSPI_FileSys);
     }
   }
 
@@ -82,7 +89,7 @@ Arcada_FilesystemType Adafruit_Arcada::filesysBegin(Arcada_FilesystemType desire
     @return True if was able to find a directory at that path
 */
 /**************************************************************************/
-bool Adafruit_Arcada::chdir(const char *path) {
+bool Adafruit_Arcada_SPITFT::chdir(const char *path) {
   Serial.printf("\tArcadaFileSys : chdir '%s'\n", path);
 
   if (strlen(path) >= sizeof(_cwd_path)) {    // too long!
@@ -124,7 +131,7 @@ bool Adafruit_Arcada::chdir(const char *path) {
     @return -1 if was not able to open, or the number of files
 */
 /**************************************************************************/
-int16_t Adafruit_Arcada::filesysListFiles(const char *path, const char *extensionFilter) {
+int16_t Adafruit_Arcada_SPITFT::filesysListFiles(const char *path, const char *extensionFilter) {
   if (! path) {   // use CWD!
     path = _cwd_path;
   }
@@ -178,7 +185,7 @@ int16_t Adafruit_Arcada::filesysListFiles(const char *path, const char *extensio
     @return true or false if we can open the file
 */
 /**************************************************************************/
-bool Adafruit_Arcada::exists(const char *path) {
+bool Adafruit_Arcada_SPITFT::exists(const char *path) {
   Serial.printf("\tArcadaFileSys : Exists? '%s'\n", path);
   File f = open(path);
   if (!f) return false;
@@ -194,7 +201,7 @@ bool Adafruit_Arcada::exists(const char *path) {
     @return true or false if we succeeded
 */
 /**************************************************************************/
-bool Adafruit_Arcada::mkdir(const char *path) {
+bool Adafruit_Arcada_SPITFT::mkdir(const char *path) {
   Serial.printf("\tArcadaFileSys : Mkdir '%s'\n", path);
 
   bool ret = false;
@@ -218,7 +225,7 @@ bool Adafruit_Arcada::mkdir(const char *path) {
     @return true or false if we succeeded
 */
 /**************************************************************************/
-bool Adafruit_Arcada::remove(const char *path) {
+bool Adafruit_Arcada_SPITFT::remove(const char *path) {
   Serial.printf("\tArcadaFileSys : Removing '%s'\n", path);
 
   bool ret = false;
@@ -243,7 +250,7 @@ bool Adafruit_Arcada::remove(const char *path) {
     @return A File object, for whatever filesystem we're using
 */
 /**************************************************************************/
-File Adafruit_Arcada::open(const char *path, uint32_t flags) {
+File Adafruit_Arcada_SPITFT::open(const char *path, uint32_t flags) {
   const char *the_path;
 
   if (!path) {    // Just the CWD then
@@ -288,7 +295,7 @@ File Adafruit_Arcada::open(const char *path, uint32_t flags) {
     @return A File object, for whatever filesystem we're using
 */
 /**************************************************************************/
-File Adafruit_Arcada::openFileByIndex(const char *path, uint16_t index, 
+File Adafruit_Arcada_SPITFT::openFileByIndex(const char *path, uint16_t index, 
 				      uint32_t flags, const char *extensionFilter) {
   if (! path) {   // use CWD!
     path = _cwd_path;
@@ -333,7 +340,7 @@ File Adafruit_Arcada::openFileByIndex(const char *path, uint16_t index,
     @return true on success, false on some sort of failure
 */
 /**************************************************************************/
-bool Adafruit_Arcada::chooseFile(const char *path,
+bool Adafruit_Arcada_SPITFT::chooseFile(const char *path,
 				 char *selected_filename, uint16_t selected_filename_maxlen,
 				 const char *extensionFilter) {
   int8_t  selected_line = 0;        // the line # that we have selected
@@ -350,8 +357,8 @@ bool Adafruit_Arcada::chooseFile(const char *path,
 
   strncpy(curr_path, path, 255);
 
-  setTextSize(FILECHOOSEMENU_TEXT_SIZE);
-  setTextWrap(false);
+  display->setTextSize(FILECHOOSEMENU_TEXT_SIZE);
+  display->setTextWrap(false);
 
   bool redraw = true; // we need to redraw the filenames/selection
   bool chdir  = true; // changed dir, we need to redraw everything!
@@ -368,42 +375,38 @@ bool Adafruit_Arcada::chooseFile(const char *path,
       if (chdir) {
 	Serial.println("\nRedrawing menu");
 	starting_line = selected_line = 0;
-	fillScreen(ARCADA_BLACK);
-	fillRect(0, 0, ARCADA_TFT_WIDTH, FILECHOOSEMENU_TEXT_HEIGHT*2, ARCADA_BLUE);
-	setTextColor(ARCADA_WHITE);
+	display->fillScreen(ARCADA_BLACK);
+	display->fillRect(0, 0, ARCADA_TFT_WIDTH, FILECHOOSEMENU_TEXT_HEIGHT*2, ARCADA_BLUE);
+	display->setTextColor(ARCADA_WHITE);
 	
 	// figure out how to display the directory at the top
 	int dirlen = strlen(curr_path);
 	if (dirlen != 1) dirlen++;        // if not '/'
 	if (extensionFilter) dirlen += 2+strlen(extensionFilter);   // if we'll be displaying *.txt
-	setCursor((ARCADA_TFT_WIDTH - dirlen*FILECHOOSEMENU_TEXT_WIDTH)/2, 0);
-	print(curr_path);
+	display->setCursor((ARCADA_TFT_WIDTH - dirlen*FILECHOOSEMENU_TEXT_WIDTH)/2, 0);
+	display->print(curr_path);
 	if (strcmp(curr_path, "/") != 0) {
-	  print("/");
+	  display->print("/");
 	}
 	if (extensionFilter) {
-	  print("*.");
-	  print(extensionFilter);
+	  display->print("*.");
+	  display->print(extensionFilter);
 	}
-	setCursor(0, FILECHOOSEMENU_TEXT_HEIGHT);
-	print("A to select & B to go back");
+	display->setCursor(0, FILECHOOSEMENU_TEXT_HEIGHT);
+	display->print("A to select & B to go back");
 	chdir = false;
       }
 
-      setCursor(0, FILECHOOSEMENU_TEXT_HEIGHT*2);
+      display->setCursor(0, FILECHOOSEMENU_TEXT_HEIGHT*2);
       line = 0;
       while (entry = dir.openNextFile()) {
 	char    filename[SD_MAX_FILENAME_SIZE];
 	filename[0] = 0;
-
-#if defined(ARCADA_USE_QSPI_FS)
-	strncpy(filename, entry.name(), SD_MAX_FILENAME_SIZE-1);
-#else
 	entry.getName(filename, SD_MAX_FILENAME_SIZE-1);
-#endif
+
 	if (entry.isDirectory() || filenameValidityChecker(filename, extensionFilter)) {
 	  if (line == selected_line) {
-	    setTextColor(ARCADA_YELLOW, ARCADA_RED);
+	    display->setTextColor(ARCADA_YELLOW, ARCADA_RED);
 	    int maxlen = selected_filename_maxlen-1;
 	    char *fn_ptr = selected_filename;
 	    strncpy(fn_ptr, curr_path, maxlen);
@@ -422,18 +425,18 @@ bool Adafruit_Arcada::chooseFile(const char *path,
 	    Serial.print("Select -> "); Serial.println(selected_filename);
 	    selected_isdir = entry.isDirectory();
 	  } else {
-	    setTextColor(ARCADA_WHITE, ARCADA_BLACK);
+	    display->setTextColor(ARCADA_WHITE, ARCADA_BLACK);
 	  }
 	  //Serial.printf("line %d, starting %d\n", line, starting_line);
 	  if (line >= starting_line) {
-	    print(filename);
+	    display->print(filename);
 	    if (entry.isDirectory()) {
-	      print("/");
+	      display->print("/");
 	    }
 	    for (int x=strlen(filename); x<FILECHOOSEMENU_MAX_LINELENGTH+1; x++) {
-	      print(" ");
+	      display->print(" ");
 	    }
-	    println();
+	    display->println();
 	  }
 	  line++;
 	}
@@ -465,11 +468,11 @@ bool Adafruit_Arcada::chooseFile(const char *path,
 	int scrollnum = strlen(fn_ptr) - FILECHOOSEMENU_MAX_LINELENGTH;
 	if (scrollnum > 0) {
 	  int ypos = ((selected_line - starting_line) + 2) * FILECHOOSEMENU_TEXT_HEIGHT;
-	  setTextColor(ARCADA_YELLOW, ARCADA_RED);
-	  setCursor(0, ypos);
-	  print(fn_ptr+selected_scroll_idx);
+	  display->setTextColor(ARCADA_YELLOW, ARCADA_RED);
+	  display->setCursor(0, ypos);
+	  display->print(fn_ptr+selected_scroll_idx);
 	  for (int s=strlen(fn_ptr+selected_scroll_idx); s<FILECHOOSEMENU_MAX_LINELENGTH+2; s++) {
-	    print(' ');
+	    display->print(' ');
 	  }
 	  selected_scroll_idx++;
 	  if (selected_scroll_idx > scrollnum) {
@@ -533,7 +536,7 @@ bool Adafruit_Arcada::chooseFile(const char *path,
     }
   }
 
-  fillScreen(ARCADA_BLACK);
+  display->fillScreen(ARCADA_BLACK);
   return true;
 }
 

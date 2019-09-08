@@ -33,7 +33,7 @@ void sd_msc_flush_cb (void);
     @return True on success, false on failure
 */
 /**************************************************************************/
-bool Adafruit_Arcada::filesysBeginMSD(Arcada_FilesystemType desiredFilesys) {
+bool Adafruit_Arcada_SPITFT::filesysBeginMSD(Arcada_FilesystemType desiredFilesys) {
 
 #if defined(USE_TINYUSB)
   Arcada_FilesystemType found = filesysBegin(desiredFilesys);
@@ -96,7 +96,7 @@ bool Adafruit_Arcada::filesysBeginMSD(Arcada_FilesystemType desiredFilesys) {
     @return True if some USB stuff happened in last timeout # millis
 */
 /**************************************************************************/
-bool Adafruit_Arcada::recentUSB(uint32_t timeout) {
+bool Adafruit_Arcada_SPITFT::recentUSB(uint32_t timeout) {
 
 #if defined(USE_TINYUSB)
   uint32_t curr_time = millis();

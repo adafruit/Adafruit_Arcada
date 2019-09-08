@@ -29,26 +29,26 @@ void setup() {
   //while (!Serial); delay(100);
   Serial.println("PixelDust demo");
   // Start TFT and fill black
-  if (!arcada.begin()) {
+  if (!arcada.arcadaBegin()) {
     Serial.print("Failed to begin");
     while (1);
   }
   arcada.displayBegin();
-  arcada.fillScreen(ARCADA_BLUE);
+  arcada.display->fillScreen(ARCADA_BLUE);
   
   // Turn on backlight
   arcada.setBacklight(255);
 
   Serial.printf("Initializing framebuf with area of %d x %d\n", width, height);
-  if (! arcada.createFrameBuffer(arcada.width(), arcada.height())) {
+  if (! arcada.createFrameBuffer(arcada.display->width(), arcada.display->height())) {
     arcada.haltBox("Could not allocate framebuffer");
   }
   framebuffer = arcada.getFrameBuffer();
 
-  play_width = arcada.width();
-  play_height = arcada.height();
-  width = arcada.width();
-  height = arcada.height();
+  play_width = arcada.display->width();
+  play_height = arcada.display->height();
+  width = arcada.display->width();
+  height = arcada.display->height();
   
 #ifdef CHUNKY_SAND
   play_width /= 2;
@@ -101,14 +101,14 @@ void setup() {
   }
   Serial.printf("%d total pixels\n", n);
 
-  colors[0] = arcada.color565(40 , 40, 40);   // Dark Gray
-  colors[1] = arcada.color565(120, 79, 23);   // Brown
-  colors[2] = arcada.color565(228,  3,  3);   // Red
-  colors[3] = arcada.color565(255,140,  0);   // Orange
-  colors[4] = arcada.color565(255,237,  0);   // Yellow
-  colors[5] = arcada.color565(  0,128, 38);   // Green
-  colors[6] = arcada.color565(  0, 77,255);   // Blue
-  colors[7] = arcada.color565(117,  7,135); // Purple
+  colors[0] = arcada.display->color565(40 , 40, 40);   // Dark Gray
+  colors[1] = arcada.display->color565(120, 79, 23);   // Brown
+  colors[2] = arcada.display->color565(228,  3,  3);   // Red
+  colors[3] = arcada.display->color565(255,140,  0);   // Orange
+  colors[4] = arcada.display->color565(255,237,  0);   // Yellow
+  colors[5] = arcada.display->color565(  0,128, 38);   // Green
+  colors[6] = arcada.display->color565(  0, 77,255);   // Blue
+  colors[7] = arcada.display->color565(117,  7,135); // Purple
   for (int i=0; i<N_COLORS; i++) {
     colors[i] = __builtin_bswap16(colors[i]);  // we swap the colors here to speed up DMA
   }
@@ -126,7 +126,7 @@ void loop() {
   //Serial.printf("(%0.1f, %0.1f, %0.1f)\n", event.acceleration.x, event.acceleration.y, event.acceleration.z);
   Serial.printf("iterate: %d ", millis()-t);
 
-  arcada.dmaWait();
+  arcada.display->dmaWait();
 
   // Erase canvas and draw new snowflake positions
   memset(framebuffer, 0x00, width*height*2);  // clear the frame buffer
@@ -139,7 +139,7 @@ void loop() {
   for(int yl=0; yl<LOGO_HEIGHT; yl++) {
     for(int xl=0; xl<LOGO_WIDTH; xl++) {
       uint16_t c = 
-         __builtin_bswap16(arcada.color565(logo_gray[yl][xl], logo_gray[yl][xl], logo_gray[yl][xl]));
+         __builtin_bswap16(arcada.display->color565(logo_gray[yl][xl], logo_gray[yl][xl], logo_gray[yl][xl]));
       x = logo_origin_x + 2*xl;
       y = logo_origin_y + 2*yl; 
       

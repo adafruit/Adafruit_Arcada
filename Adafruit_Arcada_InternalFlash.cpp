@@ -1,12 +1,12 @@
 #include <Adafruit_Arcada.h>
 
-#define FLASH_ROW_SIZE (FLASH_PAGE_SIZE * 4)
 
+#if defined(__SAMD51__)
+
+#define FLASH_ROW_SIZE (FLASH_PAGE_SIZE * 4)
 // Skip writing blocks that are identical to the existing block.
 #define QUICK_FLASH 1   // only disable for debugging/timing!
-
 #define QUAD_WORD (4 * 4)
-
 
 static inline void wait_ready(void);
 static void flash_write_row(uint32_t *dst, uint32_t *src);
@@ -16,6 +16,8 @@ static void flash_write_words(uint32_t *dst, uint32_t *src, uint32_t n_words);
 bool block_erased[FLASH_SIZE / NVMCTRL_BLOCK_SIZE];
 bool row_same[FLASH_SIZE / NVMCTRL_BLOCK_SIZE][NVMCTRL_BLOCK_SIZE / FLASH_ROW_SIZE];
 
+#endif
+
 /**************************************************************************/
 /*!
     @brief  Opens a file and writes the data contents to the internal chip flash memory. NOT the QSPI flash but the actual chip memory! It will happily write over program memory being used so make sure the address is set to well past where the program ends!
@@ -24,7 +26,7 @@ bool row_same[FLASH_SIZE / NVMCTRL_BLOCK_SIZE][NVMCTRL_BLOCK_SIZE / FLASH_ROW_SI
     @return A pointer to the flash memory address, or NULL on failure
 */
 /**************************************************************************/
-uint8_t * Adafruit_Arcada::writeFileToFlash(const char *filename, uint32_t address) {
+uint8_t * Adafruit_Arcada_SPITFT::writeFileToFlash(const char *filename, uint32_t address) {
   File f = open(filename);
   if (!f) return NULL;
 
@@ -41,6 +43,8 @@ uint8_t * Adafruit_Arcada::writeFileToFlash(const char *filename, uint32_t addre
     Serial.println("Can't determine flash size");
     return NULL;
   }
+
+#if defined(__SAMD51__)
   Serial.printf("%d bytes available\n", flashsize - address);
 
   if ((flashsize - address) < filesize) {
@@ -101,10 +105,15 @@ uint8_t * Adafruit_Arcada::writeFileToFlash(const char *filename, uint32_t addre
     Serial.println();
 
   }
-
   return (uint8_t *)address;
+#else // samd51
+  return 0; // unsupported chip
+#endif
 }
 
+
+
+#if defined(__SAMD51__)
 
 static inline void wait_ready(void) {
   while (NVMCTRL->STATUS.bit.READY == 0);
@@ -226,3 +235,5 @@ void flash_write_row(uint32_t *dst, uint32_t *src) {
     // a reset.
     wait_ready();
 }
+
+#endif

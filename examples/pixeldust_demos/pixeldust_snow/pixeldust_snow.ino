@@ -16,26 +16,26 @@ void setup() {
  // while (!Serial); delay(100);
   Serial.println("PixelDust Snow demo");
   // Start TFT and fill black
-  if (!arcada.begin()) {
+  if (!arcada.arcadaBegin()) {
     Serial.print("Failed to begin");
     while (1);
   }
   arcada.displayBegin();
-  arcada.fillScreen(ARCADA_BLUE);
+  arcada.display->fillScreen(ARCADA_BLUE);
   
   // Turn on backlight
   arcada.setBacklight(255);
 
-  width = arcada.width();
-  height = arcada.height();
+  width = arcada.display->width();
+  height = arcada.display->height();
   Serial.printf("Initializing with area of %d x %d\n", width, height);
   if (! arcada.createFrameBuffer(width, height)) {
     arcada.haltBox("Could not allocate framebuffer");
   }
   framebuffer = arcada.getFrameBuffer();
 
-  play_width = arcada.width();
-  play_height = arcada.height();
+  play_width = arcada.display->width();
+  play_height = arcada.display->height();
 #ifdef CHUNKY_SAND
   play_width /= 2;
   play_height /= 2;
@@ -61,7 +61,7 @@ void loop() {
   pixeldust->iterate(xx * 2000.0, yy * 2000.0, zz * 2000.0);
   //Serial.printf("(%0.1f, %0.1f, %0.1f)\n", event.acceleration.x, event.acceleration.y, event.acceleration.z);
 
-  arcada.dmaWait();
+  arcada.display->dmaWait();
 
   // Erase canvas and draw new snowflake positions
   memset(framebuffer, 0x00, width*height*2);  // clear the frame buffer

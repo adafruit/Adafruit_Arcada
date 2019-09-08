@@ -19,7 +19,7 @@ void setup() {
   //while (!Serial);
 
   Serial.println("Arcada PyPortal Test");
-  if (!arcada.begin()) {
+  if (!arcada.arcadaBegin()) {
     Serial.print("Failed to begin");
     while (1);
   }
@@ -30,91 +30,91 @@ void setup() {
     arcada.setBacklight(i);
     delay(1);
   }
-  arcada.fillScreen(ARCADA_RED);
+  arcada.display->fillScreen(ARCADA_RED);
   delay(100);
-  arcada.fillScreen(ARCADA_GREEN);
+  arcada.display->fillScreen(ARCADA_GREEN);
   delay(100);
-  arcada.fillScreen(ARCADA_BLUE);
+  arcada.display->fillScreen(ARCADA_BLUE);
   delay(100);
-  arcada.fillScreen(ARCADA_BLACK);
+  arcada.display->fillScreen(ARCADA_BLACK);
   delay(100);
 
-  arcada.setCursor(0, 0);
-  arcada.setTextSize(2);
-  arcada.setTextWrap(true);
+  arcada.display->setCursor(0, 0);
+  arcada.display->setTextSize(2);
+  arcada.display->setTextWrap(true);
 
   /********** Check QSPI manually */
   if (!Arcada_QSPI_Flash.begin()){
     Serial.println("Could not find flash on QSPI bus!");
-    arcada.setTextColor(ARCADA_RED);
-    arcada.println("QSPI Flash FAIL");
+    arcada.display->setTextColor(ARCADA_RED);
+    arcada.display->println("QSPI Flash FAIL");
   }
   Serial.println("Reading QSPI ID");
   Serial.print("JEDEC ID: 0x"); Serial.println(Arcada_QSPI_Flash.getJEDECID(), HEX);
-  arcada.setTextColor(ARCADA_GREEN);
-  arcada.print("QSPI Flash JEDEC 0x"); arcada.println(Arcada_QSPI_Flash.getJEDECID(), HEX);
+  arcada.display->setTextColor(ARCADA_GREEN);
+  arcada.display->print("QSPI Flash JEDEC 0x"); arcada.display->println(Arcada_QSPI_Flash.getJEDECID(), HEX);
 
   /********** Check filesystem next */
   Arcada_FilesystemType foundFS = arcada.filesysBegin();
   if (foundFS == ARCADA_FILESYS_NONE) {
     Serial.println("Failed to load filesys");
-    arcada.setTextColor(ARCADA_RED);
-    arcada.println("Filesystem failure");
+    arcada.display->setTextColor(ARCADA_RED);
+    arcada.display->println("Filesystem failure");
   } else {
     Serial.println("Filesys OK!");
-    arcada.setTextColor(ARCADA_GREEN);
-    arcada.print("Found ");
-    if (foundFS == ARCADA_FILESYS_SD) arcada.print("SD: ");
-    if (foundFS == ARCADA_FILESYS_QSPI) arcada.print("QSPI: ");
-    if (foundFS == ARCADA_FILESYS_SD_AND_QSPI) arcada.print("SD & QSPI: ");
-    arcada.print(arcada.filesysListFiles("/"));
-    arcada.println(" files");
+    arcada.display->setTextColor(ARCADA_GREEN);
+    arcada.display->print("Found ");
+    if (foundFS == ARCADA_FILESYS_SD) arcada.display->print("SD: ");
+    if (foundFS == ARCADA_FILESYS_QSPI) arcada.display->print("QSPI: ");
+    if (foundFS == ARCADA_FILESYS_SD_AND_QSPI) arcada.display->print("SD & QSPI: ");
+    arcada.display->print(arcada.filesysListFiles("/"));
+    arcada.display->println(" files");
   }
 
   /*************** WiFi Module */
-  arcada.setCursor(0, 32);
-  arcada.print("WiFi Module...");
+  arcada.display->setCursor(0, 32);
+  arcada.display->print("WiFi Module...");
   WiFi.status();
   delay(100);
   if (WiFi.status() == WL_NO_MODULE) {
-    arcada.setTextColor(ARCADA_RED);
-    arcada.println("Not Found");
-    arcada.setTextColor(ARCADA_GREEN);
+    arcada.display->setTextColor(ARCADA_RED);
+    arcada.display->println("Not Found");
+    arcada.display->setTextColor(ARCADA_GREEN);
     Serial.print("ESP32 not found, trying to burn firmware...");
-    arcada.print("Writing...");
+    arcada.display->print("Writing...");
     if (!write_esp32(esp32_firmware, esp32_md5)) {
-      arcada.setTextColor(ARCADA_RED);
-      arcada.println("FAILED");
+      arcada.display->setTextColor(ARCADA_RED);
+      arcada.display->println("FAILED");
       while (1) delay(10);
-      arcada.setTextColor(ARCADA_GREEN);
+      arcada.display->setTextColor(ARCADA_GREEN);
     }
     WiFi.status();
     delay(100);
     if (WiFi.status() == WL_NO_MODULE) {
       Serial.println("ESP32 SPI still not found");
-      arcada.setTextColor(ARCADA_RED);
-      arcada.println("FAILED");
-      arcada.setTextColor(ARCADA_GREEN);
+      arcada.display->setTextColor(ARCADA_RED);
+      arcada.display->println("FAILED");
+      arcada.display->setTextColor(ARCADA_GREEN);
     }
   } else {
     Serial.println("ESP32 SPI mode found");
-    arcada.println("OK!");
+    arcada.display->println("OK!");
   }
 
    /*************** Temperature sensor */
-   arcada.setCursor(0, 64);
-   arcada.print("ADT7410...");
+   arcada.display->setCursor(0, 64);
+   arcada.display->print("ADT7410...");
    if (!tempsensor.begin()) {
     Serial.println("Couldn't find ADT7410!");
-    arcada.setTextColor(ARCADA_RED);
-    arcada.println("FAILED");
-    arcada.setTextColor(ARCADA_GREEN);
+    arcada.display->setTextColor(ARCADA_RED);
+    arcada.display->println("FAILED");
+    arcada.display->setTextColor(ARCADA_GREEN);
   } else {
     Serial.println("ADT7410 found");
-    arcada.println("OK!");
+    arcada.display->println("OK!");
   }
  
-  coin.initButton(&arcada, 160, 200, 100, 50, ARCADA_WHITE, ARCADA_YELLOW, ARCADA_BLACK, "Sound", 2);
+  coin.initButton(arcada.display, 160, 200, 100, 50, ARCADA_WHITE, ARCADA_YELLOW, ARCADA_BLACK, "Sound", 2);
   coin.drawButton();
 
   analogWriteResolution(12);
@@ -125,35 +125,35 @@ void setup() {
 
 void loop() {
   digitalWrite(LED_BUILTIN, HIGH);
-  arcada.setTextColor(ARCADA_WHITE);
+  arcada.display->setTextColor(ARCADA_WHITE);
   // read light sensor
-  arcada.fillRect(160, 80, 240, 16, ARCADA_BLACK);
-  arcada.setCursor(0, 80);
+  arcada.display->fillRect(160, 80, 240, 16, ARCADA_BLACK);
+  arcada.display->setCursor(0, 80);
   uint16_t light = analogRead(ARCADA_LIGHT_SENSOR);
   Serial.print("light sensor: "); Serial.println(light);
-  arcada.print("Light sensor: "); arcada.println(light);
+  arcada.display->print("Light sensor: "); arcada.display->println(light);
 
   // read temp sensor
-  arcada.fillRect(150, 96, 240, 16, ARCADA_BLACK);
-  arcada.setCursor(0, 96);
+  arcada.display->fillRect(150, 96, 240, 16, ARCADA_BLACK);
+  arcada.display->setCursor(0, 96);
   float temp = tempsensor.readTempC();
   Serial.print("temp sensor: "); Serial.println(temp, 2);
-  arcada.print("Temp sensor: "); arcada.println(temp, 2);
+  arcada.display->print("Temp sensor: "); arcada.display->println(temp, 2);
 
   // externals
-  arcada.fillRect(0, 112, 240, 32, ARCADA_BLACK);
-  arcada.setCursor(0, 112);
+  arcada.display->fillRect(0, 112, 240, 32, ARCADA_BLACK);
+  arcada.display->setCursor(0, 112);
   float d3 = (float)analogRead(A1) * 3.3 / 1024;
   float d4 = (float)analogRead(A3) * 3.3 / 1024;
   Serial.print("STEMMA: "); 
   Serial.print(d3, 1); Serial.print(", ");
   Serial.print(d4, 1); Serial.println();
-  arcada.print("D3: "); arcada.println(d3, 1);
-  arcada.print("D4: "); arcada.println(d4, 1); 
+  arcada.display->print("D3: "); arcada.display->println(d3, 1);
+  arcada.display->print("D4: "); arcada.display->println(d4, 1); 
 
-  arcada.fillRect(80, 150, 240, 16, ARCADA_BLACK);
-  arcada.setCursor(0, 150);
-  arcada.print("Touch: ");
+  arcada.display->fillRect(80, 150, 240, 16, ARCADA_BLACK);
+  arcada.display->setCursor(0, 150);
+  arcada.display->print("Touch: ");
 
 
   TSPoint p = arcada.getTouchscreenPoint();
@@ -163,7 +163,7 @@ void loop() {
      Serial.print("X = "); Serial.print(p.x);
      Serial.print("\tY = "); Serial.print(p.y);
      Serial.print("\tPressure = "); Serial.println(p.z);
-     arcada.print("("); arcada.print(p.x); arcada.print(", "); arcada.print(p.y); arcada.println(")");
+     arcada.display->print("("); arcada.display->print(p.x); arcada.display->print(", "); arcada.display->print(p.y); arcada.display->println(")");
     if (coin.contains(p.x, p.y)) {
       Serial.println("Ding!");
       coin.press(true);

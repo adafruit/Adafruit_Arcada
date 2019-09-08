@@ -1,25 +1,63 @@
 #include <Adafruit_Arcada.h>
 
-static Adafruit_ZeroTimer zerotimer = Adafruit_ZeroTimer(4);
 
-void TC4_Handler(){
-  Adafruit_ZeroTimer::timerHandler(4);
+
+#if defined(__SAMD51__)
+static Adafruit_ZeroTimer zerotimer = Adafruit_ZeroTimer(ARCADA_CALLBACKTIMER);
+
+void ARCADA_CALLBACKTIMER_HANDLER() {
+  Adafruit_ZeroTimer::timerHandler(ARCADA_CALLBACKTIMER);
 }
+#endif
 
 /**************************************************************************/
 /*!
     @brief  Instantiator for Arcada class, will allso inistantiate (but not init) the TFT
 */
 /**************************************************************************/
-Adafruit_Arcada::Adafruit_Arcada(void) :
-#if defined(ARCADA_TFT_SPI)
-  ARCADA_TFT_TYPE(&ARCADA_TFT_SPI, ARCADA_TFT_CS, ARCADA_TFT_DC, ARCADA_TFT_RST)
-#elif defined(ARCADA_TFT_D0)
-  ARCADA_TFT_TYPE(tft8bitbus, ARCADA_TFT_D0, ARCADA_TFT_WR, ARCADA_TFT_DC, ARCADA_TFT_CS, ARCADA_TFT_RST, ARCADA_TFT_RD)
-#else // default SPI
-  ARCADA_TFT_TYPE(ARCADA_TFT_CS, ARCADA_TFT_DC, ARCADA_TFT_RST)
-#endif
+Adafruit_Arcada_SPITFT::Adafruit_Arcada_SPITFT()
 {
+  _sd_cs = ARCADA_SD_CS;
+  _speaker_en = ARCADA_SPEAKER_ENABLE;
+  _neopixel_pin = ARCADA_NEOPIXEL_PIN;
+  _neopixel_num = ARCADA_NEOPIXEL_NUM;
+  _backlight_pin = ARCADA_TFT_LITE;
+  _battery_sensor = ARCADA_BATTERY_SENSOR;
+  _light_sensor = ARCADA_LIGHT_SENSOR;
+
+  _touch_xp = ARCADA_TOUCHSCREEN_XP;
+  _touch_yp = ARCADA_TOUCHSCREEN_YP;
+  _touch_xm = ARCADA_TOUCHSCREEN_XM;
+  _touch_ym = ARCADA_TOUCHSCREEN_YM;
+  _ts_xmin = ARCADA_TOUCHSCREEN_CALIBX_MIN;
+  _ts_xmax = ARCADA_TOUCHSCREEN_CALIBX_MAX;
+  _ts_ymin = ARCADA_TOUCHSCREEN_CALIBY_MIN;
+  _ts_ymax = ARCADA_TOUCHSCREEN_CALIBY_MAX;
+
+  _start_button = ARCADA_BUTTONPIN_START;
+  _select_button = ARCADA_BUTTONPIN_SELECT;
+  _a_button = ARCADA_BUTTONPIN_A;
+  _b_button = ARCADA_BUTTONPIN_B;
+  _up_button = ARCADA_BUTTONPIN_UP;
+  _down_button = ARCADA_BUTTONPIN_DOWN;
+  _left_button = ARCADA_BUTTONPIN_LEFT;
+  _right_button = ARCADA_BUTTONPIN_RIGHT;
+
+  _button_latch = ARCADA_BUTTON_LATCH;
+  _button_clock = ARCADA_BUTTON_CLOCK;
+  _button_data = ARCADA_BUTTON_DATA;
+
+  _shift_up = ARCADA_BUTTON_SHIFTMASK_UP;
+  _shift_down = ARCADA_BUTTON_SHIFTMASK_DOWN;
+  _shift_left = ARCADA_BUTTON_SHIFTMASK_LEFT;
+  _shift_right = ARCADA_BUTTON_SHIFTMASK_RIGHT;
+  _shift_a = ARCADA_BUTTON_SHIFTMASK_A;
+  _shift_b = ARCADA_BUTTON_SHIFTMASK_B;
+  _shift_start = ARCADA_BUTTON_SHIFTMASK_START;
+  _shift_select = ARCADA_BUTTON_SHIFTMASK_SELECT;
+
+  _joystick_x = ARCADA_JOYSTICK_X;
+  _joystick_y = ARCADA_JOYSTICK_Y;
 }
 
 /**************************************************************************/
@@ -28,88 +66,83 @@ Adafruit_Arcada::Adafruit_Arcada(void) :
     @return True on success, False if something failed!
 */
 /**************************************************************************/
-bool Adafruit_Arcada::begin(void) {
+bool Adafruit_Arcada_SPITFT::arcadaBegin(void) {
+  if (! variantBegin()) return false;
+
   setBacklight(0);
 
-#ifdef ARCADA_SD_CS 
-  pinMode(ARCADA_SD_CS, OUTPUT);
-  digitalWrite(ARCADA_SD_CS, HIGH);
-#endif
+  if (_sd_cs >= 0) {
+    pinMode(_sd_cs, OUTPUT);
+    digitalWrite(_sd_cs, HIGH);
+  }
+
   pinMode(ARCADA_TFT_CS, OUTPUT);
   digitalWrite(ARCADA_TFT_CS, HIGH);
 
-#ifdef ARCADA_SPEAKER_ENABLE
-  pinMode(ARCADA_SPEAKER_ENABLE, OUTPUT);
-  enableSpeaker(false);
-#endif
+  if (_speaker_en >= 0) {
+    pinMode(_speaker_en, OUTPUT);
+    enableSpeaker(false);
+  }
 
   // current working dir is /
   strcpy(_cwd_path, "/");
 
-  pixels.updateLength(ARCADA_NEOPIXEL_NUM);
-  pixels.setPin(ARCADA_NEOPIXEL_PIN);
-  pixels.begin();
-  delay(10);
-  pixels.setBrightness(20);
-  pixels.fill(0);
-  pixels.show();  // turn off
-  delay(10);
-  pixels.show();  // turn off
+  if (_neopixel_pin >= 0) {
+    pixels.updateLength(_neopixel_num);
+    pixels.setPin(_neopixel_pin);
+    pixels.begin();
+    delay(10);
+    pixels.setBrightness(20);
+    pixels.fill(0);
+    pixels.show();  // turn off
+    delay(10);
+    pixels.show();  // turn off
+  }
 
   _touchscreen = NULL;
-  if (hasTouchscreen()) {
-#if defined(ARCADA_TOUCHSCREEN_XP)
-    _touchscreen = new TouchScreen(ARCADA_TOUCHSCREEN_XP, ARCADA_TOUCHSCREEN_YP,
-				   ARCADA_TOUCHSCREEN_XM, ARCADA_TOUCHSCREEN_YM, 300);
-    setTouchscreenCalibration(ARCADA_TOUCHSCREEN_CALIBX_MIN,
-			      ARCADA_TOUCHSCREEN_CALIBX_MAX,
-			      ARCADA_TOUCHSCREEN_CALIBY_MIN,
-			      ARCADA_TOUCHSCREEN_CALIBY_MAX); 
-#endif
+  if (_touch_xp >= 0) {
+    _touchscreen = new TouchScreen(_touch_xp, _touch_yp,
+				   _touch_xm, _touch_ym, 300);
+    setTouchscreenCalibration(_ts_xmin, _ts_xmax, _ts_ymin, _ts_ymax);
   }
 
-
-#ifdef ARCADA_BUTTONPIN_START
-  pinMode(ARCADA_BUTTONPIN_START, INPUT_PULLUP);
-#endif
-
-#ifdef ARCADA_BUTTONPIN_SELECT
-  pinMode(ARCADA_BUTTONPIN_SELECT, INPUT_PULLUP);
-#endif
-
-#ifdef ARCADA_BUTTONPIN_A
-  pinMode(ARCADA_BUTTONPIN_A, INPUT_PULLUP);
-#endif
-
-#ifdef ARCADA_BUTTONPIN_B
-  pinMode(ARCADA_BUTTONPIN_B, INPUT_PULLUP);
-#endif
-
-#ifdef ARCADA_BUTTONPIN_UP  // gpio for buttons
-  pinMode(ARCADA_BUTTONPIN_UP, INPUT_PULLUP);
-  pinMode(ARCADA_BUTTONPIN_DOWN, INPUT_PULLUP);
-  pinMode(ARCADA_BUTTONPIN_LEFT, INPUT_PULLUP);
-  pinMode(ARCADA_BUTTONPIN_RIGHT, INPUT_PULLUP);
-#endif
-
-#ifdef ARCADA_BUTTON_CLOCK
-  pinMode(ARCADA_BUTTON_CLOCK, OUTPUT);
-  digitalWrite(ARCADA_BUTTON_CLOCK, HIGH);
-  pinMode(ARCADA_BUTTON_LATCH, OUTPUT);
-  digitalWrite(ARCADA_BUTTON_LATCH, HIGH);
-  pinMode(ARCADA_BUTTON_DATA, INPUT);
-#endif
-
-#if (ARCADA_ACCEL_TYPE == ARCADA_ACCEL_LIS3DH)
-  if (! accel.begin(0x18) && ! accel.begin(0x19)) {
-    _has_accel = false;  // no biggie, we may be a pybadge LC
-  } else {
-    _has_accel = true;
+  if (_start_button >= 0) {
+    pinMode(_start_button, INPUT_PULLUP);
   }
-  if (hasAccel()) {
-    accel.setRange(LIS3DH_RANGE_4_G);   // 2, 4, 8 or 16 G!
+  if (_select_button >= 0) {
+    pinMode(_select_button, INPUT_PULLUP);
   }
-#endif
+  if (_a_button >= 0) {
+    pinMode(_a_button, INPUT_PULLUP);
+  }
+  if (_b_button >= 0) {
+    pinMode(_b_button, INPUT_PULLUP);
+  }
+  if (_up_button >= 0) {
+    pinMode(_up_button, INPUT_PULLUP);
+  }
+  if (_down_button >= 0) {
+    pinMode(_down_button, INPUT_PULLUP);
+  }
+  if (_left_button >= 0) {
+    pinMode(_left_button, INPUT_PULLUP);
+  }
+  if (_right_button >= 0) {
+    pinMode(_right_button, INPUT_PULLUP);
+  }
+  
+  if (_button_clock >= 0) {
+    pinMode(_button_clock, OUTPUT);
+    digitalWrite(_button_clock, HIGH);
+  }
+  if (_button_latch >= 0) {
+    pinMode(_button_latch, OUTPUT);
+    digitalWrite(_button_latch, HIGH);
+  }
+  if (_button_data >= 0) {
+    pinMode(_button_data, INPUT);
+  }
+
 
 #ifndef SPIWIFI
   _has_wifi = false;
@@ -130,16 +163,6 @@ bool Adafruit_Arcada::begin(void) {
   return true;
 }
 
-/**************************************************************************/
-/*!
-    @brief  Initialize TFT display, doesn't turn on the backlight
-*/
-/**************************************************************************/
-void Adafruit_Arcada::displayBegin(void) {
-  ARCADA_TFT_TYPE::ARCADA_TFT_INIT;
-  fillScreen(ARCADA_TFT_DEFAULTFILL);
-  setRotation(ARCADA_TFT_ROTATION);
-}
 
 /**************************************************************************/
 /*!
@@ -149,17 +172,18 @@ void Adafruit_Arcada::displayBegin(void) {
     @returns Whether saving to disk succeeded, or true if we don't save
 */
 /**************************************************************************/
-bool Adafruit_Arcada::setBacklight(uint8_t brightness, bool saveToDisk) {
+bool Adafruit_Arcada_SPITFT::setBacklight(uint8_t brightness, bool saveToDisk) {
   _brightness = brightness;
 
-#ifdef ARCADA_TFT_LITE
-  pinMode(ARCADA_TFT_LITE, OUTPUT);
-  if (_brightness == 0) {
-    digitalWrite(ARCADA_TFT_LITE, LOW);
-  } else {
-    analogWrite(ARCADA_TFT_LITE, brightness);
+  if (_backlight_pin >= 0) {
+    pinMode(_backlight_pin, OUTPUT);
+    if (_brightness == 0) {
+      digitalWrite(_backlight_pin, LOW);
+    } else {
+      analogWrite(_backlight_pin, brightness);
+    }
   }
-#endif
+
 #ifdef ARCADA_USE_JSON
   configJSON["brightness"] = _brightness;
   if (saveToDisk) {
@@ -176,7 +200,7 @@ bool Adafruit_Arcada::setBacklight(uint8_t brightness, bool saveToDisk) {
     @returns  brightness From 0 (off) to 255 (full on)
 */
 /**************************************************************************/
-uint8_t Adafruit_Arcada::getBacklight(void) {
+uint8_t Adafruit_Arcada_SPITFT::getBacklight(void) {
   return _brightness;
 }
 
@@ -188,7 +212,7 @@ uint8_t Adafruit_Arcada::getBacklight(void) {
     @returns Whether saving to disk succeeded, or true if we don't save
 */
 /**************************************************************************/
-bool Adafruit_Arcada::setVolume(uint8_t volume, bool saveToDisk) {
+bool Adafruit_Arcada_SPITFT::setVolume(uint8_t volume, bool saveToDisk) {
   _volume = volume;
 #ifdef ARCADA_USE_JSON
   configJSON["volume"] = _volume;
@@ -205,7 +229,7 @@ bool Adafruit_Arcada::setVolume(uint8_t volume, bool saveToDisk) {
     @returns  Volume From 0 (off) to 255 (full on)
 */
 /**************************************************************************/
-uint8_t Adafruit_Arcada::getVolume(void) {
+uint8_t Adafruit_Arcada_SPITFT::getVolume(void) {
   return _volume;
 }
 
@@ -215,10 +239,10 @@ uint8_t Adafruit_Arcada::getVolume(void) {
     @param  on True to enable, False to disable
 */
 /**************************************************************************/
-void Adafruit_Arcada::enableSpeaker(bool on) {
-#ifdef ARCADA_SPEAKER_ENABLE
-  digitalWrite(ARCADA_SPEAKER_ENABLE, on);
-#endif
+void Adafruit_Arcada_SPITFT::enableSpeaker(bool on) {
+  if (_speaker_en >= 0) {
+    digitalWrite(_speaker_en, on);
+  }
 }
 
 /**************************************************************************/
@@ -229,7 +253,7 @@ void Adafruit_Arcada::enableSpeaker(bool on) {
     @return True on success, False if something failed!
 */
 /**************************************************************************/
-bool Adafruit_Arcada::timerCallback(uint32_t freq, void (*callback)()) {
+bool Adafruit_Arcada_SPITFT::timerCallback(uint32_t freq, void (*callback)()) {
   if ((freq <= 50)  || (freq >= 3000000)) {
     return false;
   }
@@ -250,7 +274,7 @@ bool Adafruit_Arcada::timerCallback(uint32_t freq, void (*callback)()) {
     @param format The printf-compatible format and extra args
 */
 /**************************************************************************/
-void Adafruit_Arcada::printf(const char *format, ...) {
+void Adafruit_Arcada_SPITFT::printf(const char *format, ...) {
   va_list args;
   va_start(args, format);
   
@@ -266,18 +290,18 @@ void Adafruit_Arcada::printf(const char *format, ...) {
     @return Signed 16 bits, from -512 to 511, 0 being 'center'
 */
 /**************************************************************************/
-int16_t Adafruit_Arcada::readJoystickX(uint8_t sampling) {
+int16_t Adafruit_Arcada_SPITFT::readJoystickX(uint8_t sampling) {
 
   float reading = 0;
-#ifdef ARCADA_JOYSTICK_X
-  for (int i=0; i<sampling; i++) {
-    reading += analogRead(ARCADA_JOYSTICK_X);
-  }
-  reading /= sampling;
+  if (_joystick_x >= 0) {
+    for (int i=0; i<sampling; i++) {
+      reading += analogRead(_joystick_x);
+    }
+    reading /= sampling;
 
-  // adjust range from 0->1024 to -512 to 511;
-  reading -= _joyx_center;
-#endif
+    // adjust range from 0->1024 to -512 to 511;
+    reading -= _joyx_center;
+  }
   return reading;
 }
 
@@ -288,18 +312,18 @@ int16_t Adafruit_Arcada::readJoystickX(uint8_t sampling) {
     @return Signed 16 bits, from -512 to 511, 0 being 'center'
 */
 /**************************************************************************/
-int16_t Adafruit_Arcada::readJoystickY(uint8_t sampling) {
+int16_t Adafruit_Arcada_SPITFT::readJoystickY(uint8_t sampling) {
 
   float reading = 0;
-#ifdef ARCADA_JOYSTICK_Y
-  for (int i=0; i<sampling; i++) {
-    reading += analogRead(ARCADA_JOYSTICK_Y);
+  if (_joystick_y >= 0) {
+    for (int i=0; i<sampling; i++) {
+      reading += analogRead(_joystick_y);
+    }
+    reading /= sampling;
+    
+    // adjust range from 0->1024 to -512 to 511;
+    reading -= _joyy_center;
   }
-  reading /= sampling;
-
-  // adjust range from 0->1024 to -512 to 511;
-  reading -= _joyy_center;
-#endif
   return reading;
 }
 
@@ -311,133 +335,117 @@ int16_t Adafruit_Arcada::readJoystickY(uint8_t sampling) {
     @return Bit array with up to 32 buttons, 1 for pressed, 0 for not.
 */
 /**************************************************************************/
-uint32_t Adafruit_Arcada::readButtons(void) {
-  uint32_t buttons = 0;
+uint32_t Adafruit_Arcada_SPITFT::readButtons(void) {
+  uint32_t buttons = variantReadButtons(); // start with whatever the variant can do
 
-#if defined(ARCADA_BUTTON_CLOCK)
   // Use a latch to read 8 bits
-  uint8_t shift_buttons = 0;
-  digitalWrite(ARCADA_BUTTON_LATCH, LOW);
-  delayMicroseconds(1);
-  digitalWrite(ARCADA_BUTTON_LATCH, HIGH);
-  delayMicroseconds(1);
+  if (_button_clock >= 0) {
+    uint8_t shift_buttons = 0;
+    digitalWrite(_button_latch, LOW);
+    delayMicroseconds(1);
+    digitalWrite(_button_latch, HIGH);
+    delayMicroseconds(1);
   
-  for(int i = 0; i < 8; i++) {
-    shift_buttons <<= 1;
-    shift_buttons |= digitalRead(ARCADA_BUTTON_DATA);
-    digitalWrite(ARCADA_BUTTON_CLOCK, HIGH);
-    delayMicroseconds(1);
-    digitalWrite(ARCADA_BUTTON_CLOCK, LOW);
-    delayMicroseconds(1);
+    for(int i = 0; i < 8; i++) {
+      shift_buttons <<= 1;
+      shift_buttons |= digitalRead(_button_data);
+      digitalWrite(_button_clock, HIGH);
+      delayMicroseconds(1);
+      digitalWrite(_button_clock, LOW);
+      delayMicroseconds(1);
+    }
+  
+    if (shift_buttons & _shift_b)
+      buttons |= ARCADA_BUTTONMASK_B;
+    if (shift_buttons & _shift_a)
+      buttons |= ARCADA_BUTTONMASK_A;
+    if (shift_buttons & _shift_select)
+      buttons |= ARCADA_BUTTONMASK_SELECT;
+    if (shift_buttons & _shift_start)
+      buttons |= ARCADA_BUTTONMASK_START;
+    if (shift_buttons & _shift_up)
+      buttons |= ARCADA_BUTTONMASK_UP;
+    if (shift_buttons & _shift_down)
+      buttons |= ARCADA_BUTTONMASK_DOWN;
+    if (shift_buttons & _shift_left)
+      buttons |= ARCADA_BUTTONMASK_LEFT;
+    if (shift_buttons & _shift_right)
+      buttons |= ARCADA_BUTTONMASK_RIGHT;
   }
-  if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_B)
-    buttons |= ARCADA_BUTTONMASK_B;
-  if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_A)
-    buttons |= ARCADA_BUTTONMASK_A;
-  if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_SELECT)
-    buttons |= ARCADA_BUTTONMASK_SELECT;
-  if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_START)
-    buttons |= ARCADA_BUTTONMASK_START;
-#if defined(ARCADA_BUTTON_SHIFTMASK_UP)  // D Pad buttons on shift register
-  if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_UP)
-    buttons |= ARCADA_BUTTONMASK_UP;
-  if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_DOWN)
-    buttons |= ARCADA_BUTTONMASK_DOWN;
-  if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_LEFT)
-    buttons |= ARCADA_BUTTONMASK_LEFT;
-  if (shift_buttons & ARCADA_BUTTON_SHIFTMASK_RIGHT)
-    buttons |= ARCADA_BUTTONMASK_RIGHT;
-#endif
-#endif
 
   // GPIO buttons!
-#ifdef ARCADA_BUTTONPIN_START
-  if (!digitalRead(ARCADA_BUTTONPIN_START)) 
+  if ((_start_button >= 0) && !digitalRead(_start_button)) 
     buttons |= ARCADA_BUTTONMASK_START;
-#endif
 
-#ifdef ARCADA_BUTTONPIN_SELECT
-  if (!digitalRead(ARCADA_BUTTONPIN_SELECT)) 
+  if ((_select_button >= 0) && !digitalRead(_select_button)) 
     buttons |= ARCADA_BUTTONMASK_SELECT;
-#endif
 
-#ifdef ARCADA_BUTTONPIN_A
-  if (!digitalRead(ARCADA_BUTTONPIN_A)) 
+  if ((_a_button >= 0) && !digitalRead(_a_button)) 
     buttons |= ARCADA_BUTTONMASK_A;
-#endif
 
-#ifdef ARCADA_BUTTONPIN_B
-  if (!digitalRead(ARCADA_BUTTONPIN_B)) 
+  if ((_b_button >= 0) && !digitalRead(_b_button)) 
     buttons |= ARCADA_BUTTONMASK_B;
-#endif
 
-#if defined(BUTTONPIN_UP)  // gpio for D-PAD
-  if (!digitalRead(ARCADA_BUTTONPIN_UP)) 
+  if ((_up_button >= 0) && !digitalRead(_up_button)) 
     buttons |= ARCADA_BUTTONMASK_UP;
-  if (!digitalRead(ARCADA_BUTTONPIN_DOWN))
+  if ((_down_button >= 0) && !digitalRead(_down_button))
     buttons |= ARCADA_BUTTONMASK_DOWN;
-  if (!digitalRead(ARCADA_BUTTONPIN_LEFT))
+  if ((_left_button >= 0) && !digitalRead(_left_button))
     buttons |= ARCADA_BUTTONMASK_LEFT;
-  if (!digitalRead(ARCADA_BUTTONPIN_RIGHT))
+  if ((_right_button >= 0) && !digitalRead(_right_button))
     buttons |= ARCADA_BUTTONMASK_RIGHT;
-#endif
 
   // Potentiometers for X & Y
-#if defined(ARCADA_JOYSTICK_X)
-  int16_t x = readJoystickX();
+  int16_t x = readJoystickX(); // returns 0 on no joystick
   if (x > 350)  
     buttons |= ARCADA_BUTTONMASK_RIGHT;
   else if (x < -350)  
     buttons |= ARCADA_BUTTONMASK_LEFT;
-#endif
-#if defined(ARCADA_JOYSTICK_Y)
-  int16_t y = readJoystickY();
+  int16_t y = readJoystickY(); // returns 0 on no joystick
   if (y > 350)  
     buttons |= ARCADA_BUTTONMASK_DOWN;
   else if (y < -350)  
     buttons |= ARCADA_BUTTONMASK_UP;
-#endif
-
 
   // Touchscreen
-#if defined(ARCADA_USE_TOUCHSCREEN)
-  TSPoint p = getTouchscreenPoint();
-  if (p.z > 100) {
-    //Serial.printf("(%d, %d)\n", p.x, p.y);
-    // up!
-    if ( (p.y < height()/4) && (p.x > width()/4) && (p.x < (width()*3.0/4.0)) ) {
-       buttons |= ARCADA_BUTTONMASK_UP;
-    }
-    // down!
-    if ( (p.y > (height()*3.0/4.0)) && 
-	 (p.x > width()/3) && (p.x < (width()*3.0/4.0)) ) {
-       buttons |= ARCADA_BUTTONMASK_DOWN;
-    }
-    // left!
-    if ( (p.x < width()/4) && (p.y > height()/4) && (p.y < (height()*3.0/4.0)) ) {
-       buttons |= ARCADA_BUTTONMASK_LEFT;
-    }
-    // right!
-    if ( (p.x > (width()*3.0/4.0)) &&  
-	 (p.y > height()/4) && (p.y < (height()*3.0/4.0)) ) {
-       buttons |= ARCADA_BUTTONMASK_RIGHT;
-    }
-    // left!
-    if ( (p.x < width()/4) && (p.y > height()/4) && (p.y < (height()*3.0/4.0)) ) {
-       buttons |= ARCADA_BUTTONMASK_LEFT;
-    }
-    // B
-    if ( (p.x > width()/4) && (p.x < width()/2) // 2nd quarter
-	 && (p.y > height()/4) && (p.y < (height()*3.0/4.0)) ) {
-       buttons |= ARCADA_BUTTONMASK_B;
-    }
-    // A
-    if ( (p.x > width()/2) && (p.x < (width()*3.0/4.0)) // 3rd quarter
-	 && (p.y > height()/4) && (p.y < (height()*3.0/4.0)) ) {
-       buttons |= ARCADA_BUTTONMASK_A;
+  if (_touchscreen) {
+    TSPoint p = getTouchscreenPoint();
+    if (p.z > 100) {
+      //Serial.printf("(%d, %d)\n", p.x, p.y);
+      // up!
+      if ( (p.y < display->height()/4) && (p.x > display->width()/4) && (p.x < (display->width()*3.0/4.0)) ) {
+	buttons |= ARCADA_BUTTONMASK_UP;
+      }
+      // down!
+      if ( (p.y > (display->height()*3.0/4.0)) && 
+	   (p.x > display->width()/3) && (p.x < (display->width()*3.0/4.0)) ) {
+	buttons |= ARCADA_BUTTONMASK_DOWN;
+      }
+      // left!
+      if ( (p.x < display->width()/4) && (p.y > display->height()/4) && (p.y < (display->height()*3.0/4.0)) ) {
+	buttons |= ARCADA_BUTTONMASK_LEFT;
+      }
+      // right!
+      if ( (p.x > (display->width()*3.0/4.0)) &&  
+	   (p.y > display->height()/4) && (p.y < (display->height()*3.0/4.0)) ) {
+	buttons |= ARCADA_BUTTONMASK_RIGHT;
+      }
+      // left!
+      if ( (p.x < display->width()/4) && (p.y > display->height()/4) && (p.y < (display->height()*3.0/4.0)) ) {
+	buttons |= ARCADA_BUTTONMASK_LEFT;
+      }
+      // B
+      if ( (p.x > display->width()/4) && (p.x < display->width()/2) // 2nd quarter
+	   && (p.y > display->height()/4) && (p.y < (display->height()*3.0/4.0)) ) {
+	buttons |= ARCADA_BUTTONMASK_B;
+      }
+      // A
+      if ( (p.x > display->width()/2) && (p.x < (display->width()*3.0/4.0)) // 3rd quarter
+	   && (p.y > display->height()/4) && (p.y < (display->height()*3.0/4.0)) ) {
+	buttons |= ARCADA_BUTTONMASK_A;
+      }
     }
   }
-#endif
 
   last_buttons = curr_buttons;
   curr_buttons = buttons;
@@ -454,7 +462,7 @@ uint32_t Adafruit_Arcada::readButtons(void) {
     @return Bitmask of all buttons that were just pressed
 */
 /**************************************************************************/
-uint32_t Adafruit_Arcada::justPressedButtons(void) {  
+uint32_t Adafruit_Arcada_SPITFT::justPressedButtons(void) {  
   return justpressed_buttons;
 }
 
@@ -465,7 +473,7 @@ uint32_t Adafruit_Arcada::justPressedButtons(void) {
     @return Bitmask of all buttons that were just released
 */
 /**************************************************************************/
-uint32_t Adafruit_Arcada::justReleasedButtons(void) {  
+uint32_t Adafruit_Arcada_SPITFT::justReleasedButtons(void) {  
   return justreleased_buttons;
 }
 
@@ -475,12 +483,12 @@ uint32_t Adafruit_Arcada::justReleasedButtons(void) {
     @return 0 (darkest) to 1023 (brightest) or 0 if there is no sensor
 */
 /**************************************************************************/
-uint16_t Adafruit_Arcada::readLightSensor(void) {
-#if defined(ARCADA_LIGHT_SENSOR)
-  return analogRead(ARCADA_LIGHT_SENSOR);
-#else
-  return 0;
-#endif
+uint16_t Adafruit_Arcada_SPITFT::readLightSensor(void) {
+  if (_light_sensor >= 0) {
+    return analogRead(_light_sensor);
+  } else {
+    return 0;
+  }
 }
 
 /**************************************************************************/
@@ -489,12 +497,12 @@ uint16_t Adafruit_Arcada::readLightSensor(void) {
     @return Voltage as floating point or NAN if there is no sensor
 */
 /**************************************************************************/
-float Adafruit_Arcada::readBatterySensor(void) {
-#if defined(ARCADA_BATTERY_SENSOR)
-  return ( (float)analogRead(ARCADA_BATTERY_SENSOR) / 1023.0) * 2.0 * 3.3 ;
-#else
-  return NAN;
-#endif
+float Adafruit_Arcada_SPITFT::readBatterySensor(void) {
+  if (_battery_sensor >= 0) {
+    return ( (float)analogRead(_battery_sensor) / 1023.0) * 2.0 * 3.3 ;
+  } else {
+    return NAN;
+  }
 }
 
 /**************************************************************************/
@@ -505,7 +513,7 @@ float Adafruit_Arcada::readBatterySensor(void) {
     @return True on success (could allocate) or false on failure
 */
 /**************************************************************************/
-bool Adafruit_Arcada::createFrameBuffer(uint16_t width, uint16_t height) {
+bool Adafruit_Arcada_SPITFT::createFrameBuffer(uint16_t width, uint16_t height) {
   if(_canvas) delete(_canvas);
   _canvas = new GFXcanvas16(width, height);
   return (_canvas != NULL);
@@ -522,6 +530,8 @@ bool Adafruit_Arcada::createFrameBuffer(uint16_t width, uint16_t height) {
     @param  bigEndian If true, frame buffer data is already in big-endian
     order (which is NOT SAMD-native order) and an actual background DMA blit
     can take place (SEE NOTE BELOW)
+    @param blitdisplay The pointer to display we'll blit to. If not passed in,
+    we'll use the 'internal' default of 'display' that the variant creates
     @return True on success, failure if no canvas exists yet
     @note Even if blocking is 'false,' this function may still block.
     For starters, DMA must be enabled in Adafruit_SPITFT.h. If bigEndian is
@@ -541,19 +551,22 @@ bool Adafruit_Arcada::createFrameBuffer(uint16_t width, uint16_t height) {
     framebuffer until the transfer completes).
 */
 /**************************************************************************/
-bool Adafruit_Arcada::blitFrameBuffer(uint16_t x, uint16_t y, bool blocking,
-  bool bigEndian) {
+bool Adafruit_Arcada_SPITFT::blitFrameBuffer(uint16_t x, uint16_t y, bool blocking,
+					     bool bigEndian, Adafruit_SPITFT *blitdisplay) {
+  if (! blitdisplay) {
+    blitdisplay = display;
+  }
   if(_canvas) {
     if (! _first_frame) {
-      dmaWait();  // Wait for prior DMA transfer to complete
-      endWrite(); // End transaction from any prior call
+      blitdisplay->dmaWait();  // Wait for prior DMA transfer to complete
+      blitdisplay->endWrite(); // End transaction from any prior call
     } else {
       _first_frame = false;
     }
-    startWrite(); // Start new display transaction
-    setAddrWindow(x, y, _canvas->width(), _canvas->height());
-    writePixels(_canvas->getBuffer(), _canvas->width() * _canvas->height(),
-      blocking, bigEndian);
+    blitdisplay->startWrite(); // Start new display transaction
+    blitdisplay->setAddrWindow(x, y, _canvas->width(), _canvas->height());
+    blitdisplay->writePixels(_canvas->getBuffer(), _canvas->width() * _canvas->height(),
+			     blocking, bigEndian);
     return true;
   }
 
@@ -566,12 +579,8 @@ bool Adafruit_Arcada::blitFrameBuffer(uint16_t x, uint16_t y, bool blocking,
     @returns True if it does
 */
 /**************************************************************************/
-bool Adafruit_Arcada::hasTouchscreen(void) {
-#if defined(ARCADA_USE_TOUCHSCREEN) 
-  return true;
-#else
-  return false;
-#endif
+bool Adafruit_Arcada_SPITFT::hasTouchscreen(void) {
+  return (_touch_xp >= 0);
 }
 
 /**************************************************************************/
@@ -583,7 +592,7 @@ bool Adafruit_Arcada::hasTouchscreen(void) {
     @param ymax The value of Y which corresponds to the TFT height on that axis
 */
 /**************************************************************************/
-void Adafruit_Arcada::setTouchscreenCalibration(int16_t xmin, int16_t xmax, 
+void Adafruit_Arcada_SPITFT::setTouchscreenCalibration(int16_t xmin, int16_t xmax, 
 						int16_t ymin, int16_t ymax) {
   _ts_xmin = xmin;
   _ts_xmax = xmax;
@@ -598,7 +607,7 @@ void Adafruit_Arcada::setTouchscreenCalibration(int16_t xmin, int16_t xmax,
     touch was detected.
 */
 /**************************************************************************/
-TSPoint Adafruit_Arcada::getTouchscreenPoint(void) {
+TSPoint Adafruit_Arcada_SPITFT::getTouchscreenPoint(void) {
   if (!_touchscreen) {
     TSPoint p;
     p.x = p.y = p.z = 0;
@@ -626,27 +635,27 @@ TSPoint Adafruit_Arcada::getTouchscreenPoint(void) {
 
   //Serial.printf("rot: %d (%d, %d) \t", getRotation(), p.x, p.y);
 
-  if (getRotation() == 0) {
-    int _y = map(p.y, _ts_ymin, _ts_ymax, 0, height());
-    int _x = map(p.x, _ts_xmin, _ts_xmax, 0, width());
+  if (display->getRotation() == 0) {
+    int _y = map(p.y, _ts_ymin, _ts_ymax, 0, display->height());
+    int _x = map(p.x, _ts_xmin, _ts_xmax, 0, display->width());
     p.x = _x;
     p.y = _y;
   }
-  if (getRotation() == 1) {
-    int _x = map(p.y, _ts_ymin, _ts_ymax, 0, width());
-    int _y = map(p.x, _ts_xmax, _ts_xmin, 0, height());
+  if (display->getRotation() == 1) {
+    int _x = map(p.y, _ts_ymin, _ts_ymax, 0, display->width());
+    int _y = map(p.x, _ts_xmax, _ts_xmin, 0, display->height());
     p.x = _x;
     p.y = _y;
   }
-  if (getRotation() == 2) {
-    int _y = map(p.y, _ts_ymax, _ts_ymin, 0, height());
-    int _x = map(p.x, _ts_xmax, _ts_xmin, 0, width());
+  if (display->getRotation() == 2) {
+    int _y = map(p.y, _ts_ymax, _ts_ymin, 0, display->height());
+    int _x = map(p.x, _ts_xmax, _ts_xmin, 0, display->width());
     p.x = _x;
     p.y = _y;
   }
-  if (getRotation() == 3) {
-    int _x = map(p.y, _ts_ymax, _ts_ymin, 0, width());
-    int _y = map(p.x, _ts_xmin, _ts_xmax, 0, height());
+  if (display->getRotation() == 3) {
+    int _x = map(p.y, _ts_ymax, _ts_ymin, 0, display->width());
+    int _y = map(p.x, _ts_xmin, _ts_xmax, 0, display->height());
     p.x = _x;
     p.y = _y;
   }
@@ -660,12 +669,12 @@ TSPoint Adafruit_Arcada::getTouchscreenPoint(void) {
     @returns True if it does
 */
 /**************************************************************************/
-bool Adafruit_Arcada::hasControlPad(void) {
-#if defined(ARCADA_BUTTON_CLOCK) ||  defined(ARCADA_BUTTONPIN_A) || defined(ARCADA_JOYSTICK_X)
-  return true;
-#else
-  return false;
-#endif
+bool Adafruit_Arcada_SPITFT::hasControlPad(void) {
+  if (_joystick_x >= 0 || _button_clock >= 0 || _a_button >= 0) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 
@@ -681,7 +690,7 @@ bool Adafruit_Arcada::hasControlPad(void) {
            correct for LEDs. Intended for TFT use only.
 */
 // https://gist.github.com/kuathadianto/200148f53616cbd226d993b400214a7f
-uint16_t Adafruit_Arcada::ColorHSV565(int16_t H, uint8_t S, uint8_t V) {
+uint16_t Adafruit_Arcada_SPITFT::ColorHSV565(int16_t H, uint8_t S, uint8_t V) {
   double C = S * V / 10000.0;
   double X = C * (1 - abs(fmod(H / 60.0, 2) - 1));
   double m = (V / 100.0) - C;
@@ -721,5 +730,5 @@ uint16_t Adafruit_Arcada::ColorHSV565(int16_t H, uint8_t S, uint8_t V) {
   uint8_t red = (Rs + m) * 255;
   uint8_t green = (Gs + m) * 255;
   uint8_t blue = (Bs + m) * 255;
-  return color565(red, green, blue);
+  return display->color565(red, green, blue);
 }
