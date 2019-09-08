@@ -34,6 +34,10 @@
   #define SS_SWITCH2_PIN     10
   #define SS_SWITCH3_PIN     11
 
+
+  #define ARCADA_CALLBACKTIMER               4
+  #define ARCADA_CALLBACKTIMER_HANDLER       TC4_Handler
+
   #include "arcadatype.h"
 
 
