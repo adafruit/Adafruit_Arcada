@@ -69,7 +69,7 @@ void loop() {
     posImag -= incImag;
   }
 #if defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
-  arcada.blitFrameBuffer(0, 0, false, false, arcada.left_tft); // do the other eye too!
+  arcada.blitFrameBuffer(0, 0, false, false, arcada.display2); // do the other eye too!
 #endif
   arcada.blitFrameBuffer(0, 0, true, false); // block on blit
   elapsedTime = millis()-startTime;
