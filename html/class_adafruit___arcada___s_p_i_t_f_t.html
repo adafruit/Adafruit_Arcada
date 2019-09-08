@@ -85,6 +85,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2ef9a65c145b37a8aecafe256ea9b70b"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a2ef9a65c145b37a8aecafe256ea9b70b">variantBegin</a> (void)=0</td></tr>
 <tr class="memdesc:a2ef9a65c145b37a8aecafe256ea9b70b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Perform any specialized variant setup such as initializing accelerometers, seesaw, etc.  <a href="#a2ef9a65c145b37a8aecafe256ea9b70b">More...</a><br /></td></tr>
 <tr class="separator:a2ef9a65c145b37a8aecafe256ea9b70b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3711241171c95f5f3656729fd32ef8e"><td class="memItemLeft" align="right" valign="top">virtual uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#af3711241171c95f5f3656729fd32ef8e">variantReadButtons</a> (void)=0</td></tr>
+<tr class="memdesc:af3711241171c95f5f3656729fd32ef8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Perform any variant input reading (say if we use seesaw or whatnot)  <a href="#af3711241171c95f5f3656729fd32ef8e">More...</a><br /></td></tr>
+<tr class="separator:af3711241171c95f5f3656729fd32ef8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89b0344208af5324ca15f552801c682a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a89b0344208af5324ca15f552801c682a">timerCallback</a> (uint32_t freq, void(*callback)())</td></tr>
 <tr class="memdesc:a89b0344208af5324ca15f552801c682a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a repetative callback to a function using a timer.  <a href="#a89b0344208af5324ca15f552801c682a">More...</a><br /></td></tr>
 <tr class="separator:a89b0344208af5324ca15f552801c682a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -241,22 +244,6 @@ Adafruit_NeoPixel&#160;</td><td class="memItemRight" valign="bottom"><a class="e
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a7cecd1de7faf0ad8d9a1367285a7b284"><td class="memItemLeft" align="right" valign="top"><a id="a7cecd1de7faf0ad8d9a1367285a7b284"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a7cecd1de7faf0ad8d9a1367285a7b284">last_buttons</a></td></tr>
-<tr class="memdesc:a7cecd1de7faf0ad8d9a1367285a7b284"><td class="mdescLeft">&#160;</td><td class="mdescRight">After <a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a1679b39028bc4cc9c781da652e449a9a" title="Read all buttons/joystick and return a bitmask of which buttons are pressed, check ARCADA_BUTTONMASK_...">readButtons()</a> is called, this has the previous button states. <br /></td></tr>
-<tr class="separator:a7cecd1de7faf0ad8d9a1367285a7b284"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af85fdc45e0fa77fcb1257d54d3dfcd74"><td class="memItemLeft" align="right" valign="top"><a id="af85fdc45e0fa77fcb1257d54d3dfcd74"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#af85fdc45e0fa77fcb1257d54d3dfcd74">curr_buttons</a></td></tr>
-<tr class="memdesc:af85fdc45e0fa77fcb1257d54d3dfcd74"><td class="mdescLeft">&#160;</td><td class="mdescRight">After <a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a1679b39028bc4cc9c781da652e449a9a" title="Read all buttons/joystick and return a bitmask of which buttons are pressed, check ARCADA_BUTTONMASK_...">readButtons()</a> is called, this has the current button states. <br /></td></tr>
-<tr class="separator:af85fdc45e0fa77fcb1257d54d3dfcd74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a94a6ae611536ab65f422c58d4751e547"><td class="memItemLeft" align="right" valign="top"><a id="a94a6ae611536ab65f422c58d4751e547"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a94a6ae611536ab65f422c58d4751e547">justpressed_buttons</a></td></tr>
-<tr class="memdesc:a94a6ae611536ab65f422c58d4751e547"><td class="mdescLeft">&#160;</td><td class="mdescRight">After <a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a1679b39028bc4cc9c781da652e449a9a" title="Read all buttons/joystick and return a bitmask of which buttons are pressed, check ARCADA_BUTTONMASK_...">readButtons()</a> is called, this has what buttons were pressed since the call. <br /></td></tr>
-<tr class="separator:a94a6ae611536ab65f422c58d4751e547"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a23290a248f49aefd87bd1e582cfeca1e"><td class="memItemLeft" align="right" valign="top"><a id="a23290a248f49aefd87bd1e582cfeca1e"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a23290a248f49aefd87bd1e582cfeca1e">justreleased_buttons</a></td></tr>
-<tr class="memdesc:a23290a248f49aefd87bd1e582cfeca1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">After <a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a1679b39028bc4cc9c781da652e449a9a" title="Read all buttons/joystick and return a bitmask of which buttons are pressed, check ARCADA_BUTTONMASK_...">readButtons()</a> is called, this has what buttons were released since the call. <br /></td></tr>
-<tr class="separator:a23290a248f49aefd87bd1e582cfeca1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5b45c83927083ed14a5426ba820a5fd"><td class="memItemLeft" align="right" valign="top"><a id="ad5b45c83927083ed14a5426ba820a5fd"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#ad5b45c83927083ed14a5426ba820a5fd">_has_accel</a> = false</td></tr>
 <tr class="memdesc:ad5b45c83927083ed14a5426ba820a5fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internally tracked variable if accelerometer was found. <br /></td></tr>
@@ -324,6 +311,35 @@ Adafruit_ImageReader *&#160;</td><td class="memItemRight" valign="bottom"><a cla
 
 <p>Perform any specialized variant setup such as initializing accelerometers, seesaw, etc. </p>
 <dl class="section return"><dt>Returns</dt><dd>True on variant setup success </dd></dl>
+
+</div>
+</div>
+<a id="af3711241171c95f5f3656729fd32ef8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3711241171c95f5f3656729fd32ef8e">&#9670;&nbsp;</a></span>variantReadButtons()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual uint32_t Adafruit_Arcada_SPITFT::variantReadButtons </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Perform any variant input reading (say if we use seesaw or whatnot) </p>
+<dl class="section return"><dt>Returns</dt><dd>Bitmask of pressed buttons </dd></dl>
 
 </div>
 </div>
