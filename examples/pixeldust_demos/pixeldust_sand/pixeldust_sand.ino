@@ -54,10 +54,12 @@ void setup() {
 
   // randomize colors
   for (int i=0; i< N_FLAKES; i++) {
-    flake_colors[i] = 
-      __builtin_bswap16(arcada.ColorHSV565(40, // Hue (sandy)
-                                           random(50, 100),  // saturation
-                                           random(50, 100))); // brightness
+    flake_colors[i] = arcada.ColorHSV565(40, // Hue (sandy)
+                                         random(50, 100),  // saturation
+                                         random(50, 100)); // brightness
+#ifdef USE_SPI_DMA
+    flake_colors[i] = __builtin_bswap16(flake_colors[i]);
+#endif
   }
 }
 
@@ -94,5 +96,9 @@ void loop() {
   }
   
   arcada.blitFrameBuffer(0, 0, false, true);
+#if defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
+  arcada.blitFrameBuffer(0, 0, false, true, arcada.display2); // do the other eye too!
+#endif
+
   Serial.println(millis()-t);
 }
