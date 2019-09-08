@@ -45,7 +45,7 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
  public:
   Adafruit_LIS3DH accel = Adafruit_LIS3DH();
   Adafruit_seesaw ss;
-  Adafruit_ST7789 *display, *display2;
+  Adafruit_ST7789 *display2, *_display;  // we need to keep a 'copy' of the ST7789 version of both displays
 
   Adafruit_Arcada() {
   };
@@ -76,7 +76,7 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
   }
   
   void begin(uint32_t freq) {
-    display->init(240, 240);
+    _display->init(240, 240);
     display2->init(240, 240);
   }
   
@@ -85,14 +85,15 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
   }
   
   void displayBegin(void) {
-    display = new Adafruit_ST7789(&ARCADA_TFT_SPI, ARCADA_TFT_CS, ARCADA_TFT_DC, ARCADA_TFT_RST);
+    _display = new Adafruit_ST7789(&ARCADA_TFT_SPI, ARCADA_TFT_CS, ARCADA_TFT_DC, ARCADA_TFT_RST);
     display2 = new Adafruit_ST7789(&ARCADA_LEFTTFT_SPI, ARCADA_LEFTTFT_CS, ARCADA_LEFTTFT_DC, ARCADA_LEFTTFT_RST);
-    display->init(240, 240);
+    _display->init(240, 240);
     display2->init(240, 240);
-    display->fillScreen(ARCADA_TFT_DEFAULTFILL);
-    display->setRotation(ARCADA_TFT_ROTATION);
+    _display->fillScreen(ARCADA_TFT_DEFAULTFILL);
+    _display->setRotation(ARCADA_TFT_ROTATION);
     display2->fillScreen(ARCADA_TFT_DEFAULTFILL);
     display2->setRotation(ARCADA_TFT_ROTATION);
+    display = _display;  // grab the SPITFT pointer for arcada parent
   }
   
   uint16_t readLightSensor(void) {
