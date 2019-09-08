@@ -109,9 +109,11 @@ void setup() {
   colors[5] = arcada.display->color565(  0,128, 38);   // Green
   colors[6] = arcada.display->color565(  0, 77,255);   // Blue
   colors[7] = arcada.display->color565(117,  7,135); // Purple
+#ifdef USE_SPI_DMA
   for (int i=0; i<N_COLORS; i++) {
     colors[i] = __builtin_bswap16(colors[i]);  // we swap the colors here to speed up DMA
   }
+#endif
 }
 
 void loop() {
@@ -167,5 +169,8 @@ void loop() {
   }
   
   arcada.blitFrameBuffer(0, 0, false, true);
+#if defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
+  arcada.blitFrameBuffer(0, 0, false, true, arcada.display2); // do the other eye too!
+#endif
   Serial.println(millis()-t);
 }
