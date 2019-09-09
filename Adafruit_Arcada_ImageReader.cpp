@@ -10,6 +10,8 @@
              the screen edges. Screen rotation setting is observed.
     @param   y
              Vertical offset in pixels; top edge = 0, positive = down.
+    @param   tft
+             The display we'll be drawing to
     @param   transact
              Pass 'true' if TFT and SD are on the same SPI bus, in which
              case SPI transactions are necessary. If separate peripherals,
@@ -17,11 +19,14 @@
     @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
              completion, other values on failure).
 */
-ImageReturnCode Adafruit_Arcada_SPITFT::drawBMP(char *filename, int16_t x, int16_t y, boolean transact) {
+ImageReturnCode Adafruit_Arcada_SPITFT::drawBMP(char *filename, int16_t x, int16_t y, Adafruit_SPITFT *tft, boolean transact) {
+  if (! tft) {
+    tft = display;
+  }
   if (SD_imagereader) {
-    return SD_imagereader->drawBMP(filename, *display, x, y, transact);
+    return SD_imagereader->drawBMP(filename, *tft, x, y, transact);
   } else if (QSPI_imagereader) {
-    return QSPI_imagereader->drawBMP(filename, *display, x, y, transact);
+    return QSPI_imagereader->drawBMP(filename, *tft, x, y, transact);
   } else {
     return IMAGE_ERR_FILE_NOT_FOUND;
   }

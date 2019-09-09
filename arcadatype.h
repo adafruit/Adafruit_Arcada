@@ -162,7 +162,7 @@ class Adafruit_Arcada_SPITFT {
   StaticJsonDocument<256> configJSON;  ///< The object to store our various settings, you need to restore/save this with (load/save)ConfigurationFile
 #endif
 
-  ImageReturnCode drawBMP(char *filename, int16_t x, int16_t y, boolean transact = true);
+  ImageReturnCode drawBMP(char *filename, int16_t x, int16_t y, Adafruit_SPITFT *tft=0x0, boolean transact = true);
 
  protected:
   bool _has_accel = false; ///< Internally tracked variable if accelerometer was found

@@ -35,6 +35,10 @@ void setup(void) {
   } else if(stat == IMAGE_ERR_MALLOC) {
     arcada.haltBox("Malloc failed (insufficient RAM).");  
   }
+
+#if defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
+  arcada.drawBMP((char *)"/purple.bmp", 0, 0, arcada.display2); // do the other eye too!
+#endif
 }
 
 void loop() {

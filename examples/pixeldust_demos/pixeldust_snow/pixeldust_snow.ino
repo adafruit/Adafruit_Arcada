@@ -84,5 +84,9 @@ void loop() {
   }
   
   arcada.blitFrameBuffer(0, 0, false, true);
+#if defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
+  arcada.blitFrameBuffer(0, 0, false, false, arcada.display2); // do the other eye too!
+#endif
+ 
   Serial.println(millis()-t);
 }
