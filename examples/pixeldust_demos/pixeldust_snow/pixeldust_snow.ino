@@ -1,8 +1,8 @@
 #include "Adafruit_Arcada.h"
 #include "Adafruit_PixelDust.h"
 
-#define CHUNKY_SAND
-#define N_FLAKES 1000 
+#define PARTICLE_SIZE 3
+#define N_FLAKES 250 
 
 Adafruit_Arcada arcada;
 uint16_t *framebuffer;
@@ -36,10 +36,8 @@ void setup() {
 
   play_width = arcada.display->width();
   play_height = arcada.display->height();
-#ifdef CHUNKY_SAND
-  play_width /= 2;
-  play_height /= 2;
-#endif
+  play_width /= PARTICLE_SIZE;
+  play_height /= PARTICLE_SIZE;
 
   pixeldust = new Adafruit_PixelDust(play_width, play_height, N_FLAKES, 1, 128, false);
   
@@ -48,11 +46,14 @@ void setup() {
   }
 
   pixeldust->randomize(); // Initialize random snowflake positions
+
+  // get the first accelerometer reading
+  arcada.accel.getEvent(&event);
 }
 
 void loop() {
   uint32_t t = millis();
-  arcada.accel.getEvent(&event);
+
   double xx, yy, zz;
   xx = event.acceleration.x;
   yy = event.acceleration.y;
@@ -62,6 +63,13 @@ void loop() {
   //Serial.printf("(%0.1f, %0.1f, %0.1f)\n", event.acceleration.x, event.acceleration.y, event.acceleration.z);
 
   arcada.display->dmaWait();
+#if defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
+  arcada.display2->dmaWait();
+#endif
+
+  // we dont want to read the accel while DMA occurs, because it seems to be :(
+  // so read it now, and we'll use it later
+  arcada.accel.getEvent(&event);
 
   // Erase canvas and draw new snowflake positions
   memset(framebuffer, 0x00, width*height*2);  // clear the frame buffer
@@ -73,20 +81,16 @@ void loop() {
 
     uint16_t flakeColor = 0xFFFF; // all are white pixels
     
-#ifdef CHUNKY_SAND
-    framebuffer[2*y * width + 2*x] = flakeColor;
-    framebuffer[2*y * width + 2*x+1] = flakeColor;
-    framebuffer[(2*y+1) * width + 2*x] = flakeColor;
-    framebuffer[(2*y+1) * width + 2*x + 1] = flakeColor;
-#else
-    framebuffer[y * width + x] = flakeColor;
-#endif
+    for (int w=0; w<PARTICLE_SIZE; w++) {
+      for (int h=0; h<PARTICLE_SIZE; h++) {
+        framebuffer[(PARTICLE_SIZE*y+h) * width + (PARTICLE_SIZE*x+w)] = flakeColor;
+      }
+    }
   }
-  
-  arcada.blitFrameBuffer(0, 0, false, true);
+
+  arcada.blitFrameBuffer(0, 0, false, false);
 #if defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
   arcada.blitFrameBuffer(0, 0, false, false, arcada.display2); // do the other eye too!
 #endif
- 
   Serial.println(millis()-t);
 }

@@ -129,7 +129,9 @@ void loop() {
   Serial.printf("iterate: %d ", millis()-t);
 
   arcada.display->dmaWait();
-
+#if defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
+  arcada.display2->dmaWait();
+#endif
   // Erase canvas and draw new snowflake positions
   memset(framebuffer, 0x00, width*height*2);  // clear the frame buffer
 
