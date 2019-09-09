@@ -18,11 +18,30 @@ void setup(void) {
 
 void loop() {
   arcada.display->fillScreen(ARCADA_RED);
+#if defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
+  arcada.display2->fillScreen(ARCADA_RED);
+#endif
+
   delay(100);
+
   arcada.display->fillScreen(ARCADA_GREEN);
+#if defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
+  arcada.display2->fillScreen(ARCADA_GREEN);
+#endif
+
   delay(100);
+
   arcada.display->fillScreen(ARCADA_BLUE);
+#if defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
+  arcada.display2->fillScreen(ARCADA_BLUE);
+#endif
+
   delay(100);
+
   arcada.display->fillScreen(ARCADA_BLACK);
+#if defined(ADAFRUIT_MONSTER_M4SK_EXPRESS)
+  arcada.display2->fillScreen(ARCADA_BLACK);
+#endif
+
   delay(100);
 }
