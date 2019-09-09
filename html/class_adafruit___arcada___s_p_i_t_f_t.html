@@ -227,9 +227,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a9f856abe82e8afebf6d2d9cc9d345dc2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a9f856abe82e8afebf6d2d9cc9d345dc2">hasWiFi</a> (void)</td></tr>
 <tr class="memdesc:a9f856abe82e8afebf6d2d9cc9d345dc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the status of the ESP32 module connected via SPI.  <a href="#a9f856abe82e8afebf6d2d9cc9d345dc2">More...</a><br /></td></tr>
 <tr class="separator:a9f856abe82e8afebf6d2d9cc9d345dc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a626072ad8d4e7a440c001efc649035ca"><td class="memItemLeft" align="right" valign="top">ImageReturnCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a626072ad8d4e7a440c001efc649035ca">drawBMP</a> (char *filename, int16_t x, int16_t y, boolean transact=true)</td></tr>
-<tr class="memdesc:a626072ad8d4e7a440c001efc649035ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads BMP image file from QSPI or SD card directly to SPITFT screen.  <a href="#a626072ad8d4e7a440c001efc649035ca">More...</a><br /></td></tr>
-<tr class="separator:a626072ad8d4e7a440c001efc649035ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34b4252b54585e3c6c2e679395f50750"><td class="memItemLeft" align="right" valign="top">ImageReturnCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a34b4252b54585e3c6c2e679395f50750">drawBMP</a> (char *filename, int16_t x, int16_t y, Adafruit_SPITFT *tft=0x0, boolean transact=true)</td></tr>
+<tr class="memdesc:a34b4252b54585e3c6c2e679395f50750"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads BMP image file from QSPI or SD card directly to SPITFT screen.  <a href="#a34b4252b54585e3c6c2e679395f50750">More...</a><br /></td></tr>
+<tr class="separator:a34b4252b54585e3c6c2e679395f50750"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -1801,8 +1801,8 @@ Adafruit_ImageReader *&#160;</td><td class="memItemRight" valign="bottom"><a cla
 
 </div>
 </div>
-<a id="a626072ad8d4e7a440c001efc649035ca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a626072ad8d4e7a440c001efc649035ca">&#9670;&nbsp;</a></span>drawBMP()</h2>
+<a id="a34b4252b54585e3c6c2e679395f50750"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34b4252b54585e3c6c2e679395f50750">&#9670;&nbsp;</a></span>drawBMP()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1828,6 +1828,12 @@ Adafruit_ImageReader *&#160;</td><td class="memItemRight" valign="bottom"><a cla
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">Adafruit_SPITFT *&#160;</td>
+          <td class="paramname"><em>tft</em> = <code>0x0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">boolean&#160;</td>
           <td class="paramname"><em>transact</em> = <code>true</code>&#160;</td>
         </tr>
@@ -1845,6 +1851,7 @@ Adafruit_ImageReader *&#160;</td><td class="memItemRight" valign="bottom"><a cla
     <tr><td class="paramname">filename</td><td>Name of BMP image file to load. </td></tr>
     <tr><td class="paramname">x</td><td>Horizontal offset in pixels; left edge = 0, positive = right. Value is signed, image will be clipped if all or part is off the screen edges. Screen rotation setting is observed. </td></tr>
     <tr><td class="paramname">y</td><td>Vertical offset in pixels; top edge = 0, positive = down. </td></tr>
+    <tr><td class="paramname">tft</td><td>The display we'll be drawing to </td></tr>
     <tr><td class="paramname">transact</td><td>Pass 'true' if TFT and SD are on the same SPI bus, in which case SPI transactions are necessary. If separate peripherals, can pass 'false'. </td></tr>
   </table>
   </dd>
