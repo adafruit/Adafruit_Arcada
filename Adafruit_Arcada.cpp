@@ -430,10 +430,6 @@ uint32_t Adafruit_Arcada_SPITFT::readButtons(void) {
 	   (p.y > display->height()/4) && (p.y < (display->height()*3.0/4.0)) ) {
 	buttons |= ARCADA_BUTTONMASK_RIGHT;
       }
-      // left!
-      if ( (p.x < display->width()/4) && (p.y > display->height()/4) && (p.y < (display->height()*3.0/4.0)) ) {
-	buttons |= ARCADA_BUTTONMASK_LEFT;
-      }
       // B
       if ( (p.x > display->width()/4) && (p.x < display->width()/2) // 2nd quarter
 	   && (p.y > display->height()/4) && (p.y < (display->height()*3.0/4.0)) ) {
