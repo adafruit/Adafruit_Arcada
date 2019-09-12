@@ -254,6 +254,8 @@ void Adafruit_Arcada_SPITFT::enableSpeaker(bool on) {
 */
 /**************************************************************************/
 bool Adafruit_Arcada_SPITFT::timerCallback(uint32_t freq, void (*callback)()) {
+
+#if defined(__SAMD51__)
   if ((freq <= 50)  || (freq >= 3000000)) {
     return false;
   }
@@ -266,6 +268,9 @@ bool Adafruit_Arcada_SPITFT::timerCallback(uint32_t freq, void (*callback)()) {
   zerotimer.setCallback(true, TC_CALLBACK_CC_CHANNEL0, callback);
   zerotimer.enable(true);
   return true;
+#else
+  return false; // not supported (yet)!
+#endif
 }
 
 /**************************************************************************/
