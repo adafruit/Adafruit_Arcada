@@ -49,10 +49,9 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
 
   Adafruit_Arcada() {
   };
-
   
   bool variantBegin(void) {
-    if(!ss.begin()) {
+    if(!ss.begin(0x49, -1, false)) {
       return false;
     }
     ss.pinMode(SS_SWITCH1_PIN, INPUT_PULLUP);
@@ -64,7 +63,7 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
     delay(10);
     ss.digitalWrite(SS_TFTRESET_PIN, HIGH);
     delay(10);
-    
+
     if (! accel.begin(0x18) && ! accel.begin(0x19)) {
       _has_accel = false;  // couldn't find accelerometer, could be a pybadge LC
     } else {
@@ -90,9 +89,11 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
     _display->init(240, 240);
     display2->init(240, 240);
     _display->fillScreen(ARCADA_TFT_DEFAULTFILL);
-    _display->setRotation(ARCADA_TFT_ROTATION);
     display2->fillScreen(ARCADA_TFT_DEFAULTFILL);
+    _display->setRotation(ARCADA_TFT_ROTATION);
     display2->setRotation(ARCADA_TFT_ROTATION);
+    _display->setSPISpeed(50000000); // yes fast
+    display2->setSPISpeed(50000000); // 50 MHz!
     display = _display;  // grab the SPITFT pointer for arcada parent
   }
   
