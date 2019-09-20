@@ -2,7 +2,9 @@
 
 #if defined(__SAMD51__)
 
+#if !defined(FLASH_PAGE_SIZE)
 #define FLASH_PAGE_SIZE  (8 << NVMCTRL->PARAM.bit.PSZ)
+#endif
 #define FLASH_NUM_PAGES  NVMCTRL->PARAM.bit.NVMP
 #if !defined(FLASH_SIZE)
 #define FLASH_SIZE       (FLASH_PAGE_SIZE * FLASH_NUM_PAGES)
