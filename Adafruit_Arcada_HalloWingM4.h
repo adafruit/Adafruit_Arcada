@@ -21,6 +21,8 @@
   #define ARCADA_LIGHT_SENSOR             A7
   #define ARCADA_BATTERY_SENSOR           A6
 
+  #define ARCADA_CALLBACKTIMER               4
+  #define ARCADA_CALLBACKTIMER_HANDLER       TC4_Handler
 
   #define ARCADA_USE_JSON
 
