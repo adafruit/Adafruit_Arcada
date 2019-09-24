@@ -72,7 +72,9 @@ class Adafruit_Arcada_SPITFT {
   bool exists(const char *path);
   bool mkdir(const char *path);
   bool remove(const char *path);
-  uint8_t *writeFileToFlash(const char *filename, uint32_t address);
+  uint8_t *writeDataToFlash(uint8_t *data, uint32_t len);
+  uint8_t *writeFileToFlash(const char *filename);
+  uint32_t availableFlash(void);
   bool filesysBeginMSD(Arcada_FilesystemType desiredFilesys=ARCADA_FILESYS_SD_AND_QSPI);
   bool recentUSB(uint32_t timeout = 100);
   bool chooseFile(const char *path, char *filename, uint16_t filename_max, 
@@ -163,6 +165,7 @@ class Adafruit_Arcada_SPITFT {
 #endif
 
   ImageReturnCode drawBMP(char *filename, int16_t x, int16_t y, Adafruit_SPITFT *tft=0x0, boolean transact = true);
+  Adafruit_ImageReader *getImageReader(void);
 
  protected:
   bool _has_accel = false; ///< Internally tracked variable if accelerometer was found
