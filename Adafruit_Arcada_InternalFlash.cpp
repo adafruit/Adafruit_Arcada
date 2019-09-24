@@ -65,6 +65,8 @@ static inline void wait_ready(void) {
 /**************************************************************************/
 /*!
     @brief  Write a block of data in RAM to the NEXT AVAILABLE position in flash memory (NOT a specific location).
+    @param ramAddress Pointer to source RAM data
+    @param len Size in bytes of RAM data to store
     @return Pointer to stored data, NULL if insufficient space or an error.
 */
 /**************************************************************************/
