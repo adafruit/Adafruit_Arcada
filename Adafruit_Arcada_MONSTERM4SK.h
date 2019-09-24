@@ -91,6 +91,11 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
     display2 = new Adafruit_ST7789(&ARCADA_LEFTTFT_SPI, ARCADA_LEFTTFT_CS, ARCADA_LEFTTFT_DC, ARCADA_LEFTTFT_RST);
     _display->init(240, 240);
     display2->init(240, 240);
+
+    uint8_t rtna = 0x01; // Screen refresh rate control (datasheet 9.2.18, FRCTRL2)
+    _display->sendCommand(0xC6, &rtna, 1);
+    display2->sendCommand(0xC6, &rtna, 1);
+
     _display->fillScreen(ARCADA_TFT_DEFAULTFILL);
     display2->fillScreen(ARCADA_TFT_DEFAULTFILL);
     _display->setRotation(ARCADA_TFT_ROTATION);
