@@ -118,9 +118,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a17999bf8499b8be02fd9778ca779a29b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a17999bf8499b8be02fd9778ca779a29b">remove</a> (const char *path)</td></tr>
 <tr class="memdesc:a17999bf8499b8be02fd9778ca779a29b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove a file from the filesys.  <a href="#a17999bf8499b8be02fd9778ca779a29b">More...</a><br /></td></tr>
 <tr class="separator:a17999bf8499b8be02fd9778ca779a29b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1230de148048fb511f5d51a1fdd04cd8"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a1230de148048fb511f5d51a1fdd04cd8">writeFileToFlash</a> (const char *filename, uint32_t address)</td></tr>
-<tr class="memdesc:a1230de148048fb511f5d51a1fdd04cd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens a file and writes the data contents to the internal chip flash memory. NOT the QSPI flash but the actual chip memory! It will happily write over program memory being used so make sure the address is set to well past where the program ends!  <a href="#a1230de148048fb511f5d51a1fdd04cd8">More...</a><br /></td></tr>
-<tr class="separator:a1230de148048fb511f5d51a1fdd04cd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30942f35600713a096d785854081744c"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a30942f35600713a096d785854081744c">writeDataToFlash</a> (uint8_t *data, uint32_t len)</td></tr>
+<tr class="memdesc:a30942f35600713a096d785854081744c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Write a block of data in RAM to the NEXT AVAILABLE position in flash memory (NOT a specific location).  <a href="#a30942f35600713a096d785854081744c">More...</a><br /></td></tr>
+<tr class="separator:a30942f35600713a096d785854081744c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37b0b7ea67cda40b5758fb5174153940"><td class="memItemLeft" align="right" valign="top">uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a37b0b7ea67cda40b5758fb5174153940">writeFileToFlash</a> (const char *filename)</td></tr>
+<tr class="memdesc:a37b0b7ea67cda40b5758fb5174153940"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens a file and writes the data contents to the internal chip flash memory. NOT the QSPI flash but the actual chip memory!  <a href="#a37b0b7ea67cda40b5758fb5174153940">More...</a><br /></td></tr>
+<tr class="separator:a37b0b7ea67cda40b5758fb5174153940"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeab1a5c507cb0705be2fe1e3106e9ff5"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#aeab1a5c507cb0705be2fe1e3106e9ff5">availableFlash</a> (void)</td></tr>
+<tr class="memdesc:aeab1a5c507cb0705be2fe1e3106e9ff5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine amount of unused flash memory remaining.  <a href="#aeab1a5c507cb0705be2fe1e3106e9ff5">More...</a><br /></td></tr>
+<tr class="separator:aeab1a5c507cb0705be2fe1e3106e9ff5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a35f3fd29516143b0abafbe3bff1306"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a3a35f3fd29516143b0abafbe3bff1306">filesysBeginMSD</a> (Arcada_FilesystemType desiredFilesys=ARCADA_FILESYS_SD_AND_QSPI)</td></tr>
 <tr class="memdesc:a3a35f3fd29516143b0abafbe3bff1306"><td class="mdescLeft">&#160;</td><td class="mdescRight">Make the raw filesystem of the Arcada board available over USB.  <a href="#a3a35f3fd29516143b0abafbe3bff1306">More...</a><br /></td></tr>
 <tr class="separator:a3a35f3fd29516143b0abafbe3bff1306"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -230,6 +236,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a34b4252b54585e3c6c2e679395f50750"><td class="memItemLeft" align="right" valign="top">ImageReturnCode&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a34b4252b54585e3c6c2e679395f50750">drawBMP</a> (char *filename, int16_t x, int16_t y, Adafruit_SPITFT *tft=0x0, boolean transact=true)</td></tr>
 <tr class="memdesc:a34b4252b54585e3c6c2e679395f50750"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads BMP image file from QSPI or SD card directly to SPITFT screen.  <a href="#a34b4252b54585e3c6c2e679395f50750">More...</a><br /></td></tr>
 <tr class="separator:a34b4252b54585e3c6c2e679395f50750"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad21603d22754e29b42b93d1c4ae48388"><td class="memItemLeft" align="right" valign="top">Adafruit_ImageReader *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#ad21603d22754e29b42b93d1c4ae48388">getImageReader</a> (void)</td></tr>
+<tr class="memdesc:ad21603d22754e29b42b93d1c4ae48388"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reques the ImageReader object used, either for SD or QSPI.  <a href="#ad21603d22754e29b42b93d1c4ae48388">More...</a><br /></td></tr>
+<tr class="separator:ad21603d22754e29b42b93d1c4ae48388"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -680,23 +689,23 @@ Adafruit_ImageReader *&#160;</td><td class="memItemRight" valign="bottom"><a cla
 
 </div>
 </div>
-<a id="a1230de148048fb511f5d51a1fdd04cd8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1230de148048fb511f5d51a1fdd04cd8">&#9670;&nbsp;</a></span>writeFileToFlash()</h2>
+<a id="a30942f35600713a096d785854081744c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30942f35600713a096d785854081744c">&#9670;&nbsp;</a></span>writeDataToFlash()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint8_t * Adafruit_Arcada_SPITFT::writeFileToFlash </td>
+          <td class="memname">uint8_t * Adafruit_Arcada_SPITFT::writeDataToFlash </td>
           <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>filename</em>, </td>
+          <td class="paramtype">uint8_t *&#160;</td>
+          <td class="paramname"><em>ramAddress</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>address</em>&#160;</td>
+          <td class="paramname"><em>len</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -706,15 +715,63 @@ Adafruit_ImageReader *&#160;</td><td class="memItemRight" valign="bottom"><a cla
       </table>
 </div><div class="memdoc">
 
-<p>Opens a file and writes the data contents to the internal chip flash memory. NOT the QSPI flash but the actual chip memory! It will happily write over program memory being used so make sure the address is set to well past where the program ends! </p>
+<p>Write a block of data in RAM to the NEXT AVAILABLE position in flash memory (NOT a specific location). </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">filename</td><td>A string with the filename path, can be relative or absolute </td></tr>
-    <tr><td class="paramname">address</td><td>The address we'll start writing data to, make sure this is well past where program memory ends, at least 4K away. </td></tr>
+    <tr><td class="paramname">ramAddress</td><td>Pointer to source RAM data </td></tr>
+    <tr><td class="paramname">len</td><td>Size in bytes of RAM data to store </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A pointer to the flash memory address, or NULL on failure </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to stored data, NULL if insufficient space or an error. </dd></dl>
+
+</div>
+</div>
+<a id="a37b0b7ea67cda40b5758fb5174153940"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37b0b7ea67cda40b5758fb5174153940">&#9670;&nbsp;</a></span>writeFileToFlash()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t * Adafruit_Arcada_SPITFT::writeFileToFlash </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>filename</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Opens a file and writes the data contents to the internal chip flash memory. NOT the QSPI flash but the actual chip memory! </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>A string with the filename path, can be relative or absolute. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A pointer to the flash memory address, or NULL on failure. </dd></dl>
+
+</div>
+</div>
+<a id="aeab1a5c507cb0705be2fe1e3106e9ff5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeab1a5c507cb0705be2fe1e3106e9ff5">&#9670;&nbsp;</a></span>availableFlash()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t Adafruit_Arcada_SPITFT::availableFlash </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Determine amount of unused flash memory remaining. </p>
+<dl class="section return"><dt>Returns</dt><dd>Available flash space, in bytes. </dd></dl>
 
 </div>
 </div>
@@ -1857,6 +1914,27 @@ Adafruit_ImageReader *&#160;</td><td class="memItemRight" valign="bottom"><a cla
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>One of the ImageReturnCode values (IMAGE_SUCCESS on successful completion, other values on failure). </dd></dl>
+
+</div>
+</div>
+<a id="ad21603d22754e29b42b93d1c4ae48388"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad21603d22754e29b42b93d1c4ae48388">&#9670;&nbsp;</a></span>getImageReader()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Adafruit_ImageReader * Adafruit_Arcada_SPITFT::getImageReader </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reques the ImageReader object used, either for SD or QSPI. </p>
+<dl class="section return"><dt>Returns</dt><dd>The activated ImageReader, or NULL if neither SD or QSPI are available </dd></dl>
 
 </div>
 </div>
