@@ -165,6 +165,7 @@ class Adafruit_Arcada_SPITFT {
 #endif
 
   ImageReturnCode drawBMP(char *filename, int16_t x, int16_t y, Adafruit_SPITFT *tft=0x0, boolean transact = true);
+  Adafruit_ImageReader *getImageReader(void);
 
  protected:
   bool _has_accel = false; ///< Internally tracked variable if accelerometer was found

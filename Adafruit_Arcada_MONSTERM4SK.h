@@ -51,6 +51,9 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
   };
   
   bool variantBegin(void) {
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN, LOW);
+
     if(!ss.begin(0x49, -1, false)) {
       return false;
     }

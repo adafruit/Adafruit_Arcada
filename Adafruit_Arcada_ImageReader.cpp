@@ -31,3 +31,12 @@ ImageReturnCode Adafruit_Arcada_SPITFT::drawBMP(char *filename, int16_t x, int16
     return IMAGE_ERR_FILE_NOT_FOUND;
   }
 }
+
+Adafruit_ImageReader *Adafruit_Arcada_SPITFT::getImageReader(void) {
+  if (SD_imagereader) {
+    return SD_imagereader;
+  } else if (QSPI_imagereader) {
+    return QSPI_imagereader;
+  }
+  return NULL;
+}
