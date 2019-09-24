@@ -32,6 +32,11 @@ ImageReturnCode Adafruit_Arcada_SPITFT::drawBMP(char *filename, int16_t x, int16
   }
 }
 
+/*!
+    @brief   Reques the ImageReader object used, either for SD or QSPI
+    @return  The activated ImageReader, or NULL if neither SD or QSPI 
+    are available
+*/
 Adafruit_ImageReader *Adafruit_Arcada_SPITFT::getImageReader(void) {
   if (SD_imagereader) {
     return SD_imagereader;
