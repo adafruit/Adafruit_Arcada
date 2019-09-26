@@ -9,7 +9,11 @@ class Adafruit_Arcada_SPITFT;
 #include <Adafruit_NeoPixel.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SPITFT.h>
+
+#if defined(__SAMD21__) || defined(__SAMD51__)
 #include <Adafruit_ZeroTimer.h>
+#endif
+
 #include <TouchScreen.h>
 
 #include "Adafruit_Arcada_PyBadge.h"
@@ -20,7 +24,7 @@ class Adafruit_Arcada_SPITFT;
 #include "Adafruit_Arcada_HalloWingM4.h"
 #include "Adafruit_Arcada_HalloWingM0.h"
 #include "Adafruit_Arcada_CircuitPlaygroundExpress.h"
-
+#include "Adafruit_Arcada_CircuitPlaygroundBluefruit.h"
 
 #ifndef ARCADA_SD_CS 
   #define ARCADA_SD_CS -1
