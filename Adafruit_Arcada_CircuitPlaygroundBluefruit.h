@@ -15,6 +15,7 @@
   #define ARCADA_NEOPIXEL_PIN     8
   #define ARCADA_NEOPIXEL_NUM     10
   #define ARCADA_AUDIO_OUT        A0
+  #define ARCADA_SPEAKER_ENABLE   11
 
   #define ARCADA_LIGHT_SENSOR     A8
 
