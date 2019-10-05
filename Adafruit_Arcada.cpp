@@ -256,8 +256,8 @@ void Adafruit_Arcada_SPITFT::enableSpeaker(bool on) {
 bool Adafruit_Arcada_SPITFT::timerCallback(float freq, void (*callback)()) {
 
 #if defined(__SAMD51__)
-  Serial.printf("Desired freq: %d Hz\n", freq);
-  uint8_t divider  = 1;
+  Serial.printf("Desired freq: %f Hz\n", freq);
+  uint16_t divider = 1;
   uint16_t compare = 0;
   tc_clock_prescaler prescaler = TC_CLOCK_PRESCALER_DIV1;
 
