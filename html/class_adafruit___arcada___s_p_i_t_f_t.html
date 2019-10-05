@@ -88,9 +88,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af3711241171c95f5f3656729fd32ef8e"><td class="memItemLeft" align="right" valign="top">virtual uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#af3711241171c95f5f3656729fd32ef8e">variantReadButtons</a> (void)=0</td></tr>
 <tr class="memdesc:af3711241171c95f5f3656729fd32ef8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Perform any variant input reading (say if we use seesaw or whatnot)  <a href="#af3711241171c95f5f3656729fd32ef8e">More...</a><br /></td></tr>
 <tr class="separator:af3711241171c95f5f3656729fd32ef8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a89b0344208af5324ca15f552801c682a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a89b0344208af5324ca15f552801c682a">timerCallback</a> (uint32_t freq, void(*callback)())</td></tr>
-<tr class="memdesc:a89b0344208af5324ca15f552801c682a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a repetative callback to a function using a timer.  <a href="#a89b0344208af5324ca15f552801c682a">More...</a><br /></td></tr>
-<tr class="separator:a89b0344208af5324ca15f552801c682a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81d3317b5c5d17a4a0fc26f7dab60a17"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a81d3317b5c5d17a4a0fc26f7dab60a17">timerCallback</a> (float freq, void(*callback)())</td></tr>
+<tr class="memdesc:a81d3317b5c5d17a4a0fc26f7dab60a17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a repetative callback to a function using a timer.  <a href="#a81d3317b5c5d17a4a0fc26f7dab60a17">More...</a><br /></td></tr>
+<tr class="separator:a81d3317b5c5d17a4a0fc26f7dab60a17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0bca295dd78375b0286f7b345a43d353"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a0bca295dd78375b0286f7b345a43d353">printf</a> (const char *format,...)</td></tr>
 <tr class="memdesc:a0bca295dd78375b0286f7b345a43d353"><td class="mdescLeft">&#160;</td><td class="mdescRight">printf wrapper to serial debug, handy for logging config, C inclusion  <a href="#a0bca295dd78375b0286f7b345a43d353">More...</a><br /></td></tr>
 <tr class="separator:a0bca295dd78375b0286f7b345a43d353"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -352,8 +352,8 @@ Adafruit_ImageReader *&#160;</td><td class="memItemRight" valign="bottom"><a cla
 
 </div>
 </div>
-<a id="a89b0344208af5324ca15f552801c682a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a89b0344208af5324ca15f552801c682a">&#9670;&nbsp;</a></span>timerCallback()</h2>
+<a id="a81d3317b5c5d17a4a0fc26f7dab60a17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81d3317b5c5d17a4a0fc26f7dab60a17">&#9670;&nbsp;</a></span>timerCallback()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -361,7 +361,7 @@ Adafruit_ImageReader *&#160;</td><td class="memItemRight" valign="bottom"><a cla
         <tr>
           <td class="memname">bool Adafruit_Arcada_SPITFT::timerCallback </td>
           <td>(</td>
-          <td class="paramtype">uint32_t&#160;</td>
+          <td class="paramtype">float&#160;</td>
           <td class="paramname"><em>freq</em>, </td>
         </tr>
         <tr>
