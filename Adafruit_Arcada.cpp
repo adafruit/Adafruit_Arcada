@@ -248,7 +248,7 @@ void Adafruit_Arcada_SPITFT::enableSpeaker(bool on) {
 /**************************************************************************/
 /*!
     @brief  Create a repetative callback to a function using a timer
-    @param  freq The callback frequency, must be between 50 Hz and 3MHz (slower is better)
+    @param  freq The callback frequency, must be between 0.75 Hz and 24MHz (slower is better)
     @param  callback A pointer to the function we'll call every time
     @return True on success, False if something failed!
 */
@@ -289,6 +289,10 @@ bool Adafruit_Arcada_SPITFT::timerCallback(float freq, void (*callback)()) {
     divider = 256;
     prescaler = TC_CLOCK_PRESCALER_DIV256;
     compare = (48000000/256)/freq;
+  } else if (freq >= 0.75) {
+    divider = 1024;
+    prescaler = TC_CLOCK_PRESCALER_DIV1024;
+    compare = (48000000/1024)/freq;
   } else {
     return false;
   }
