@@ -302,7 +302,7 @@ uint8_t * Adafruit_Arcada_SPITFT::writeFileToFlash(const char *filename) {
   while(bytesToGo > 0) {
     yield();
     memset(blockBuf, 0xFF, sizeof blockBuf);
-    bytesThisPass = min(bytesToGo, sizeof blockBuf);
+    bytesThisPass = min((uint32_t)bytesToGo, sizeof blockBuf);
     if(f.read(blockBuf, bytesThisPass) != bytesThisPass) {
       Serial.printf("File read %d bytes failed!", bytesThisPass);
       return NULL;
