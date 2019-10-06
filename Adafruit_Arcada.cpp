@@ -316,6 +316,15 @@ bool Adafruit_Arcada_SPITFT::timerCallback(float freq, void (*callback)()) {
 
 /**************************************************************************/
 /*!
+    @brief  Stop a previously-initiated timer.
+*/
+/**************************************************************************/
+void Adafruit_Arcada_SPITFT::timerStop(void) {
+  zerotimer.enable(false);
+}
+
+/**************************************************************************/
+/*!
     @brief printf wrapper to serial debug, handy for logging config, C inclusion
     @param format The printf-compatible format and extra args
 */

@@ -59,6 +59,8 @@ class Adafruit_Arcada_SPITFT {
   virtual uint32_t variantReadButtons(void) = 0;
 
   bool timerCallback(float freq, void (*callback)());
+  void timerStop(void);
+
   void printf(const char *format, ...);
 
   // Filesystem stuff!
