@@ -33,16 +33,17 @@ uint32_t Adafruit_Arcada_SPITFT::availableFlash(void) {
     // any trailing bytes in the last program block may be gibberish,
     // so we can't make use of that for ourselves.
     flashAddress = (uint8_t *)&__etext; // OK to overwrite the '0' there
-    if((uint32_t)flashAddress % FLASH_BLOCK_SIZE) {
-      flashAddress = &flashAddress[FLASH_BLOCK_SIZE -
-        ((uint32_t)flashAddress % FLASH_BLOCK_SIZE)];
+    uint16_t partialBlock = (uint32_t)flashAddress % FLASH_BLOCK_SIZE;
+    if(partialBlock) {
+      flashAddress += FLASH_BLOCK_SIZE - partialBlock;
     }
   } else {
     // On subsequent calls, round up to next quadword (16 byte) boundary,
     // try packing some data into the trailing bytes of the last-used flash
     // block! Saves up to (8K-16) bytes flash per call.
-    if((uint32_t)flashAddress & 15) {
-      flashAddress = &flashAddress[16 - ((uint32_t)flashAddress & 15)];
+    uint8_t partialQuadword = (uint32_t)flashAddress & 15;
+    if(partialQuadword) {
+      flashAddress += 16 - partialQuadword;
     }
   }
   return FLASH_SIZE - (uint32_t)flashAddress;
