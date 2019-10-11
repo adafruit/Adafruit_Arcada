@@ -320,7 +320,9 @@ bool Adafruit_Arcada_SPITFT::timerCallback(float freq, void (*callback)()) {
 */
 /**************************************************************************/
 void Adafruit_Arcada_SPITFT::timerStop(void) {
+#if defined(__SAMD51__)
   zerotimer.enable(false);
+#endif
 }
 
 /**************************************************************************/
