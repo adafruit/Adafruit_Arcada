@@ -18,6 +18,7 @@ before_install:
   - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
 
 install:
+   - rm -rf $HOME/arduino_ide/libraries/Adafruit_Circuit_Playground
    - arduino --install-library "Adafruit Unified Sensor"
    - arduino --install-library "Adafruit NeoPixel"
    - arduino --install-library "Adafruit ADT7410 Library"
@@ -35,6 +36,7 @@ install:
    - arduino --install-library "Adafruit ImageReader Library"
    - arduino --install-library "Adafruit TinyUSB Library"
    - arduino --install-library "SdFat - Adafruit Fork"
+   - arduino --install-library "Adafruit Circuit Playground"
    - git clone --quiet https://github.com/adafruit/WiFiNINA.git $HOME/Arduino/libraries/WiFiNINA
    - git clone --quiet https://github.com/adafruit/Audio.git $HOME/Arduino/libraries/Audio
 
