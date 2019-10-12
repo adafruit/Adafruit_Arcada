@@ -33,6 +33,7 @@ install:
    - arduino --install-library "Adafruit PixelDust"
    - arduino --install-library "ArduinoJson"
    - arduino --install-library "Adafruit ImageReader Library"
+   - arduino --install-library "Adafruit TinyUSB Library"
    - arduino --install-library "SdFat - Adafruit Fork"
    - git clone --quiet https://github.com/adafruit/WiFiNINA.git $HOME/Arduino/libraries/WiFiNINA
    - git clone --quiet https://github.com/adafruit/Audio.git $HOME/Arduino/libraries/Audio
