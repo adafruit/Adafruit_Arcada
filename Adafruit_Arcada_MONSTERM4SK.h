@@ -21,8 +21,8 @@
   #define ARCADA_SPEAKER_ENABLE  20
   #define ARCADA_AUDIO_OUT       A0
 
-  #define ARCADA_RIGHT_AUDIO_PIN          A0
-  #define ARCADA_LEFT_AUDIO_PIN           A1
+  #define ARCADA_LEFT_AUDIO_PIN  A0
+  #define ARCADA_RIGHT_AUDIO_PIN A1
 
   #define ARCADA_USE_JSON
 
