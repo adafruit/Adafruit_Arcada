@@ -5,6 +5,7 @@
 #include <SdFat.h>
 #include <Adafruit_SPIFlash.h>
 #include <Adafruit_ImageReader.h> // Image-reading functions
+#include <Adafruit_WavePlayer.h>
 
 #if defined(USE_TINYUSB)
   #include "Adafruit_TinyUSB.h"
@@ -16,6 +17,24 @@
 
 #define SD_MAX_FILENAME_SIZE 80
 #define ARCADA_DEFAULT_CONFIGURATION_FILENAME  "/arcada_config.json"
+
+
+#define WAV_BUFFER_SIZE  2048
+
+#if defined(__SAMD51__)
+  #define WAV_DAC_BITS   12
+#else
+  #define WAV_DAC_BITS   10
+#endif
+
+#if defined(ARCADA_LEFT_AUDIO_PIN)
+  #define WAV_STEREO_OUT true
+#else
+  #define WAV_STEREO_OUT false
+#endif
+
+#define SPEAKER_IDLE (1 << (WAV_DAC_BITS - 1))
+
 
 /** Filesystems that are currently activated */
 typedef enum _FilesystemType { 
@@ -169,11 +188,22 @@ class Adafruit_Arcada_SPITFT {
   ImageReturnCode drawBMP(char *filename, int16_t x, int16_t y, Adafruit_SPITFT *tft=0x0, boolean transact = true);
   Adafruit_ImageReader *getImageReader(void);
 
+  wavStatus WavLoad(char *filename, uint32_t *samplerate);
+  wavStatus WavLoad(File f, uint32_t *samplerate);
+  wavStatus WavReadFile();
+  wavStatus WavPlayNextSample(void);
+  bool WavReadyForData();
+
  protected:
   bool _has_accel = false; ///< Internally tracked variable if accelerometer was found
   bool _has_wifi = false;  ///< Internally tracked variable if wifi module was found
   Adafruit_ImageReader *QSPI_imagereader = 0,  ///< If initalized, the imagereader for the QSPI filesystem
     *SD_imagereader = 0; ///< If initalized, the imagereader for the SD card filesystem
+
+  Adafruit_WavePlayer *player = NULL;
+  File _wav_file;
+  volatile bool _wav_readflag = true;
+  volatile bool _wav_playing = false;
 
  private:
   uint32_t last_buttons, ///< After readButtons() is called, this has the previous button states
