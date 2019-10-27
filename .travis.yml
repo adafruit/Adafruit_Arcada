@@ -34,6 +34,7 @@ install:
    - arduino --install-library "Adafruit PixelDust"
    - arduino --install-library "ArduinoJson"
    - arduino --install-library "Adafruit ImageReader Library"
+   - arduino --install-library "Adafruit WavePlayer Library"
    - arduino --install-library "Adafruit TinyUSB Library"
    - arduino --install-library "SdFat - Adafruit Fork"
    - arduino --install-library "Adafruit Circuit Playground"
