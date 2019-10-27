@@ -1,5 +1,24 @@
 #include "Adafruit_Arcada.h"
 
+
+
+#if defined(__SAMD51__)
+  #define WAV_DAC_BITS   12
+  #define WAV_BUFFER_SIZE  4096
+#else
+  #define WAV_DAC_BITS   10
+  #define WAV_BUFFER_SIZE  2048
+#endif
+
+#if defined(ARCADA_LEFT_AUDIO_PIN)
+  #define WAV_STEREO_OUT true
+#else
+  #define WAV_STEREO_OUT false
+#endif
+
+#define SPEAKER_IDLE (1 << (WAV_DAC_BITS - 1))
+
+
 wavStatus Adafruit_Arcada_SPITFT::WavLoad(char *filename, uint32_t *samplerate) {
   Serial.printf("Trying: '%s'\n", filename);
   File wav_file = open(filename, FILE_READ);
@@ -42,6 +61,7 @@ wavStatus Adafruit_Arcada_SPITFT::WavReadFile() {
     return WAV_EOF;
   }
 
+  _wav_readflag = false;
   return player->read();
 }
 
@@ -71,7 +91,9 @@ wavStatus Adafruit_Arcada_SPITFT::WavPlayNextSample(void) {
     // set a flag and handle it in loop(), not here in the interrupt!
     // The read operation will almost certainly take longer than a
     // single audio sample cycle and would cause audio to stutter.
-    _wav_readflag = (status == WAV_LOAD);
+    if (status == WAV_LOAD) {
+      _wav_readflag = true;
+    }
 
   } else if (status == WAV_EOF) {
     // End of WAV file reached stop audio

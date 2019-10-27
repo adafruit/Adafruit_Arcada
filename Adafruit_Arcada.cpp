@@ -296,9 +296,13 @@ bool Adafruit_Arcada_SPITFT::timerCallback(float freq, void (*callback)()) {
   } else {
     return false;
   }
-  Serial.printf("Divider %d / compare %d -> %d Hz\n", 
-	       divider, compare, (48000000/compare));
-  
+
+  _callback_freq = ((48000000.0/(float)divider) / (float)compare);
+  _callback_func = callback;
+
+  Serial.printf("Divider %d / compare %d -> %f Hz\n", 
+	       divider, compare, _callback_freq);
+
   zerotimer.enable(false);
   zerotimer.configure(prescaler, // prescaler
 		      TC_COUNTER_SIZE_16BIT,   // bit width of timer/counter
@@ -313,6 +317,36 @@ bool Adafruit_Arcada_SPITFT::timerCallback(float freq, void (*callback)()) {
   return false; // not supported (yet)!
 #endif
 }
+
+/**************************************************************************/
+/*!
+    @brief  Get the final frequency created for the callback helper
+    @return The callback frequency
+*/
+/**************************************************************************/
+float Adafruit_Arcada_SPITFT::getTimerCallbackFreq(void) {
+#if defined(__SAMD51__)
+  return _callback_freq;
+#else
+  return 0;
+#endif
+}
+
+/**************************************************************************/
+/*!
+    @brief  Get the previous callback function we were using
+    @return A pointer to a function that takes no arguments, and returns nothing
+    or NULL on no callback set
+*/
+/**************************************************************************/
+void (*Adafruit_Arcada_SPITFT::getTimerCallback(void))(void) {
+#if defined(__SAMD51__)
+  return _callback_func;
+#else
+  return NULL;
+#endif
+}
+
 
 /**************************************************************************/
 /*!

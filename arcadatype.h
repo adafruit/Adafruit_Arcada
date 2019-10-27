@@ -18,24 +18,6 @@
 #define SD_MAX_FILENAME_SIZE 80
 #define ARCADA_DEFAULT_CONFIGURATION_FILENAME  "/arcada_config.json"
 
-
-#define WAV_BUFFER_SIZE  2048
-
-#if defined(__SAMD51__)
-  #define WAV_DAC_BITS   12
-#else
-  #define WAV_DAC_BITS   10
-#endif
-
-#if defined(ARCADA_LEFT_AUDIO_PIN)
-  #define WAV_STEREO_OUT true
-#else
-  #define WAV_STEREO_OUT false
-#endif
-
-#define SPEAKER_IDLE (1 << (WAV_DAC_BITS - 1))
-
-
 /** Filesystems that are currently activated */
 typedef enum _FilesystemType { 
   ARCADA_FILESYS_NONE, 
@@ -78,6 +60,9 @@ class Adafruit_Arcada_SPITFT {
   virtual uint32_t variantReadButtons(void) = 0;
 
   bool timerCallback(float freq, void (*callback)());
+  float getTimerCallbackFreq(void);
+  void (*getTimerCallback())();
+
   void timerStop(void);
 
   void printf(const char *format, ...);
@@ -226,6 +211,9 @@ class Adafruit_Arcada_SPITFT {
   TouchScreen *_touchscreen;
   int16_t _ts_xmin = 0, _ts_xmax = 1023, _ts_ymin = 0, _ts_ymax = 1023;
 
+  float _callback_freq = 0;
+  void (*_callback_func)() = NULL;
+  
   // Pins
   int8_t _sd_cs, _speaker_en, _neopixel_pin, _backlight_pin, 
     _touch_xp, _touch_yp, _touch_xm, _touch_ym,

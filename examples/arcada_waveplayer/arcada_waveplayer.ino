@@ -3,16 +3,10 @@
 
 #include <Adafruit_Arcada.h>
 
-typedef struct wavList { // Linked list of WAV filenames
-  char           *filename;
-  struct wavList *next;
-};
 
-Adafruit_Arcada     arcada;
-bool                readflag = false; // See wavOutCallback()
-bool                playing  = false;
-char               *wavPath  = "wavs";
-wavList            *wavPtr   = NULL;
+Adafruit_Arcada    arcada;
+char               *wavPath  = "/wavs";
+volatile bool      playing = false;
 
 // Crude error handler. Prints message to Serial Monitor, blinks LED.
 void fatal(const char *message, uint16_t blinkDelay) {
@@ -31,22 +25,35 @@ void setup(void) {
   Serial.begin(9600);
   while(!Serial) yield();
   delay(100);
-  Serial.println("Wave player");
-  
-  // Build a looped list of WAV filenames...
-  wavPtr = makeWavList(wavPath, true);
-  if(wavPtr) arcada.chdir(wavPath);
-  else       fatal("No WAVs found!", 500);
+  Serial.print("Arcada wave player demo. Place wav's in ");
+  Serial.print(wavPath);
+  Serial.println(" on filesystem");
+
+  arcada.chdir(wavPath);
+  if (arcada.filesysListFiles("/", "wav") == 0) {
+    fatal("No WAVs found!", 500);
+  }
 }
 
+uint8_t file_index = 0;
 void loop(void) {
   uint32_t sampleRate;
   wavStatus status;
-  
-  status = arcada.WavLoad(wavPtr->filename, &sampleRate);
+
+  // find the next wav file
+  File file = arcada.openFileByIndex(wavPath, file_index, O_READ, "wav");
+  if (! file) {
+    // wrap around to beginning of directory
+    file_index = 0;
+    Serial.println("--------------------------------------------------");
+    return;
+  }
+
+  // Try to load it as a wave file
+  status = arcada.WavLoad(file, &sampleRate);
   if ((status == WAV_LOAD) || (status == WAV_EOF)) {
     Serial.println("Loaded!");
-    arcada.enableSpeaker(true);  // enable output
+    arcada.enableSpeaker(true);  // enable speaker output
     arcada.timerCallback(sampleRate, wavOutCallback); // setup the callback to play audio
   } else {
     Serial.print("WAV error: "); Serial.println(status);
@@ -59,14 +66,13 @@ void loop(void) {
     }
     yield();
   } while ((status == WAV_OK) || (status == WAV_LOAD));
-
-  Serial.print("WAV end: ");
-  Serial.println(status);
-
-  wavPtr = wavPtr->next; // List loops around to start
-
-  // Audio might be continuing to play at this point! It's switched
-  // off in wavOutCallback() below only when final buffer is depleted.
+  Serial.print("WAV end: "); Serial.println(status);
+ 
+  // Audio might be continuing to play at this point!
+  while (playing)   yield();
+  // now we're really done
+  file.close();
+  file_index++;
 }
 
 // Single-sample-playing callback function for timerCallback() above.
@@ -76,37 +82,8 @@ void wavOutCallback(void) {
     // End of WAV file reached, stop timer, stop audio
     arcada.timerStop();
     arcada.enableSpeaker(false);
+    playing = false;
+  } else {
+    playing = true;
   }
-}
-
-// Scan a directory for all WAVs, build and return a linked list. Does NOT
-// filter out non-supported WAV variants, but Adafruit_WavePlayer handles
-// most non-compressed WAVs now, so we're in decent shape all considered.
-// List is NOT sorted, uses the order they come out of openFileByIndex().
-wavList *makeWavList(char *path, bool loop) {
-  File     file;
-  char     filename[SD_MAX_FILENAME_SIZE+1];
-  wavList *listHead = NULL, *listTail = NULL, *wptr;
-
-  for(int i=0; file = arcada.openFileByIndex(path, i, O_READ, "wav"); i++) {
-    yield();
-    // Next WAV found, alloc new wavlist struct, try duplicating filename
-    if((wptr = (wavList *)malloc(sizeof(wavList)))) {
-      file.getName(filename, SD_MAX_FILENAME_SIZE);
-      if((wptr->filename = strdup(filename))) {
-        // Struct and filename allocated OK, add to linked list...
-        if(listTail) listTail->next = wptr;
-        else         listHead       = wptr;
-        listTail = wptr;
-      } else {
-        free(wptr); // Filename alloc failed, delete struct
-      }
-    }
-    file.close();
-  }
-
-  // If loop requested and any items in list, make list circular...
-  if(loop && listTail) listTail->next = listHead;
-
-  return listHead;
 }
