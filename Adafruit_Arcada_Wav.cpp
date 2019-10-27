@@ -19,12 +19,32 @@
 #define SPEAKER_IDLE (1 << (WAV_DAC_BITS - 1))
 
 
+/**************************************************************************/
+/*!
+    @brief  Load up a wave file from the filesystem, to prepare for playback
+    @param filename Name of file to open, either relative or abs path
+    @param samplerate The uint32_t where the loaded wav files' sample rate will
+    be stored for the caller to use.
+    @return Status enum from Adafruit WavePlayer library, on success, places the
+    wave file samplerate into samplerate pointer
+*/
+/**************************************************************************/
 wavStatus Adafruit_Arcada_SPITFT::WavLoad(char *filename, uint32_t *samplerate) {
   Serial.printf("Trying: '%s'\n", filename);
   File wav_file = open(filename, FILE_READ);
   return WavLoad(wav_file, samplerate);
 }
 
+/**************************************************************************/
+/*!
+    @brief  Load up a wave file from the filesystem, to prepare for playback
+    @param f The already-opened file that we'll play
+    @param samplerate The uint32_t where the loaded wav files' sample rate will
+    be stored for the caller to use.
+    @return Status enum from Adafruit WavePlayer library, on success, places the
+    wave file samplerate into samplerate pointer
+*/
+/**************************************************************************/
 wavStatus Adafruit_Arcada_SPITFT::WavLoad(File f, uint32_t *samplerate) {
   if (! f) {
     return WAV_ERR_NOFILE;
@@ -56,6 +76,13 @@ wavStatus Adafruit_Arcada_SPITFT::WavLoad(File f, uint32_t *samplerate) {
   return status;
 }
 
+/**************************************************************************/
+/*!
+    @brief Reads another buffer's full of wave data into the internal buffer
+    from the filesystem.
+    @return Status enum from Adafruit WavePlayer library
+*/
+/**************************************************************************/
 wavStatus Adafruit_Arcada_SPITFT::WavReadFile() {
   if (!player) {
     return WAV_EOF;
@@ -65,10 +92,22 @@ wavStatus Adafruit_Arcada_SPITFT::WavReadFile() {
   return player->read();
 }
 
+/**************************************************************************/
+/*!
+    @brief Checks if we need to load the double buffer with WavReadFile() soon!
+    @return True if there's free buffer space
+*/
+/**************************************************************************/
 bool Adafruit_Arcada_SPITFT::WavReadyForData() {
   return _wav_readflag;
 }
 
+/**************************************************************************/
+/*!
+    @brief Output the next sample to the DAC(s) - should be called at 'samplerate'!
+    @return Status enum from Adafruit WavePlayer library
+*/
+/**************************************************************************/
 wavStatus Adafruit_Arcada_SPITFT::WavPlayNextSample(void) {
   wavSample sample;
   
