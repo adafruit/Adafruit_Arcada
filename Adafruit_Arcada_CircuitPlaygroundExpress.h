@@ -21,6 +21,9 @@
   #define ARCADA_SPIFLASH_CS      SS
   #define ARCADA_SPIFLASH_SPI     SPI
 
+  #define ARCADA_CALLBACKTIMER         4
+  #define ARCADA_CALLBACKTIMER_HANDLER TC4_Handler
+
   #define ARCADA_USE_JSON
 
   #include "arcadatype.h"
