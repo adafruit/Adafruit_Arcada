@@ -10,7 +10,7 @@ class Adafruit_Arcada_SPITFT;
 #include <Adafruit_GFX.h>
 #include <Adafruit_SPITFT.h>
 
-#if defined(__SAMD21__) || defined(__SAMD51__)
+#if defined(_SAMD21_) || defined(__SAMD51__)
 #include <Adafruit_ZeroTimer.h>
 #endif
 
