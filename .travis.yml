@@ -13,6 +13,7 @@ git:
 env:
   global:
     - PRETTYNAME="Adafruit Arcada Library"
+    - DOXYFILE=$TRAVIS_BUILD_DIR/Doxyfile
 
 before_install:
   - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
