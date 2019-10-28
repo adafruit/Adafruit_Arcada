@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Adafruit Arcada Library: Adafruit_Arcada_SPITFT Class Reference</title>
+<title>Adafruit Library: Adafruit_Arcada_SPITFT Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">Adafruit Arcada Library
+   <div id="projectname">Adafruit Library
    </div>
   </td>
  </tr>
@@ -88,9 +88,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af3711241171c95f5f3656729fd32ef8e"><td class="memItemLeft" align="right" valign="top">virtual uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#af3711241171c95f5f3656729fd32ef8e">variantReadButtons</a> (void)=0</td></tr>
 <tr class="memdesc:af3711241171c95f5f3656729fd32ef8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Perform any variant input reading (say if we use seesaw or whatnot)  <a href="#af3711241171c95f5f3656729fd32ef8e">More...</a><br /></td></tr>
 <tr class="separator:af3711241171c95f5f3656729fd32ef8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81d3317b5c5d17a4a0fc26f7dab60a17"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a81d3317b5c5d17a4a0fc26f7dab60a17">timerCallback</a> (float freq, void(*callback)())</td></tr>
-<tr class="memdesc:a81d3317b5c5d17a4a0fc26f7dab60a17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a repetative callback to a function using a timer.  <a href="#a81d3317b5c5d17a4a0fc26f7dab60a17">More...</a><br /></td></tr>
-<tr class="separator:a81d3317b5c5d17a4a0fc26f7dab60a17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd1bae2c7b3c09cdde0727dd5633baa7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#abd1bae2c7b3c09cdde0727dd5633baa7">timerCallback</a> (float freq, arcada_callback_t callback)</td></tr>
+<tr class="memdesc:abd1bae2c7b3c09cdde0727dd5633baa7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a repetative callback to a function using a timer.  <a href="#abd1bae2c7b3c09cdde0727dd5633baa7">More...</a><br /></td></tr>
+<tr class="separator:abd1bae2c7b3c09cdde0727dd5633baa7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9df1d10b0b9c720a493ae06f0035bce0"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a9df1d10b0b9c720a493ae06f0035bce0">getTimerCallbackFreq</a> (void)</td></tr>
+<tr class="memdesc:a9df1d10b0b9c720a493ae06f0035bce0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the final frequency created for the callback helper.  <a href="#a9df1d10b0b9c720a493ae06f0035bce0">More...</a><br /></td></tr>
+<tr class="separator:a9df1d10b0b9c720a493ae06f0035bce0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c09345939150f2e5dc0d81e2f23b0dd"><td class="memItemLeft" align="right" valign="top">arcada_callback_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a3c09345939150f2e5dc0d81e2f23b0dd">getTimerCallback</a> (void)</td></tr>
+<tr class="memdesc:a3c09345939150f2e5dc0d81e2f23b0dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the previous callback function we were using.  <a href="#a3c09345939150f2e5dc0d81e2f23b0dd">More...</a><br /></td></tr>
+<tr class="separator:a3c09345939150f2e5dc0d81e2f23b0dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a861311f37b32cdc81f8595060bc5473f"><td class="memItemLeft" align="right" valign="top"><a id="a861311f37b32cdc81f8595060bc5473f"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a861311f37b32cdc81f8595060bc5473f">timerStop</a> (void)</td></tr>
 <tr class="memdesc:a861311f37b32cdc81f8595060bc5473f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stop a previously-initiated timer. <br /></td></tr>
@@ -243,6 +249,21 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:ad21603d22754e29b42b93d1c4ae48388"><td class="memItemLeft" align="right" valign="top">Adafruit_ImageReader *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#ad21603d22754e29b42b93d1c4ae48388">getImageReader</a> (void)</td></tr>
 <tr class="memdesc:ad21603d22754e29b42b93d1c4ae48388"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reques the ImageReader object used, either for SD or QSPI.  <a href="#ad21603d22754e29b42b93d1c4ae48388">More...</a><br /></td></tr>
 <tr class="separator:ad21603d22754e29b42b93d1c4ae48388"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca8c278547b8713a5f6cc653075b7180"><td class="memItemLeft" align="right" valign="top">wavStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#aca8c278547b8713a5f6cc653075b7180">WavLoad</a> (char *filename, uint32_t *samplerate)</td></tr>
+<tr class="memdesc:aca8c278547b8713a5f6cc653075b7180"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load up a wave file from the filesystem, to prepare for playback.  <a href="#aca8c278547b8713a5f6cc653075b7180">More...</a><br /></td></tr>
+<tr class="separator:aca8c278547b8713a5f6cc653075b7180"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ef86a21729313bce06dadcdf05b0326"><td class="memItemLeft" align="right" valign="top">wavStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a8ef86a21729313bce06dadcdf05b0326">WavLoad</a> (File f, uint32_t *samplerate)</td></tr>
+<tr class="memdesc:a8ef86a21729313bce06dadcdf05b0326"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load up a wave file from the filesystem, to prepare for playback.  <a href="#a8ef86a21729313bce06dadcdf05b0326">More...</a><br /></td></tr>
+<tr class="separator:a8ef86a21729313bce06dadcdf05b0326"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24f347c31864c43cedb3d3b9ebe613dc"><td class="memItemLeft" align="right" valign="top">wavStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a24f347c31864c43cedb3d3b9ebe613dc">WavReadFile</a> ()</td></tr>
+<tr class="memdesc:a24f347c31864c43cedb3d3b9ebe613dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads another buffer's full of wave data into the internal buffer from the filesystem.  <a href="#a24f347c31864c43cedb3d3b9ebe613dc">More...</a><br /></td></tr>
+<tr class="separator:a24f347c31864c43cedb3d3b9ebe613dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac305d2d90649e87f0a8b582f43bc39c"><td class="memItemLeft" align="right" valign="top">wavStatus&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#aac305d2d90649e87f0a8b582f43bc39c">WavPlayNextSample</a> (void)</td></tr>
+<tr class="memdesc:aac305d2d90649e87f0a8b582f43bc39c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Output the next sample to the DAC(s) - should be called at 'samplerate'!  <a href="#aac305d2d90649e87f0a8b582f43bc39c">More...</a><br /></td></tr>
+<tr class="separator:aac305d2d90649e87f0a8b582f43bc39c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a000e75f6b30f1e214fdc2f40d1ff48dc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a000e75f6b30f1e214fdc2f40d1ff48dc">WavReadyForData</a> ()</td></tr>
+<tr class="memdesc:a000e75f6b30f1e214fdc2f40d1ff48dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if we need to load the double buffer with <a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a24f347c31864c43cedb3d3b9ebe613dc" title="Reads another buffer&#39;s full of wave data into the internal buffer from the filesystem. ">WavReadFile()</a> soon!  <a href="#a000e75f6b30f1e214fdc2f40d1ff48dc">More...</a><br /></td></tr>
+<tr class="separator:a000e75f6b30f1e214fdc2f40d1ff48dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -356,8 +377,8 @@ Adafruit_ImageReader *&#160;</td><td class="memItemRight" valign="bottom"><a cla
 
 </div>
 </div>
-<a id="a81d3317b5c5d17a4a0fc26f7dab60a17"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a81d3317b5c5d17a4a0fc26f7dab60a17">&#9670;&nbsp;</a></span>timerCallback()</h2>
+<a id="abd1bae2c7b3c09cdde0727dd5633baa7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd1bae2c7b3c09cdde0727dd5633baa7">&#9670;&nbsp;</a></span>timerCallback()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -371,7 +392,7 @@ Adafruit_ImageReader *&#160;</td><td class="memItemRight" valign="bottom"><a cla
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">void(*)()&#160;</td>
+          <td class="paramtype">arcada_callback_t&#160;</td>
           <td class="paramname"><em>callback</em>&#160;</td>
         </tr>
         <tr>
@@ -391,6 +412,48 @@ Adafruit_ImageReader *&#160;</td><td class="memItemRight" valign="bottom"><a cla
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True on success, False if something failed! </dd></dl>
+
+</div>
+</div>
+<a id="a9df1d10b0b9c720a493ae06f0035bce0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9df1d10b0b9c720a493ae06f0035bce0">&#9670;&nbsp;</a></span>getTimerCallbackFreq()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float Adafruit_Arcada_SPITFT::getTimerCallbackFreq </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the final frequency created for the callback helper. </p>
+<dl class="section return"><dt>Returns</dt><dd>The callback frequency </dd></dl>
+
+</div>
+</div>
+<a id="a3c09345939150f2e5dc0d81e2f23b0dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c09345939150f2e5dc0d81e2f23b0dd">&#9670;&nbsp;</a></span>getTimerCallback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">arcada_callback_t Adafruit_Arcada_SPITFT::getTimerCallback </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the previous callback function we were using. </p>
+<dl class="section return"><dt>Returns</dt><dd>A pointer to a function that takes no arguments, and returns nothing or NULL on no callback set </dd></dl>
 
 </div>
 </div>
@@ -1942,6 +2005,143 @@ Adafruit_ImageReader *&#160;</td><td class="memItemRight" valign="bottom"><a cla
 
 </div>
 </div>
+<a id="aca8c278547b8713a5f6cc653075b7180"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca8c278547b8713a5f6cc653075b7180">&#9670;&nbsp;</a></span>WavLoad() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">wavStatus Adafruit_Arcada_SPITFT::WavLoad </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t *&#160;</td>
+          <td class="paramname"><em>samplerate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Load up a wave file from the filesystem, to prepare for playback. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>Name of file to open, either relative or abs path </td></tr>
+    <tr><td class="paramname">samplerate</td><td>The uint32_t where the loaded wav files' sample rate will be stored for the caller to use. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Status enum from Adafruit WavePlayer library, on success, places the wave file samplerate into samplerate pointer </dd></dl>
+
+</div>
+</div>
+<a id="a8ef86a21729313bce06dadcdf05b0326"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ef86a21729313bce06dadcdf05b0326">&#9670;&nbsp;</a></span>WavLoad() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">wavStatus Adafruit_Arcada_SPITFT::WavLoad </td>
+          <td>(</td>
+          <td class="paramtype">File&#160;</td>
+          <td class="paramname"><em>f</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t *&#160;</td>
+          <td class="paramname"><em>samplerate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Load up a wave file from the filesystem, to prepare for playback. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">f</td><td>The already-opened file that we'll play </td></tr>
+    <tr><td class="paramname">samplerate</td><td>The uint32_t where the loaded wav files' sample rate will be stored for the caller to use. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Status enum from Adafruit WavePlayer library, on success, places the wave file samplerate into samplerate pointer </dd></dl>
+
+</div>
+</div>
+<a id="a24f347c31864c43cedb3d3b9ebe613dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24f347c31864c43cedb3d3b9ebe613dc">&#9670;&nbsp;</a></span>WavReadFile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">wavStatus Adafruit_Arcada_SPITFT::WavReadFile </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reads another buffer's full of wave data into the internal buffer from the filesystem. </p>
+<dl class="section return"><dt>Returns</dt><dd>Status enum from Adafruit WavePlayer library </dd></dl>
+
+</div>
+</div>
+<a id="aac305d2d90649e87f0a8b582f43bc39c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac305d2d90649e87f0a8b582f43bc39c">&#9670;&nbsp;</a></span>WavPlayNextSample()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">wavStatus Adafruit_Arcada_SPITFT::WavPlayNextSample </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Output the next sample to the DAC(s) - should be called at 'samplerate'! </p>
+<dl class="section return"><dt>Returns</dt><dd>Status enum from Adafruit WavePlayer library </dd></dl>
+
+</div>
+</div>
+<a id="a000e75f6b30f1e214fdc2f40d1ff48dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a000e75f6b30f1e214fdc2f40d1ff48dc">&#9670;&nbsp;</a></span>WavReadyForData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool Adafruit_Arcada_SPITFT::WavReadyForData </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks if we need to load the double buffer with <a class="el" href="class_adafruit___arcada___s_p_i_t_f_t.html#a24f347c31864c43cedb3d3b9ebe613dc" title="Reads another buffer&#39;s full of wave data into the internal buffer from the filesystem. ">WavReadFile()</a> soon! </p>
+<dl class="section return"><dt>Returns</dt><dd>True if there's free buffer space </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li><a class="el" href="arcadatype_8h_source.html">arcadatype.h</a></li>
 <li>Adafruit_Arcada.cpp</li>
@@ -1951,6 +2151,7 @@ Adafruit_ImageReader *&#160;</td><td class="memItemRight" valign="bottom"><a cla
 <li>Adafruit_Arcada_ImageReader.cpp</li>
 <li>Adafruit_Arcada_InternalFlash.cpp</li>
 <li>Adafruit_Arcada_USBMSD.cpp</li>
+<li>Adafruit_Arcada_Wav.cpp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
