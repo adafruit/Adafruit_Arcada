@@ -5,6 +5,7 @@
 #include <SdFat.h>
 #include <Adafruit_SPIFlash.h>
 #include <Adafruit_ImageReader.h> // Image-reading functions
+#include <Adafruit_WavePlayer.h>
 
 #if defined(USE_TINYUSB)
   #include "Adafruit_TinyUSB.h"
@@ -16,6 +17,8 @@
 
 #define SD_MAX_FILENAME_SIZE 80
 #define ARCADA_DEFAULT_CONFIGURATION_FILENAME  "/arcada_config.json"
+
+typedef void (*arcada_callback_t)(void);
 
 /** Filesystems that are currently activated */
 typedef enum _FilesystemType { 
@@ -58,7 +61,16 @@ class Adafruit_Arcada_SPITFT {
   /**************************************************************************/
   virtual uint32_t variantReadButtons(void) = 0;
 
-  bool timerCallback(float freq, void (*callback)());
+  bool timerCallback(float freq, arcada_callback_t callback);
+  float getTimerCallbackFreq(void);
+
+
+  /*! @brief  Get the previous callback function we were using
+    @return A pointer to a function that takes no arguments, and returns nothing
+    or NULL on no callback set
+  */
+  arcada_callback_t getTimerCallback(void);
+
   void timerStop(void);
 
   void printf(const char *format, ...);
@@ -169,11 +181,18 @@ class Adafruit_Arcada_SPITFT {
   ImageReturnCode drawBMP(char *filename, int16_t x, int16_t y, Adafruit_SPITFT *tft=0x0, boolean transact = true);
   Adafruit_ImageReader *getImageReader(void);
 
+  wavStatus WavLoad(char *filename, uint32_t *samplerate);
+  wavStatus WavLoad(File f, uint32_t *samplerate);
+  wavStatus WavReadFile();
+  wavStatus WavPlayNextSample(void);
+  bool WavReadyForData();
+
  protected:
   bool _has_accel = false; ///< Internally tracked variable if accelerometer was found
   bool _has_wifi = false;  ///< Internally tracked variable if wifi module was found
   Adafruit_ImageReader *QSPI_imagereader = 0,  ///< If initalized, the imagereader for the QSPI filesystem
     *SD_imagereader = 0; ///< If initalized, the imagereader for the SD card filesystem
+
 
  private:
   uint32_t last_buttons, ///< After readButtons() is called, this has the previous button states
@@ -196,6 +215,14 @@ class Adafruit_Arcada_SPITFT {
   TouchScreen *_touchscreen;
   int16_t _ts_xmin = 0, _ts_xmax = 1023, _ts_ymin = 0, _ts_ymax = 1023;
 
+  Adafruit_WavePlayer *player = NULL;
+  File _wav_file;
+  volatile bool _wav_readflag = true;
+  volatile bool _wav_playing = false;
+
+  float _callback_freq = 0;
+  arcada_callback_t _callback_func = NULL;
+  
   // Pins
   int8_t _sd_cs, _speaker_en, _neopixel_pin, _backlight_pin, 
     _touch_xp, _touch_yp, _touch_xm, _touch_ym,
