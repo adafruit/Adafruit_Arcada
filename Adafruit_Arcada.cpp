@@ -339,7 +339,7 @@ float Adafruit_Arcada_SPITFT::getTimerCallbackFreq(void) {
     or NULL on no callback set
 */
 /**************************************************************************/
-void (*Adafruit_Arcada_SPITFT::getTimerCallback(void))(void) {
+arcada_callback_t Adafruit_Arcada_SPITFT::getTimerCallback(void) {
 #if defined(__SAMD51__)
   return _callback_func;
 #else
