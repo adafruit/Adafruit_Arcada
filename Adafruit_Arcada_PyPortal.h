@@ -24,6 +24,8 @@
 
   #define ARCADA_SD_CS            32
 
+  #define ARCADA_AUDIO_OUT        A0
+
   #define ARCADA_TOUCHSCREEN_YM          A6
   #define ARCADA_TOUCHSCREEN_XP          A5
   #define ARCADA_TOUCHSCREEN_YP          A4
