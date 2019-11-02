@@ -25,7 +25,7 @@
 
 class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
  public:
-  Adafruit_CPlay_LIS3DH accel = Adafruit_CPlay_LIS3DH();
+  Adafruit_CPlay_LIS3DH accel = Adafruit_CPlay_LIS3DH(&Wire1);
 
   Adafruit_Arcada(void) {
     _has_accel = true;
