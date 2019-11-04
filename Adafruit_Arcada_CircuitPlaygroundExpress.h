@@ -52,6 +52,8 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
     tft->init(240, 240);
     tft->setRotation(ARCADA_TFT_ROTATION);
     tft->fillScreen(ARCADA_TFT_DEFAULTFILL);
+    uint8_t rtna = 0x01; // Screen refresh rate control (datasheet 9.2.18, FRCTRL2)
+    tft->sendCommand(0xC6, &rtna, 1);
     display = tft;
   }
 
