@@ -147,3 +147,57 @@ wavStatus Adafruit_Arcada_SPITFT::WavPlayNextSample(void) {
 
   return status;
 }
+
+
+/**************************************************************************/
+/*!
+    @brief Play a wave file completely thru by blocking until end of file
+    @param filename Name of file to open, either relative or abs path
+    @return Status enum from Adafruit WavePlayer library, WAV_OK on success
+*/
+/**************************************************************************/
+wavStatus Adafruit_Arcada_SPITFT::WavPlayComplete(char *filename) {
+  File wav_file = open(filename, FILE_READ);
+  return WavPlayComplete(wav_file);
+}
+
+/**************************************************************************/
+/*!
+    @brief Play a wave file completely thru by blocking until end of file
+    @param f The already-opened file that we'll play
+    @return Status enum from Adafruit WavePlayer library, WAV_OK on success
+*/
+/**************************************************************************/
+wavStatus Adafruit_Arcada_SPITFT::WavPlayComplete(File f) {
+  wavStatus status;
+  uint32_t sampleRate;
+
+  status = WavLoad(f, &sampleRate);
+  if ((status == WAV_LOAD) || (status == WAV_EOF)) {
+    Serial.println("WAV file loaded!");
+    enableSpeaker(true);  // enable speaker output
+  } else {
+    Serial.print("WAV error: "); Serial.println(status);
+    return status;
+  }
+
+  uint32_t t, prior, usec = 1000000L / sampleRate;
+  prior = micros();
+
+  do { // Repeat this loop until WAV_EOF or WAV_ERR_*
+    while((t = micros()) - prior < usec);
+    status = WavPlayNextSample();
+    prior = t;
+  
+    if (WavReadyForData()) {
+      yield();
+      WavReadFile();
+    }
+    
+    yield();
+  } while (status != WAV_EOF);
+
+
+  enableSpeaker(false);  // disable speaker output
+  return WAV_OK;
+}

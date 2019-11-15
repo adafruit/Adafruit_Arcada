@@ -186,6 +186,8 @@ class Adafruit_Arcada_SPITFT {
   wavStatus WavReadFile();
   wavStatus WavPlayNextSample(void);
   bool WavReadyForData();
+  wavStatus WavPlayComplete(char *filename);
+  wavStatus WavPlayComplete(File f);
 
  protected:
   bool _has_accel = false; ///< Internally tracked variable if accelerometer was found
