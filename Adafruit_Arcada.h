@@ -16,16 +16,16 @@ class Adafruit_Arcada_SPITFT;
 
 #include <TouchScreen.h>
 
-#include "Adafruit_Arcada_PyBadge.h"
-#include "Adafruit_Arcada_PyGamer.h"
-#include "Adafruit_Arcada_PyGamerAdvance.h"
-#include "Adafruit_Arcada_PyPortal.h"
-#include "Adafruit_Arcada_PyPortalTitano.h"
-#include "Adafruit_Arcada_MONSTERM4SK.h"
-#include "Adafruit_Arcada_HalloWingM4.h"
-#include "Adafruit_Arcada_HalloWingM0.h"
-#include "Adafruit_Arcada_CircuitPlaygroundExpress.h"
-#include "Adafruit_Arcada_CircuitPlaygroundBluefruit.h"
+#include "Boards/Adafruit_Arcada_PyBadge.h"
+#include "Boards/Adafruit_Arcada_PyGamer.h"
+#include "Boards/Adafruit_Arcada_PyGamerAdvance.h"
+#include "Boards/Adafruit_Arcada_PyPortal.h"
+#include "Boards/Adafruit_Arcada_PyPortalTitano.h"
+#include "Boards/Adafruit_Arcada_MONSTERM4SK.h"
+#include "Boards/Adafruit_Arcada_HalloWingM4.h"
+#include "Boards/Adafruit_Arcada_HalloWingM0.h"
+#include "Boards/Adafruit_Arcada_CircuitPlaygroundExpress.h"
+#include "Boards/Adafruit_Arcada_CircuitPlaygroundBluefruit.h"
 
 #ifndef ARCADA_SD_CS 
   #define ARCADA_SD_CS -1
