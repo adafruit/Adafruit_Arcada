@@ -30,6 +30,7 @@ install:
    - arduino --install-library "Adafruit ZeroTimer Library"
    - arduino --install-library "Adafruit TouchScreen"
    - arduino --install-library "Adafruit MSA301"
+   - arduino --install-library "Adafruit EPD"
    - arduino --install-library "Adafruit BusIO"
    - arduino --install-library "Adafruit PixelDust"
    - arduino --install-library "ArduinoJson"
