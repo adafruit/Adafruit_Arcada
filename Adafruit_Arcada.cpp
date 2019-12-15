@@ -1,11 +1,16 @@
 #include <Adafruit_Arcada.h>
 
-#if defined(ARCADA_CALLBACKTIMER)
+#if defined(ARCADA_CALLBACKTIMER) && defined(__SAMD51__)
 static Adafruit_ZeroTimer zerotimer = Adafruit_ZeroTimer(ARCADA_CALLBACKTIMER);
 
 void ARCADA_CALLBACKTIMER_HANDLER() {
   Adafruit_ZeroTimer::timerHandler(ARCADA_CALLBACKTIMER);
 }
+#endif
+
+#if defined(NRF52_SERIES)
+void (*nrf52_callback)() = NULL;
+extern "C" { void SysTick_Handler(void) { if (nrf52_callback != NULL) nrf52_callback(); } } // extern C
 #endif
 
 /**************************************************************************/
@@ -297,8 +302,8 @@ bool Adafruit_Arcada_SPITFT::timerCallback(float freq, void (*callback)()) {
   _callback_freq = ((48000000.0/(float)divider) / (float)compare);
   _callback_func = callback;
 
-  Serial.printf("Divider %d / compare %d -> %f Hz\n", 
-	       divider, compare, _callback_freq);
+  //Serial.printf("Divider %d / compare %d -> %f Hz\n", 
+  //divider, compare, _callback_freq);
 
   zerotimer.enable(false);
   zerotimer.configure(prescaler, // prescaler
@@ -309,6 +314,10 @@ bool Adafruit_Arcada_SPITFT::timerCallback(float freq, void (*callback)()) {
   zerotimer.setCompare(0, compare);
   zerotimer.setCallback(true, TC_CALLBACK_CC_CHANNEL0, callback);
   zerotimer.enable(true);
+  return true;
+#elif defined(NRF52_SERIES)
+  SysTick_Config(F_CPU/freq);
+  nrf52_callback = callback;
   return true;
 #else
   return false;
