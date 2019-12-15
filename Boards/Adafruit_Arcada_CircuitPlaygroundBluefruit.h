@@ -55,10 +55,10 @@ class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
   uint32_t variantReadButtons(void) {
     uint32_t buttons = 0;
     if (CircuitPlayground.leftButton()) {
-      buttons |= ARCADA_BUTTONMASK_LEFT;
+      buttons |= ARCADA_BUTTONMASK_LEFT | ARCADA_BUTTONMASK_A;
     }
     if (CircuitPlayground.rightButton()) {
-      buttons |= ARCADA_BUTTONMASK_RIGHT;
+      buttons |= ARCADA_BUTTONMASK_RIGHT | ARCADA_BUTTONMASK_B;
     }
    
     return buttons;
