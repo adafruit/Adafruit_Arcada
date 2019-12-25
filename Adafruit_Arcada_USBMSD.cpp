@@ -40,6 +40,15 @@ bool Adafruit_Arcada_SPITFT::filesysBeginMSD(Arcada_FilesystemType desiredFilesy
 
   if (found == ARCADA_FILESYS_NONE) { return false; }
 
+  // arcadaBegin() could take long time to complete
+  // By the time this function is called, usb enumeration is probably completed as CDC only device
+  // Therefore we have to
+  // - Physically detach the device by disable pull-up resistor
+  // - Configure the Mass Stroage interface
+  // - Re-attach by enable pull-up resistor
+  USBDevice.detach();
+  delay(50); // a bit of delay for device to disconnect
+
   if (found == ARCADA_FILESYS_SD || found == ARCADA_FILESYS_SD_AND_QSPI) {    // SD first
     // Set disk vendor id, product id and revision with string up to 8, 16, 4 characters respectively
     usb_msc.setID("Adafruit", "SD Card", "1.0");
@@ -58,7 +67,11 @@ bool Adafruit_Arcada_SPITFT::filesysBeginMSD(Arcada_FilesystemType desiredFilesy
     usb_msc.setCapacity(block_count, 512);
     
     // MSC is ready for read/write
-    usb_msc.setUnitReady(true);  
+    usb_msc.setUnitReady(true);
+
+    // re-attach to usb bus
+    USBDevice.attach();
+
     return true;
   }
 
@@ -80,8 +93,12 @@ bool Adafruit_Arcada_SPITFT::filesysBeginMSD(Arcada_FilesystemType desiredFilesy
     usb_msc.setCapacity(Arcada_QSPI_Flash.pageSize()*Arcada_QSPI_Flash.numPages()/512, 512);
 
     // MSC is ready for read/write
-    usb_msc.setUnitReady(true);  
+    usb_msc.setUnitReady(true);
     usb_msc.begin();
+
+    // re-attach to usb bus
+    USBDevice.attach();
+
     return true;
   }
 #endif
