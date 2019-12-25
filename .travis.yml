@@ -19,26 +19,6 @@ before_install:
 
 install:
    - rm -rf $HOME/arduino_ide/libraries/Adafruit_Circuit_Playground
-   - arduino --install-library "Adafruit Unified Sensor"
-   - arduino --install-library "Adafruit NeoPixel"
-   - arduino --install-library "Adafruit ADT7410 Library"
-   - arduino --install-library "Adafruit GFX Library"
-   - arduino --install-library "Adafruit ST7735 and ST7789 Library"
-   - arduino --install-library "Adafruit ILI9341"
-   - arduino --install-library "Adafruit SPIFlash"
-   - arduino --install-library "Adafruit LIS3DH"
-   - arduino --install-library "Adafruit ZeroTimer Library"
-   - arduino --install-library "Adafruit TouchScreen"
-   - arduino --install-library "Adafruit MSA301"
-   - arduino --install-library "Adafruit EPD"
-   - arduino --install-library "Adafruit BusIO"
-   - arduino --install-library "Adafruit PixelDust"
-   - arduino --install-library "ArduinoJson"
-   - arduino --install-library "Adafruit ImageReader Library"
-   - arduino --install-library "Adafruit WavePlayer Library"
-   - arduino --install-library "Adafruit TinyUSB Library"
-   - arduino --install-library "SdFat - Adafruit Fork"
-   - arduino --install-library "Adafruit Circuit Playground"
    - git clone --quiet https://github.com/adafruit/WiFiNINA.git $HOME/Arduino/libraries/WiFiNINA
    - git clone --quiet https://github.com/adafruit/Audio.git $HOME/Arduino/libraries/Audio
 
