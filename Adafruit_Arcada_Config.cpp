@@ -4,10 +4,9 @@
 // Copyright Benoit Blanchon 2014-2018
 // MIT License
 
-
 /**************************************************************************/
 /*!
-    @brief  Loads the configuration JSON from the filesystem 
+    @brief  Loads the configuration JSON from the filesystem
     (which must be initialized before this function is called) and stores
     parsed JSON data internally.
     @param  filename The path to the JSON file
@@ -42,10 +41,9 @@ bool Adafruit_Arcada_SPITFT::loadConfigurationFile(const char *filename) {
 #endif
 }
 
-
 /**************************************************************************/
 /*!
-    @brief  Saves the configuration JSON to the filesystem 
+    @brief  Saves the configuration JSON to the filesystem
     (which must be initialized before this function is called)
     @param  filename The path to the JSON file
     @return True if a the file was writable and saved
