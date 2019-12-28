@@ -10,16 +10,21 @@ void ARCADA_CALLBACKTIMER_HANDLER() {
 
 #if defined(NRF52_SERIES)
 void (*nrf52_callback)() = NULL;
-extern "C" { void SysTick_Handler(void) { if (nrf52_callback != NULL) nrf52_callback(); } } // extern C
+extern "C" {
+void SysTick_Handler(void) {
+  if (nrf52_callback != NULL)
+    nrf52_callback();
+}
+} // extern C
 #endif
 
 /**************************************************************************/
 /*!
-    @brief  Instantiator for Arcada class, will allso inistantiate (but not init) the TFT
+    @brief  Instantiator for Arcada class, will allso inistantiate (but not
+   init) the TFT
 */
 /**************************************************************************/
-Adafruit_Arcada_SPITFT::Adafruit_Arcada_SPITFT()
-{
+Adafruit_Arcada_SPITFT::Adafruit_Arcada_SPITFT() {
   _sd_cs = ARCADA_SD_CS;
   _speaker_en = ARCADA_SPEAKER_ENABLE;
   _neopixel_pin = ARCADA_NEOPIXEL_PIN;
@@ -70,7 +75,8 @@ Adafruit_Arcada_SPITFT::Adafruit_Arcada_SPITFT()
 */
 /**************************************************************************/
 bool Adafruit_Arcada_SPITFT::arcadaBegin(void) {
-  if (! variantBegin()) return false;
+  if (!variantBegin())
+    return false;
 
   setBacklight(0);
 
@@ -97,15 +103,15 @@ bool Adafruit_Arcada_SPITFT::arcadaBegin(void) {
     delay(10);
     pixels.setBrightness(20);
     pixels.fill(0);
-    pixels.show();  // turn off
+    pixels.show(); // turn off
     delay(10);
-    pixels.show();  // turn off
+    pixels.show(); // turn off
   }
 
   _touchscreen = NULL;
   if (_touch_xp >= 0) {
-    _touchscreen = new TouchScreen(_touch_xp, _touch_yp,
-				   _touch_xm, _touch_ym, 300);
+    _touchscreen =
+        new TouchScreen(_touch_xp, _touch_yp, _touch_xm, _touch_ym, 300);
     setTouchscreenCalibration(_ts_xmin, _ts_xmax, _ts_ymin, _ts_ymax);
   }
 
@@ -133,7 +139,7 @@ bool Adafruit_Arcada_SPITFT::arcadaBegin(void) {
   if (_right_button >= 0) {
     pinMode(_right_button, INPUT_PULLUP);
   }
-  
+
   if (_button_clock >= 0) {
     pinMode(_button_clock, OUTPUT);
     digitalWrite(_button_clock, HIGH);
@@ -146,7 +152,6 @@ bool Adafruit_Arcada_SPITFT::arcadaBegin(void) {
     pinMode(_button_data, INPUT);
   }
 
-
 #ifndef SPIWIFI
   _has_wifi = false;
 #else
@@ -154,8 +159,7 @@ bool Adafruit_Arcada_SPITFT::arcadaBegin(void) {
   delay(100);
   if (WiFi.status() == WL_NO_MODULE) {
     _has_wifi = false;
-  }
-  else {
+  } else {
     _has_wifi = true;
   }
 #endif
@@ -166,12 +170,12 @@ bool Adafruit_Arcada_SPITFT::arcadaBegin(void) {
   return true;
 }
 
-
 /**************************************************************************/
 /*!
     @brief  Set the backlight brightness and save to the configuration
     @param  brightness From 0 (off) to 255 (full on)
-    @param  saveToDisk Whether we save this permanently to disk, default is false
+    @param  saveToDisk Whether we save this permanently to disk, default is
+   false
     @returns Whether saving to disk succeeded, or true if we don't save
 */
 /**************************************************************************/
@@ -193,9 +197,8 @@ bool Adafruit_Arcada_SPITFT::setBacklight(uint8_t brightness, bool saveToDisk) {
     return saveConfigurationFile();
   }
 #endif
-  return true; 
+  return true;
 }
-
 
 /**************************************************************************/
 /*!
@@ -203,15 +206,14 @@ bool Adafruit_Arcada_SPITFT::setBacklight(uint8_t brightness, bool saveToDisk) {
     @returns  brightness From 0 (off) to 255 (full on)
 */
 /**************************************************************************/
-uint8_t Adafruit_Arcada_SPITFT::getBacklight(void) {
-  return _brightness;
-}
+uint8_t Adafruit_Arcada_SPITFT::getBacklight(void) { return _brightness; }
 
 /**************************************************************************/
 /*!
     @brief  Set the audio volume (not working at this time)
     @param  volume From 0 (off) to 255 (full on)
-    @param  saveToDisk Whether we save this permanently to disk, default is false
+    @param  saveToDisk Whether we save this permanently to disk, default is
+   false
     @returns Whether saving to disk succeeded, or true if we don't save
 */
 /**************************************************************************/
@@ -223,7 +225,7 @@ bool Adafruit_Arcada_SPITFT::setVolume(uint8_t volume, bool saveToDisk) {
     return saveConfigurationFile();
   }
 #endif
-  return true; 
+  return true;
 }
 
 /**************************************************************************/
@@ -232,9 +234,7 @@ bool Adafruit_Arcada_SPITFT::setVolume(uint8_t volume, bool saveToDisk) {
     @returns  Volume From 0 (off) to 255 (full on)
 */
 /**************************************************************************/
-uint8_t Adafruit_Arcada_SPITFT::getVolume(void) {
-  return _volume;
-}
+uint8_t Adafruit_Arcada_SPITFT::getVolume(void) { return _volume; }
 
 /**************************************************************************/
 /*!
@@ -251,7 +251,8 @@ void Adafruit_Arcada_SPITFT::enableSpeaker(bool on) {
 /**************************************************************************/
 /*!
     @brief  Create a repetative callback to a function using a timer
-    @param  freq The callback frequency, must be between 0.75 Hz and 24MHz (slower is better)
+    @param  freq The callback frequency, must be between 0.75 Hz and 24MHz
+   (slower is better)
     @param  callback A pointer to the function we'll call every time
     @return True on success, False if something failed!
 */
@@ -266,57 +267,57 @@ bool Adafruit_Arcada_SPITFT::timerCallback(float freq, void (*callback)()) {
   if ((freq < 24000000) && (freq > 800)) {
     divider = 1;
     prescaler = TC_CLOCK_PRESCALER_DIV1;
-    compare = 48000000/freq;
+    compare = 48000000 / freq;
   } else if (freq > 400) {
     divider = 2;
     prescaler = TC_CLOCK_PRESCALER_DIV2;
-    compare = (48000000/2)/freq;
+    compare = (48000000 / 2) / freq;
   } else if (freq > 200) {
     divider = 4;
     prescaler = TC_CLOCK_PRESCALER_DIV4;
-    compare = (48000000/4)/freq;
+    compare = (48000000 / 4) / freq;
   } else if (freq > 100) {
     divider = 8;
     prescaler = TC_CLOCK_PRESCALER_DIV8;
-    compare = (48000000/8)/freq;
+    compare = (48000000 / 8) / freq;
   } else if (freq > 50) {
     divider = 16;
     prescaler = TC_CLOCK_PRESCALER_DIV16;
-    compare = (48000000/16)/freq;
+    compare = (48000000 / 16) / freq;
   } else if (freq > 12) {
     divider = 64;
     prescaler = TC_CLOCK_PRESCALER_DIV64;
-    compare = (48000000/64)/freq;
+    compare = (48000000 / 64) / freq;
   } else if (freq > 3) {
     divider = 256;
     prescaler = TC_CLOCK_PRESCALER_DIV256;
-    compare = (48000000/256)/freq;
+    compare = (48000000 / 256) / freq;
   } else if (freq >= 0.75) {
     divider = 1024;
     prescaler = TC_CLOCK_PRESCALER_DIV1024;
-    compare = (48000000/1024)/freq;
+    compare = (48000000 / 1024) / freq;
   } else {
     return false;
   }
 
-  _callback_freq = ((48000000.0/(float)divider) / (float)compare);
+  _callback_freq = ((48000000.0 / (float)divider) / (float)compare);
   _callback_func = callback;
 
-  //Serial.printf("Divider %d / compare %d -> %f Hz\n", 
-  //divider, compare, _callback_freq);
+  // Serial.printf("Divider %d / compare %d -> %f Hz\n",
+  // divider, compare, _callback_freq);
 
   zerotimer.enable(false);
-  zerotimer.configure(prescaler, // prescaler
-		      TC_COUNTER_SIZE_16BIT,   // bit width of timer/counter
-		      TC_WAVE_GENERATION_MATCH_PWM // frequency or PWM mode
-		      );
+  zerotimer.configure(prescaler,                   // prescaler
+                      TC_COUNTER_SIZE_16BIT,       // bit width of timer/counter
+                      TC_WAVE_GENERATION_MATCH_PWM // frequency or PWM mode
+  );
 
   zerotimer.setCompare(0, compare);
   zerotimer.setCallback(true, TC_CALLBACK_CC_CHANNEL0, callback);
   zerotimer.enable(true);
   return true;
 #elif defined(NRF52_SERIES)
-  SysTick_Config(F_CPU/freq);
+  SysTick_Config(F_CPU / freq);
   nrf52_callback = callback;
   return true;
 #else
@@ -353,7 +354,6 @@ arcada_callback_t Adafruit_Arcada_SPITFT::getTimerCallback(void) {
 #endif
 }
 
-
 /**************************************************************************/
 /*!
     @brief  Stop a previously-initiated timer.
@@ -374,9 +374,9 @@ void Adafruit_Arcada_SPITFT::timerStop(void) {
 void Adafruit_Arcada_SPITFT::printf(const char *format, ...) {
   va_list args;
   va_start(args, format);
-  
+
   Serial.printf(format, args);
-  
+
   va_end(args);
 }
 
@@ -391,7 +391,7 @@ int16_t Adafruit_Arcada_SPITFT::readJoystickX(uint8_t sampling) {
 
   float reading = 0;
   if (_joystick_x >= 0) {
-    for (int i=0; i<sampling; i++) {
+    for (int i = 0; i < sampling; i++) {
       reading += analogRead(_joystick_x);
     }
     reading /= sampling;
@@ -413,11 +413,11 @@ int16_t Adafruit_Arcada_SPITFT::readJoystickY(uint8_t sampling) {
 
   float reading = 0;
   if (_joystick_y >= 0) {
-    for (int i=0; i<sampling; i++) {
+    for (int i = 0; i < sampling; i++) {
       reading += analogRead(_joystick_y);
     }
     reading /= sampling;
-    
+
     // adjust range from 0->1024 to -512 to 511;
     reading -= _joyy_center;
   }
@@ -427,13 +427,14 @@ int16_t Adafruit_Arcada_SPITFT::readJoystickY(uint8_t sampling) {
 /**************************************************************************/
 /*!
     @brief  Read all buttons/joystick and return a bitmask of which buttons are
-            pressed, check ARCADA_BUTTONMASK_* for valid bitmasks to check again.
-            If there's an analog joystick, it will 'simulate' the button presses.
+            pressed, check ARCADA_BUTTONMASK_* for valid bitmasks to check
+   again. If there's an analog joystick, it will 'simulate' the button presses.
     @return Bit array with up to 32 buttons, 1 for pressed, 0 for not.
 */
 /**************************************************************************/
 uint32_t Adafruit_Arcada_SPITFT::readButtons(void) {
-  uint32_t buttons = variantReadButtons(); // start with whatever the variant can do
+  uint32_t buttons =
+      variantReadButtons(); // start with whatever the variant can do
 
   // Use a latch to read 8 bits
   if (_button_clock >= 0) {
@@ -442,8 +443,8 @@ uint32_t Adafruit_Arcada_SPITFT::readButtons(void) {
     delayMicroseconds(1);
     digitalWrite(_button_latch, HIGH);
     delayMicroseconds(1);
-  
-    for(int i = 0; i < 8; i++) {
+
+    for (int i = 0; i < 8; i++) {
       shift_buttons <<= 1;
       shift_buttons |= digitalRead(_button_data);
       digitalWrite(_button_clock, HIGH);
@@ -451,7 +452,7 @@ uint32_t Adafruit_Arcada_SPITFT::readButtons(void) {
       digitalWrite(_button_clock, LOW);
       delayMicroseconds(1);
     }
-  
+
     if (shift_buttons & _shift_b)
       buttons |= ARCADA_BUTTONMASK_B;
     if (shift_buttons & _shift_a)
@@ -471,19 +472,19 @@ uint32_t Adafruit_Arcada_SPITFT::readButtons(void) {
   }
 
   // GPIO buttons!
-  if ((_start_button >= 0) && !digitalRead(_start_button)) 
+  if ((_start_button >= 0) && !digitalRead(_start_button))
     buttons |= ARCADA_BUTTONMASK_START;
 
-  if ((_select_button >= 0) && !digitalRead(_select_button)) 
+  if ((_select_button >= 0) && !digitalRead(_select_button))
     buttons |= ARCADA_BUTTONMASK_SELECT;
 
-  if ((_a_button >= 0) && !digitalRead(_a_button)) 
+  if ((_a_button >= 0) && !digitalRead(_a_button))
     buttons |= ARCADA_BUTTONMASK_A;
 
-  if ((_b_button >= 0) && !digitalRead(_b_button)) 
+  if ((_b_button >= 0) && !digitalRead(_b_button))
     buttons |= ARCADA_BUTTONMASK_B;
 
-  if ((_up_button >= 0) && !digitalRead(_up_button)) 
+  if ((_up_button >= 0) && !digitalRead(_up_button))
     buttons |= ARCADA_BUTTONMASK_UP;
   if ((_down_button >= 0) && !digitalRead(_down_button))
     buttons |= ARCADA_BUTTONMASK_DOWN;
@@ -494,48 +495,56 @@ uint32_t Adafruit_Arcada_SPITFT::readButtons(void) {
 
   // Potentiometers for X & Y
   int16_t x = readJoystickX(); // returns 0 on no joystick
-  if (x > 350)  
+  if (x > 350)
     buttons |= ARCADA_BUTTONMASK_RIGHT;
-  else if (x < -350)  
+  else if (x < -350)
     buttons |= ARCADA_BUTTONMASK_LEFT;
   int16_t y = readJoystickY(); // returns 0 on no joystick
-  if (y > 350)  
+  if (y > 350)
     buttons |= ARCADA_BUTTONMASK_DOWN;
-  else if (y < -350)  
+  else if (y < -350)
     buttons |= ARCADA_BUTTONMASK_UP;
 
   // Touchscreen
   if (_touchscreen) {
     TSPoint p = getTouchscreenPoint();
     if (p.z > 100) {
-      //Serial.printf("(%d, %d)\n", p.x, p.y);
+      // Serial.printf("(%d, %d)\n", p.x, p.y);
       // up!
-      if ( (p.y < display->height()/4) && (p.x > display->width()/4) && (p.x < (display->width()*3.0/4.0)) ) {
-	buttons |= ARCADA_BUTTONMASK_UP;
+      if ((p.y < display->height() / 4) && (p.x > display->width() / 4) &&
+          (p.x < (display->width() * 3.0 / 4.0))) {
+        buttons |= ARCADA_BUTTONMASK_UP;
       }
       // down!
-      if ( (p.y > (display->height()*3.0/4.0)) && 
-	   (p.x > display->width()/3) && (p.x < (display->width()*3.0/4.0)) ) {
-	buttons |= ARCADA_BUTTONMASK_DOWN;
+      if ((p.y > (display->height() * 3.0 / 4.0)) &&
+          (p.x > display->width() / 3) &&
+          (p.x < (display->width() * 3.0 / 4.0))) {
+        buttons |= ARCADA_BUTTONMASK_DOWN;
       }
       // left!
-      if ( (p.x < display->width()/4) && (p.y > display->height()/4) && (p.y < (display->height()*3.0/4.0)) ) {
-	buttons |= ARCADA_BUTTONMASK_LEFT;
+      if ((p.x < display->width() / 4) && (p.y > display->height() / 4) &&
+          (p.y < (display->height() * 3.0 / 4.0))) {
+        buttons |= ARCADA_BUTTONMASK_LEFT;
       }
       // right!
-      if ( (p.x > (display->width()*3.0/4.0)) &&  
-	   (p.y > display->height()/4) && (p.y < (display->height()*3.0/4.0)) ) {
-	buttons |= ARCADA_BUTTONMASK_RIGHT;
+      if ((p.x > (display->width() * 3.0 / 4.0)) &&
+          (p.y > display->height() / 4) &&
+          (p.y < (display->height() * 3.0 / 4.0))) {
+        buttons |= ARCADA_BUTTONMASK_RIGHT;
       }
       // B
-      if ( (p.x > display->width()/4) && (p.x < display->width()/2) // 2nd quarter
-	   && (p.y > display->height()/4) && (p.y < (display->height()*3.0/4.0)) ) {
-	buttons |= ARCADA_BUTTONMASK_B;
+      if ((p.x > display->width() / 4) &&
+          (p.x < display->width() / 2) // 2nd quarter
+          && (p.y > display->height() / 4) &&
+          (p.y < (display->height() * 3.0 / 4.0))) {
+        buttons |= ARCADA_BUTTONMASK_B;
       }
       // A
-      if ( (p.x > display->width()/2) && (p.x < (display->width()*3.0/4.0)) // 3rd quarter
-	   && (p.y > display->height()/4) && (p.y < (display->height()*3.0/4.0)) ) {
-	buttons |= ARCADA_BUTTONMASK_A;
+      if ((p.x > display->width() / 2) &&
+          (p.x < (display->width() * 3.0 / 4.0)) // 3rd quarter
+          && (p.y > display->height() / 4) &&
+          (p.y < (display->height() * 3.0 / 4.0))) {
+        buttons |= ARCADA_BUTTONMASK_A;
       }
     }
   }
@@ -544,29 +553,31 @@ uint32_t Adafruit_Arcada_SPITFT::readButtons(void) {
   curr_buttons = buttons;
   justpressed_buttons = (last_buttons ^ curr_buttons) & curr_buttons;
   justreleased_buttons = (last_buttons ^ curr_buttons) & last_buttons;
-  
+
   return buttons;
 }
 
 /**************************************************************************/
 /*!
     @brief  What buttons were just pressed as of the last readButtons() call.
-    Use ARCADA_BUTTONMASK_* defines to extract which bits are true (just pressed)
+    Use ARCADA_BUTTONMASK_* defines to extract which bits are true (just
+   pressed)
     @return Bitmask of all buttons that were just pressed
 */
 /**************************************************************************/
-uint32_t Adafruit_Arcada_SPITFT::justPressedButtons(void) {  
+uint32_t Adafruit_Arcada_SPITFT::justPressedButtons(void) {
   return justpressed_buttons;
 }
 
 /**************************************************************************/
 /*!
     @brief  What buttons were just released as of the last readButtons() call.
-    Use ARCADA_BUTTONMASK_* defines to extract which bits are true (just releasd)
+    Use ARCADA_BUTTONMASK_* defines to extract which bits are true (just
+   releasd)
     @return Bitmask of all buttons that were just released
 */
 /**************************************************************************/
-uint32_t Adafruit_Arcada_SPITFT::justReleasedButtons(void) {  
+uint32_t Adafruit_Arcada_SPITFT::justReleasedButtons(void) {
   return justreleased_buttons;
 }
 
@@ -592,7 +603,7 @@ uint16_t Adafruit_Arcada_SPITFT::readLightSensor(void) {
 /**************************************************************************/
 float Adafruit_Arcada_SPITFT::readBatterySensor(void) {
   if (_battery_sensor >= 0) {
-    return ( (float)analogRead(_battery_sensor) / 1023.0) * 2.0 * 3.3 ;
+    return ((float)analogRead(_battery_sensor) / 1023.0) * 2.0 * 3.3;
   } else {
     return NAN;
   }
@@ -606,8 +617,10 @@ float Adafruit_Arcada_SPITFT::readBatterySensor(void) {
     @return True on success (could allocate) or false on failure
 */
 /**************************************************************************/
-bool Adafruit_Arcada_SPITFT::createFrameBuffer(uint16_t width, uint16_t height) {
-  if(_canvas) delete(_canvas);
+bool Adafruit_Arcada_SPITFT::createFrameBuffer(uint16_t width,
+                                               uint16_t height) {
+  if (_canvas)
+    delete (_canvas);
   _canvas = new GFXcanvas16(width, height);
   return (_canvas != NULL);
 }
@@ -644,13 +657,14 @@ bool Adafruit_Arcada_SPITFT::createFrameBuffer(uint16_t width, uint16_t height) 
     framebuffer until the transfer completes).
 */
 /**************************************************************************/
-bool Adafruit_Arcada_SPITFT::blitFrameBuffer(uint16_t x, uint16_t y, bool blocking,
-					     bool bigEndian, Adafruit_SPITFT *blitdisplay) {
-  if (! blitdisplay) {
+bool Adafruit_Arcada_SPITFT::blitFrameBuffer(uint16_t x, uint16_t y,
+                                             bool blocking, bool bigEndian,
+                                             Adafruit_SPITFT *blitdisplay) {
+  if (!blitdisplay) {
     blitdisplay = display;
   }
-  if(_canvas) {
-    if (! _first_frame) {
+  if (_canvas) {
+    if (!_first_frame) {
       blitdisplay->dmaWait();  // Wait for prior DMA transfer to complete
       blitdisplay->endWrite(); // End transaction from any prior call
     } else {
@@ -658,8 +672,9 @@ bool Adafruit_Arcada_SPITFT::blitFrameBuffer(uint16_t x, uint16_t y, bool blocki
     }
     blitdisplay->startWrite(); // Start new display transaction
     blitdisplay->setAddrWindow(x, y, _canvas->width(), _canvas->height());
-    blitdisplay->writePixels(_canvas->getBuffer(), _canvas->width() * _canvas->height(),
-			     blocking, bigEndian);
+    blitdisplay->writePixels(_canvas->getBuffer(),
+                             _canvas->width() * _canvas->height(), blocking,
+                             bigEndian);
     return true;
   }
 
@@ -672,9 +687,7 @@ bool Adafruit_Arcada_SPITFT::blitFrameBuffer(uint16_t x, uint16_t y, bool blocki
     @returns True if it does
 */
 /**************************************************************************/
-bool Adafruit_Arcada_SPITFT::hasTouchscreen(void) {
-  return (_touch_xp >= 0);
-}
+bool Adafruit_Arcada_SPITFT::hasTouchscreen(void) { return (_touch_xp >= 0); }
 
 /**************************************************************************/
 /*!
@@ -685,8 +698,10 @@ bool Adafruit_Arcada_SPITFT::hasTouchscreen(void) {
     @param ymax The value of Y which corresponds to the TFT height on that axis
 */
 /**************************************************************************/
-void Adafruit_Arcada_SPITFT::setTouchscreenCalibration(int16_t xmin, int16_t xmax, 
-						int16_t ymin, int16_t ymax) {
+void Adafruit_Arcada_SPITFT::setTouchscreenCalibration(int16_t xmin,
+                                                       int16_t xmax,
+                                                       int16_t ymin,
+                                                       int16_t ymax) {
   _ts_xmin = xmin;
   _ts_xmax = xmax;
   _ts_ymin = ymin;
@@ -708,12 +723,12 @@ TSPoint Adafruit_Arcada_SPITFT::getTouchscreenPoint(void) {
   }
 
   TSPoint points[8];
-  for (int i=0; i<8; i++) {
+  for (int i = 0; i < 8; i++) {
     points[i] = _touchscreen->getPoint(); // the uncalibrated point
   }
   bool invalid = true;
   TSPoint p;
-  for (int i=0; i<8; i++) {
+  for (int i = 0; i < 8; i++) {
     if ((points[i].z > 100) && (points[i].z < 1000)) {
       p.x = points[i].x;
       p.y = points[i].y;
@@ -726,7 +741,7 @@ TSPoint Adafruit_Arcada_SPITFT::getTouchscreenPoint(void) {
     return p;
   }
 
-  //Serial.printf("rot: %d (%d, %d) \t", getRotation(), p.x, p.y);
+  // Serial.printf("rot: %d (%d, %d) \t", getRotation(), p.x, p.y);
 
   if (display->getRotation() == 0) {
     int _y = map(p.y, _ts_ymin, _ts_ymax, 0, display->height());
@@ -755,10 +770,10 @@ TSPoint Adafruit_Arcada_SPITFT::getTouchscreenPoint(void) {
   return p;
 }
 
-
 /**************************************************************************/
 /*!
-    @brief  Does this board have a control pad - latch, buttons or analog joystick?
+    @brief  Does this board have a control pad - latch, buttons or analog
+   joystick?
     @returns True if it does
 */
 /**************************************************************************/
@@ -770,7 +785,6 @@ bool Adafruit_Arcada_SPITFT::hasControlPad(void) {
   }
 }
 
-
 /*!
   @brief   Convert hue, saturation and value into a packed 16-bit RGB color
            that can be passed to TFT
@@ -779,7 +793,7 @@ bool Adafruit_Arcada_SPITFT::hasControlPad(void) {
                 (max or pure hue)
   @param   V  Value (brightness), 8-bit value, 0 (min / black / off) to
                 100 (max or full brightness)
-  @return  Packed 16-bit 5-6-5 RGB. Result is linearly but not perceptually 
+  @return  Packed 16-bit 5-6-5 RGB. Result is linearly but not perceptually
            correct for LEDs. Intended for TFT use only.
 */
 // https://gist.github.com/kuathadianto/200148f53616cbd226d993b400214a7f
@@ -788,38 +802,33 @@ uint16_t Adafruit_Arcada_SPITFT::ColorHSV565(int16_t H, uint8_t S, uint8_t V) {
   double X = C * (1 - abs(fmod(H / 60.0, 2) - 1));
   double m = (V / 100.0) - C;
   double Rs, Gs, Bs;
-  
-  if(H >= 0 && H < 60) {
+
+  if (H >= 0 && H < 60) {
     Rs = C;
     Gs = X;
-    Bs = 0;	
-  }
-  else if(H >= 60 && H < 120) {	
+    Bs = 0;
+  } else if (H >= 60 && H < 120) {
     Rs = X;
     Gs = C;
-    Bs = 0;	
-  }
-  else if(H >= 120 && H < 180) {
+    Bs = 0;
+  } else if (H >= 120 && H < 180) {
     Rs = 0;
     Gs = C;
-    Bs = X;	
-  }
-  else if(H >= 180 && H < 240) {
+    Bs = X;
+  } else if (H >= 180 && H < 240) {
     Rs = 0;
     Gs = X;
-    Bs = C;	
-  }
-  else if(H >= 240 && H < 300) {
+    Bs = C;
+  } else if (H >= 240 && H < 300) {
     Rs = X;
     Gs = 0;
-    Bs = C;	
-  }
-  else {
+    Bs = C;
+  } else {
     Rs = C;
     Gs = 0;
-    Bs = X;	
+    Bs = X;
   }
-  
+
   uint8_t red = (Rs + m) * 255;
   uint8_t green = (Gs + m) * 255;
   uint8_t blue = (Bs + m) * 255;

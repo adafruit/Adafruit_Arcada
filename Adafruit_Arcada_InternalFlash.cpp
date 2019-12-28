@@ -3,11 +3,11 @@
 #if defined(__SAMD51__)
 
 #if !defined(FLASH_PAGE_SIZE)
-#define FLASH_PAGE_SIZE  (8 << NVMCTRL->PARAM.bit.PSZ)
+#define FLASH_PAGE_SIZE (8 << NVMCTRL->PARAM.bit.PSZ)
 #endif
-#define FLASH_NUM_PAGES  NVMCTRL->PARAM.bit.NVMP
+#define FLASH_NUM_PAGES NVMCTRL->PARAM.bit.NVMP
 #if !defined(FLASH_SIZE)
-#define FLASH_SIZE       (FLASH_PAGE_SIZE * FLASH_NUM_PAGES)
+#define FLASH_SIZE (FLASH_PAGE_SIZE * FLASH_NUM_PAGES)
 #endif
 #define FLASH_BLOCK_SIZE (FLASH_PAGE_SIZE * 16) // Datasheet 25.6.2
 
@@ -15,7 +15,7 @@ extern uint32_t __etext; // CODE END. Symbol exported from linker script
 static uint8_t *flashAddress = NULL; // Initted on first use below
 
 // Skip writing blocks that are identical to the existing block.
-#define QUICK_FLASH 1   // only disable for debugging/timing!
+#define QUICK_FLASH 1 // only disable for debugging/timing!
 
 #endif
 
@@ -27,14 +27,14 @@ static uint8_t *flashAddress = NULL; // Initted on first use below
 /**************************************************************************/
 uint32_t Adafruit_Arcada_SPITFT::availableFlash(void) {
 #if defined(__SAMD51__)
-  if(flashAddress == NULL) {
+  if (flashAddress == NULL) {
     // On first call, initialize flashAddress to first block boundary
     // following program storage. Code is uploaded page-at-a-time and
     // any trailing bytes in the last program block may be gibberish,
     // so we can't make use of that for ourselves.
     flashAddress = (uint8_t *)&__etext; // OK to overwrite the '0' there
     uint16_t partialBlock = (uint32_t)flashAddress % FLASH_BLOCK_SIZE;
-    if(partialBlock) {
+    if (partialBlock) {
       flashAddress += FLASH_BLOCK_SIZE - partialBlock;
     }
   } else {
@@ -42,12 +42,12 @@ uint32_t Adafruit_Arcada_SPITFT::availableFlash(void) {
     // try packing some data into the trailing bytes of the last-used flash
     // block! Saves up to (8K-16) bytes flash per call.
     uint8_t partialQuadword = (uint32_t)flashAddress & 15;
-    if(partialQuadword) {
+    if (partialQuadword) {
       flashAddress += 16 - partialQuadword;
     }
   }
   return FLASH_SIZE - (uint32_t)flashAddress;
-#else // !__SAMD51__
+#else  // !__SAMD51__
   return 0; // unsupported chip
 #endif // __SAMD51__
 }
@@ -59,24 +59,27 @@ uint32_t Adafruit_Arcada_SPITFT::availableFlash(void) {
 */
 /**************************************************************************/
 static inline void wait_ready(void) {
-  while(!NVMCTRL->STATUS.bit.READY);
+  while (!NVMCTRL->STATUS.bit.READY)
+    ;
 }
 #endif
 
 /**************************************************************************/
 /*!
-    @brief  Write a block of data in RAM to the NEXT AVAILABLE position in flash memory (NOT a specific location).
+    @brief  Write a block of data in RAM to the NEXT AVAILABLE position in flash
+   memory (NOT a specific location).
     @param ramAddress Pointer to source RAM data
     @param len Size in bytes of RAM data to store
     @return Pointer to stored data, NULL if insufficient space or an error.
 */
 /**************************************************************************/
-uint8_t *Adafruit_Arcada_SPITFT::writeDataToFlash(uint8_t *ramAddress, uint32_t len) {
+uint8_t *Adafruit_Arcada_SPITFT::writeDataToFlash(uint8_t *ramAddress,
+                                                  uint32_t len) {
 #if defined(__SAMD51__)
   // availableFlash(), aside from reporting the amount of free flash memory,
   // also adjusts flashAddress to the first/next available usable boundary.
   // No need to do that manually here.
-  if(len > availableFlash()) {
+  if (len > availableFlash()) {
     Serial.println("Too large!");
     return NULL;
   }
@@ -91,82 +94,86 @@ uint8_t *Adafruit_Arcada_SPITFT::writeDataToFlash(uint8_t *ramAddress, uint32_t 
   // Clear page buffer, only needed once, quadword write also clears it
   NVMCTRL->CTRLB.reg = NVMCTRL_CTRLB_CMDEX_KEY | NVMCTRL_CTRLB_CMD_PBC;
 
-  for(uint8_t tries = 0;;) { // Repeat write sequence until success or limit
+  for (uint8_t tries = 0;;) { // Repeat write sequence until success or limit
 
-    uint8_t  *src = (uint8_t *)ramAddress;    // Maintain passed-in pointers,
+    uint8_t *src = (uint8_t *)ramAddress;     // Maintain passed-in pointers,
     uint32_t *dst = (uint32_t *)flashAddress; // modify these instead.
-    int32_t   bytesThisPass, bytesToGo = len;
+    int32_t bytesThisPass, bytesToGo = len;
 
     Serial.print("Storing");
     wait_ready(); // Wait for any NVM write op in progress
 
-    while(bytesToGo > 0) {
+    while (bytesToGo > 0) {
       yield();
       // Because dst (via flashAddress) is always quadword-aligned at this
       // point, and flash blocks are known to be a quadword-multiple size,
       // this comparison is reasonable for checking for start of block...
-      if(!((uint32_t)dst % FLASH_BLOCK_SIZE)) { // At block boundary
+      if (!((uint32_t)dst % FLASH_BLOCK_SIZE)) { // At block boundary
         // If ANY changed data within the entire block, it must be erased
         bytesThisPass = min(FLASH_BLOCK_SIZE, bytesToGo);
-        if(memcmp(src, dst, bytesThisPass)) { // >0 if different
-          Serial.write('-');                  // minus = erasing
+        if (memcmp(src, dst, bytesThisPass)) { // >0 if different
+          Serial.write('-');                   // minus = erasing
           wait_ready();
-          NVMCTRL->ADDR.reg  = (uint32_t)dst; // Destination address in flash
+          NVMCTRL->ADDR.reg = (uint32_t)dst; // Destination address in flash
           NVMCTRL->CTRLB.reg = NVMCTRL_CTRLB_CMDEX_KEY | NVMCTRL_CTRLB_CMD_EB;
-        } else { // Skip entire block
-          Serial.print(">>");                 // >> = skipping, already stored
+        } else {              // Skip entire block
+          Serial.print(">>"); // >> = skipping, already stored
           bytesToGo -= bytesThisPass;
-          src       += FLASH_BLOCK_SIZE;      // Advance to next block
-          dst       += FLASH_BLOCK_SIZE / 4;
+          src += FLASH_BLOCK_SIZE; // Advance to next block
+          dst += FLASH_BLOCK_SIZE / 4;
           continue;
         }
       }
 
       // Examine next quadword, write only if needed (reduce flash wear)
       bytesThisPass = min(16, bytesToGo);
-      if(memcmp(src, dst, bytesThisPass)) { // >0 if different
-        if(!((uint32_t)dst & 2047)) Serial.write('.'); // One . per 2KB
+      if (memcmp(src, dst, bytesThisPass)) { // >0 if different
+        if (!((uint32_t)dst & 2047))
+          Serial.write('.'); // One . per 2KB
         // src might not be 32-bit aligned and must be read byte-at-a-time.
         // dst write ops MUST be 32-bit! Won't work with memcpy().
-        dst[0] = src[ 0] | (src[ 1]<<8) | (src[ 2]<<16) | (src[ 3]<<24);
-        dst[1] = src[ 4] | (src[ 5]<<8) | (src[ 6]<<16) | (src[ 7]<<24);
-        dst[2] = src[ 8] | (src[ 9]<<8) | (src[10]<<16) | (src[11]<<24);
-        dst[3] = src[12] | (src[13]<<8) | (src[14]<<16) | (src[15]<<24);
+        dst[0] = src[0] | (src[1] << 8) | (src[2] << 16) | (src[3] << 24);
+        dst[1] = src[4] | (src[5] << 8) | (src[6] << 16) | (src[7] << 24);
+        dst[2] = src[8] | (src[9] << 8) | (src[10] << 16) | (src[11] << 24);
+        dst[3] = src[12] | (src[13] << 8) | (src[14] << 16) | (src[15] << 24);
         // Trigger the quadword write
         wait_ready();
-        NVMCTRL->ADDR.reg  = (uint32_t)dst;
+        NVMCTRL->ADDR.reg = (uint32_t)dst;
         NVMCTRL->CTRLB.reg = NVMCTRL_CTRLB_CMDEX_KEY | NVMCTRL_CTRLB_CMD_WQW;
       }
       bytesToGo -= bytesThisPass;
-      src       += 16; // Advance to next quadword
-      dst       +=  4;
+      src += 16; // Advance to next quadword
+      dst += 4;
     }
 
     wait_ready(); // Wait for last write to finish
 
-    Serial.print("verify..."); Serial.flush();
-    if(memcmp(ramAddress, flashAddress, len)) { // nonzero if mismatch
-      if(++tries >= 4) {
+    Serial.print("verify...");
+    Serial.flush();
+    if (memcmp(ramAddress, flashAddress, len)) { // nonzero if mismatch
+      if (++tries >= 4) {
         Serial.println("...proceeding anyway");
         break; // Give up, run with the data we have
       }
       // If we didn't start at a block boundary...
-      if(uint32_t q = (uint32_t)flashAddress % FLASH_BLOCK_SIZE) {
+      if (uint32_t q = (uint32_t)flashAddress % FLASH_BLOCK_SIZE) {
         // Get index of first changed byte
         uint32_t n;
-        for(n=0; (ramAddress[n] == flashAddress[n]) &&
-          (n <= FLASH_BLOCK_SIZE); n++);
+        for (n = 0;
+             (ramAddress[n] == flashAddress[n]) && (n <= FLASH_BLOCK_SIZE); n++)
+          ;
         // ...and if first mismatched byte is within the region before
         // the first block boundary...
         q = FLASH_BLOCK_SIZE - q; // Bytes in partial 1st block
-        if(n < q) {
+        if (n < q) {
           // ...then flashAddress MUST be advanced to the next block
           // boundary before we retry, reason being that we CAN'T erase
           // the initial partial block (it may be preceded by other data).
           flashAddress = &flashAddress[q];
         }
       }
-      Serial.println("...retrying..."); Serial.flush();
+      Serial.println("...retrying...");
+      Serial.flush();
     } else {
       Serial.println("OK");
       break;
@@ -181,21 +188,24 @@ uint8_t *Adafruit_Arcada_SPITFT::writeDataToFlash(uint8_t *ramAddress, uint32_t 
   // No need to align to next boundary, done at top of next call
   flashAddress += len;
   return returnVal;
-#else // !__SAMD51__
+#else  // !__SAMD51__
   return 0; // unsupported chip
 #endif // __SAMD51__
 }
 
 /**************************************************************************/
 /*!
-    @brief  Opens a file and writes the data contents to the internal chip flash memory. NOT the QSPI flash but the actual chip memory!
-    @param  filename A string with the filename path, can be relative or absolute.
+    @brief  Opens a file and writes the data contents to the internal chip flash
+   memory. NOT the QSPI flash but the actual chip memory!
+    @param  filename A string with the filename path, can be relative or
+   absolute.
     @return A pointer to the flash memory address, or NULL on failure.
 */
 /**************************************************************************/
-uint8_t * Adafruit_Arcada_SPITFT::writeFileToFlash(const char *filename) {
+uint8_t *Adafruit_Arcada_SPITFT::writeFileToFlash(const char *filename) {
   File f = open(filename);
-  if (!f) return NULL;
+  if (!f)
+    return NULL;
 
   uint32_t filesize = f.fileSize();
   Serial.printf("Filesize : %d bytes\n", filesize);
@@ -220,45 +230,46 @@ uint8_t * Adafruit_Arcada_SPITFT::writeFileToFlash(const char *filename) {
   // Clear page buffer, only needed once, quadword write also clears it
   NVMCTRL->CTRLB.reg = NVMCTRL_CTRLB_CMDEX_KEY | NVMCTRL_CTRLB_CMD_PBC;
 
-  uint8_t  *src = (uint8_t *)blockBuf;
+  uint8_t *src = (uint8_t *)blockBuf;
   uint32_t *dst = (uint32_t *)flashAddress;
-  int32_t   bytesThisPass, bytesToGo = filesize;
+  int32_t bytesThisPass, bytesToGo = filesize;
 
   Serial.print("Storing");
   wait_ready(); // Wait for any NVM write op in progress
 
-  while(bytesToGo > 0) {
+  while (bytesToGo > 0) {
     yield();
 
     // Because sequential calls aim to 'pack' data within blocks,
     // the first write isn't necessarily FLASH_BLOCK_SIZE bytes,
     // it may be less depending on prior data in the current block.
     bytesThisPass = FLASH_BLOCK_SIZE - ((uint32_t)dst % FLASH_BLOCK_SIZE);
-    if(bytesThisPass > bytesToGo) bytesThisPass = bytesToGo;
+    if (bytesThisPass > bytesToGo)
+      bytesThisPass = bytesToGo;
 
     memset(blockBuf, 0xFF, sizeof blockBuf);
-    if(f.read(blockBuf, bytesThisPass) != bytesThisPass) {
+    if (f.read(blockBuf, bytesThisPass) != bytesThisPass) {
       Serial.printf("File read %d bytes failed!", bytesThisPass);
       return NULL;
     }
-//Serial.printf("bytesToGo: %d\n", bytesToGo);
-//Serial.printf("bytesThisPass: %d\n", bytesThisPass);
-//Serial.printf("dst: %d\n", (uint32_t)dst);
+    // Serial.printf("bytesToGo: %d\n", bytesToGo);
+    // Serial.printf("bytesThisPass: %d\n", bytesThisPass);
+    // Serial.printf("dst: %d\n", (uint32_t)dst);
 
     // Because dst (via flashAddress) is always quadword-aligned at this
     // point, and flash blocks are known to be a quadword-multiple size,
     // this comparison is reasonable for checking for start of block...
-    if(!((uint32_t)dst % FLASH_BLOCK_SIZE)) { // At block boundary
+    if (!((uint32_t)dst % FLASH_BLOCK_SIZE)) { // At block boundary
       // If ANY changed data within the entire block, it must be erased
-      if(memcmp(src, dst, bytesThisPass)) { // >0 if different
-        Serial.write('-');                  // minus = erasing
+      if (memcmp(src, dst, bytesThisPass)) { // >0 if different
+        Serial.write('-');                   // minus = erasing
         wait_ready();
-        NVMCTRL->ADDR.reg  = (uint32_t)dst; // Destination address in flash
+        NVMCTRL->ADDR.reg = (uint32_t)dst; // Destination address in flash
         NVMCTRL->CTRLB.reg = NVMCTRL_CTRLB_CMDEX_KEY | NVMCTRL_CTRLB_CMD_EB;
-      } else { // Skip entire block
-        Serial.print(">>");                 // >> = skipping, already stored
+      } else {              // Skip entire block
+        Serial.print(">>"); // >> = skipping, already stored
         bytesToGo -= bytesThisPass;
-        dst       += FLASH_BLOCK_SIZE / 4; // Advance to next block
+        dst += FLASH_BLOCK_SIZE / 4; // Advance to next block
         continue;
       }
     }
@@ -270,26 +281,27 @@ uint8_t * Adafruit_Arcada_SPITFT::writeFileToFlash(const char *filename) {
     // Write bytesThisPass from blockBuf to flash, using quadwords
     int quadwordBytes;
     int countdown = bytesThisPass;
-    while(countdown > 0) {
+    while (countdown > 0) {
       // Examine next quadword, write only if needed (reduce flash wear)
       quadwordBytes = min(16, bytesToGo);
-//      if(memcmp(src, dst, quadwordBytes)) { // >0 if different
-      if(1) {
-        if(!((uint32_t)dst & 2047)) Serial.write('.'); // One . per 2KB
+      //      if(memcmp(src, dst, quadwordBytes)) { // >0 if different
+      if (1) {
+        if (!((uint32_t)dst & 2047))
+          Serial.write('.'); // One . per 2KB
         // src might not be 32-bit aligned and must be read byte-at-a-time.
         // dst write ops MUST be 32-bit! Won't work with memcpy().
-        dst[0] = src[ 0] | (src[ 1]<<8) | (src[ 2]<<16) | (src[ 3]<<24);
-        dst[1] = src[ 4] | (src[ 5]<<8) | (src[ 6]<<16) | (src[ 7]<<24);
-        dst[2] = src[ 8] | (src[ 9]<<8) | (src[10]<<16) | (src[11]<<24);
-        dst[3] = src[12] | (src[13]<<8) | (src[14]<<16) | (src[15]<<24);
+        dst[0] = src[0] | (src[1] << 8) | (src[2] << 16) | (src[3] << 24);
+        dst[1] = src[4] | (src[5] << 8) | (src[6] << 16) | (src[7] << 24);
+        dst[2] = src[8] | (src[9] << 8) | (src[10] << 16) | (src[11] << 24);
+        dst[3] = src[12] | (src[13] << 8) | (src[14] << 16) | (src[15] << 24);
         // Trigger the quadword write
         wait_ready();
-        NVMCTRL->ADDR.reg  = (uint32_t)dst;
+        NVMCTRL->ADDR.reg = (uint32_t)dst;
         NVMCTRL->CTRLB.reg = NVMCTRL_CTRLB_CMDEX_KEY | NVMCTRL_CTRLB_CMD_WQW;
       }
       countdown -= quadwordBytes;
-      src       += 16; // Advance to next quadword
-      dst       +=  4;
+      src += 16; // Advance to next quadword
+      dst += 4;
     }
     bytesToGo -= bytesThisPass;
   } // end of file
@@ -300,36 +312,36 @@ uint8_t * Adafruit_Arcada_SPITFT::writeFileToFlash(const char *filename) {
   Serial.println("Verifying!");
   f.rewind();
   bytesToGo = filesize;
-  while(bytesToGo > 0) {
+  while (bytesToGo > 0) {
     yield();
     memset(blockBuf, 0xFF, sizeof blockBuf);
     bytesThisPass = min((uint32_t)bytesToGo, sizeof blockBuf);
-    if(f.read(blockBuf, bytesThisPass) != bytesThisPass) {
+    if (f.read(blockBuf, bytesThisPass) != bytesThisPass) {
       Serial.printf("File read %d bytes failed!", bytesThisPass);
       return NULL;
     }
 
-    if(memcmp(src, dst, bytesThisPass)) {
+    if (memcmp(src, dst, bytesThisPass)) {
       Serial.printf("Failed at address %d\n", (uint32_t)dst);
-/* Verification dump:
-uint8_t *foo = (uint8_t *)blockBuf, *bar = (uint8_t *)dst;
-Serial.print("Expected: ");
-for(int i=0; i<bytesThisPass; i++) {
-  Serial.printf("%02x ", foo[i]);
-}
-Serial.println();
-Serial.print("Got: ");
-for(int i=0; i<bytesThisPass; i++) {
-  Serial.printf("%02x ", bar[i]);
-}
-Serial.println();
-*/
+      /* Verification dump:
+      uint8_t *foo = (uint8_t *)blockBuf, *bar = (uint8_t *)dst;
+      Serial.print("Expected: ");
+      for(int i=0; i<bytesThisPass; i++) {
+        Serial.printf("%02x ", foo[i]);
+      }
+      Serial.println();
+      Serial.print("Got: ");
+      for(int i=0; i<bytesThisPass; i++) {
+        Serial.printf("%02x ", bar[i]);
+      }
+      Serial.println();
+      */
       return NULL;
     }
     Serial.println();
 
     bytesToGo -= bytesThisPass;
-    dst       += bytesThisPass / 4;
+    dst += bytesThisPass / 4;
   }
 
   NVMCTRL->CTRLA.reg = saveCache; // Restore NVM cache settings
@@ -344,4 +356,3 @@ Serial.println();
   return 0; // unsupported chip
 #endif
 }
-

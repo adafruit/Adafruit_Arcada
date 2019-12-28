@@ -1,7 +1,8 @@
 #include "Adafruit_Arcada.h"
 
 /*!
-    @brief   Loads BMP image file from QSPI or SD card directly to SPITFT screen.
+    @brief   Loads BMP image file from QSPI or SD card directly to SPITFT
+   screen.
     @param   filename
              Name of BMP image file to load.
     @param   x
@@ -19,8 +20,10 @@
     @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
              completion, other values on failure).
 */
-ImageReturnCode Adafruit_Arcada_SPITFT::drawBMP(char *filename, int16_t x, int16_t y, Adafruit_SPITFT *tft, boolean transact) {
-  if (! tft) {
+ImageReturnCode Adafruit_Arcada_SPITFT::drawBMP(char *filename, int16_t x,
+                                                int16_t y, Adafruit_SPITFT *tft,
+                                                boolean transact) {
+  if (!tft) {
     tft = display;
   }
   if (SD_imagereader) {
@@ -34,7 +37,7 @@ ImageReturnCode Adafruit_Arcada_SPITFT::drawBMP(char *filename, int16_t x, int16
 
 /*!
     @brief   Reques the ImageReader object used, either for SD or QSPI
-    @return  The activated ImageReader, or NULL if neither SD or QSPI 
+    @return  The activated ImageReader, or NULL if neither SD or QSPI
     are available
 */
 Adafruit_ImageReader *Adafruit_Arcada_SPITFT::getImageReader(void) {

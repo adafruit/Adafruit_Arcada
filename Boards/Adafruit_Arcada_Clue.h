@@ -1,42 +1,31 @@
-#if defined(ARDUINO_NRF52840_CIRCUITPLAY)
-#include <Adafruit_CircuitPlayground.h>
+#if defined(ARDUINO_NRF52840_CLUE)
 #include <Adafruit_ST7789.h>
 
-#define ARCADA_TFT_SPI SPI
-#define ARCADA_TFT_CS A6  // Display CS Arduino pin number
-#define ARCADA_TFT_DC A7  // Display D/C Arduino pin number
-#define ARCADA_TFT_RST -1 // Display reset done with chip
-#define ARCADA_TFT_LITE A3
-#define ARCADA_TFT_ROTATION 2
+#define ARCADA_TFT_SPI SPI1
+#define ARCADA_TFT_CS 31  // Display CS Arduino pin number
+#define ARCADA_TFT_DC 32  // Display D/C Arduino pin number
+#define ARCADA_TFT_RST 33 // Display reset done with chip
+#define ARCADA_TFT_LITE 34
+#define ARCADA_TFT_ROTATION 1
 #define ARCADA_TFT_DEFAULTFILL 0x0
 #define ARCADA_TFT_WIDTH 240
 #define ARCADA_TFT_HEIGHT 240
 
-#define ARCADA_NEOPIXEL_PIN 8
-#define ARCADA_NEOPIXEL_NUM 10
-#define ARCADA_AUDIO_OUT A0
-#define ARCADA_SPEAKER_ENABLE 11
+#define ARCADA_NEOPIXEL_PIN 18
+#define ARCADA_NEOPIXEL_NUM 1
 
-#define ARCADA_LIGHT_SENSOR A8
-
+#define ARCADA_AUDIO_OUT 0 // PWM output
 #define ARCADA_USE_JSON
 
 #include "arcadatype.h"
 
 class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
 public:
-  Adafruit_CPlay_LIS3DH accel = Adafruit_CPlay_LIS3DH(&Wire1);
-
-  Adafruit_Arcada(void) { _has_accel = true; };
+  Adafruit_Arcada(void){};
 
   bool variantBegin(void) {
-    CircuitPlayground.begin();
-
-    if (!accel.begin(0x18) && !accel.begin(0x19)) {
-      return false; // couldn't find accelerometer
-    }
-    accel.setRange(LIS3DH_RANGE_4_G); // 2, 4, 8 or 16 G!
-
+    pinMode(5, INPUT_PULLUP);
+    pinMode(11, INPUT_PULLUP);
     return true;
   }
 
@@ -54,10 +43,10 @@ public:
 
   uint32_t variantReadButtons(void) {
     uint32_t buttons = 0;
-    if (CircuitPlayground.leftButton()) {
+    if (!digitalRead(5)) {
       buttons |= ARCADA_BUTTONMASK_LEFT | ARCADA_BUTTONMASK_A;
     }
-    if (CircuitPlayground.rightButton()) {
+    if (!digitalRead(11)) {
       buttons |= ARCADA_BUTTONMASK_RIGHT | ARCADA_BUTTONMASK_B;
     }
 
