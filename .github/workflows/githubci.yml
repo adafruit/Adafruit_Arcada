@@ -9,7 +9,7 @@ jobs:
       matrix:
         arduino-platform: ["pybadge", "pygamer", "pyportal",
 	                   "hallowing_m4", "hallowing_m0",
-                           "cpb", "cpx_ada", "pyportal_titano"]
+                           "monster_m4sk", "cpx_ada", "pyportal_titano"]
 
     runs-on: ubuntu-latest
     
