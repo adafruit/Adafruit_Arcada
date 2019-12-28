@@ -26,6 +26,7 @@ class Adafruit_Arcada_SPITFT;
 #include "Boards/Adafruit_Arcada_HalloWingM0.h"
 #include "Boards/Adafruit_Arcada_CircuitPlaygroundExpress.h"
 #include "Boards/Adafruit_Arcada_CircuitPlaygroundBluefruit.h"
+#include "Boards/Adafruit_Arcada_Clue.h"
 
 #ifndef ARCADA_SD_CS 
   #define ARCADA_SD_CS -1
