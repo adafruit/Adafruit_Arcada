@@ -132,7 +132,9 @@ void Adafruit_Arcada_SPITFT::alertBox(const char *string, uint16_t boxColor,
     if (isprint(string[c]) && string[c] != '\n') {
       display->print(string[c]);
     }
-    fontX += charWidth;
+    if (string[c] != '\n') {
+      fontX += charWidth;
+    }
   }
 
   if (continueButtonMask) {
