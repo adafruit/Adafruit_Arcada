@@ -60,7 +60,7 @@ bool Adafruit_Arcada_SPITFT::saveConfigurationFile(const char *filename) {
   remove(filename);
 
   // Open file for writing
-  File file = open(filename, O_WRITE);
+  File file = open(filename, O_WRITE | O_CREAT);
   if (!file) {
     Serial.println(F("Failed to create file"));
     return false;

@@ -7,7 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arduino-platform: ["pybadge", "pygamer", "pyportal",
+        arduino-platform: ["pybadge", "pybadge_tinyusb", "pygamer", "pyportal",
 	                   "hallowing_m4", "hallowing_m0",
                            "monster_m4sk", "cpx_ada", "pyportal_titano"]
 
