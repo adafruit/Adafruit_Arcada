@@ -37,6 +37,9 @@ uint32_t Adafruit_Arcada_SPITFT::availableFlash(void) {
     if (partialBlock) {
       flashAddress += FLASH_BLOCK_SIZE - partialBlock;
     }
+    // Move ahead one block. This shouldn't be necessary, but for
+    // some reason certain programs are clobbering themselves.
+    flashAddress += FLASH_BLOCK_SIZE;
   } else {
     // On subsequent calls, round up to next quadword (16 byte) boundary,
     // try packing some data into the trailing bytes of the last-used flash
