@@ -8,7 +8,7 @@ jobs:
       fail-fast: false
       matrix:
         arduino-platform: ["pybadge", "pybadge_tinyusb", "pygamer", "pyportal",
-	                   "hallowing_m4", "hallowing_m0",
+	                   "hallowing_m4", "hallowing_m0", "clue",
                            "monster_m4sk", "cpx_ada", "pyportal_titano"]
 
     runs-on: ubuntu-latest

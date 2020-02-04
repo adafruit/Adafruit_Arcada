@@ -14,7 +14,7 @@
 #define ARCADA_NEOPIXEL_PIN 18
 #define ARCADA_NEOPIXEL_NUM 1
 
-#define ARCADA_AUDIO_OUT 0 // PWM output
+#define ARCADA_AUDIO_OUT 46 // PWM output
 #define ARCADA_USE_JSON
 
 #include "arcadatype.h"
