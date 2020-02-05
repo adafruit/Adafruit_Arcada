@@ -30,18 +30,19 @@
 
 class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
 public:
-  Adafruit_MSA301 accel = Adafruit_MSA301();
+  Adafruit_MSA301 *accel = NULL;
 
   Adafruit_Arcada(void) { _has_accel = true; };
 
   bool variantBegin(void) {
-    if (!accel.begin()) {
+    accel = new Adafruit_MSA301();
+    if (!accel->begin()) {
       return false; // couldn't find accelerometer
     }
-    accel.setPowerMode(MSA301_NORMALMODE);
-    accel.setDataRate(MSA301_DATARATE_1000_HZ);
-    accel.setBandwidth(MSA301_BANDWIDTH_500_HZ);
-    accel.setRange(MSA301_RANGE_4_G);
+    accel->setPowerMode(MSA301_NORMALMODE);
+    accel->setDataRate(MSA301_DATARATE_1000_HZ);
+    accel->setBandwidth(MSA301_BANDWIDTH_500_HZ);
+    accel->setRange(MSA301_RANGE_4_G);
     return true;
   }
 

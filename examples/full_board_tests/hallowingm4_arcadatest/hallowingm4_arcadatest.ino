@@ -62,7 +62,7 @@ void setup(void) {
 
   /********** Check MSA301 */
 
-  if (! arcada.accel.begin()) {
+  if (! arcada.accel->begin()) {
     Serial.println("Couldnt start MSA301");
     arcada.display->setTextColor(ARCADA_RED);
     arcada.display->println("MSA301 FAIL");
@@ -70,13 +70,13 @@ void setup(void) {
   }
   arcada.display->println("MSA301 OK");
   Serial.println("MSA found!");
-  arcada.accel.setPowerMode(MSA301_NORMALMODE);
-  arcada.accel.setDataRate(MSA301_DATARATE_1000_HZ);
-  arcada.accel.setBandwidth(MSA301_BANDWIDTH_500_HZ);
-  arcada.accel.setRange(MSA301_RANGE_2_G);
-  arcada.accel.setResolution(MSA301_RESOLUTION_14 );
-  arcada.accel.setClick(false, false, MSA301_TAPDUR_250_MS, 10);
-  arcada.accel.enableInterrupts(true, true, true, true, true);  // enable single/double and xyz activity
+  arcada.accel->setPowerMode(MSA301_NORMALMODE);
+  arcada.accel->setDataRate(MSA301_DATARATE_1000_HZ);
+  arcada.accel->setBandwidth(MSA301_BANDWIDTH_500_HZ);
+  arcada.accel->setRange(MSA301_RANGE_2_G);
+  arcada.accel->setResolution(MSA301_RESOLUTION_14 );
+  arcada.accel->setClick(false, false, MSA301_TAPDUR_250_MS, 10);
+  arcada.accel->enableInterrupts(true, true, true, true, true);  // enable single/double and xyz activity
 
   /********** Start speaker */
   arcada.enableSpeaker(true);
@@ -90,11 +90,11 @@ void setup(void) {
 uint8_t j = 0;
 
 void loop() {
-  uint8_t clickstat = arcada.accel.getClick();
+  uint8_t clickstat = arcada.accel->getClick();
   if (clickstat) {
     Serial.print("Click = 0x"); Serial.println(clickstat, HEX);
   }
-  uint8_t motionstat = arcada.accel.getMotionInterruptStatus();
+  uint8_t motionstat = arcada.accel->getMotionInterruptStatus();
   if (motionstat) {
     Serial.print("Motion IRQ = 0x"); Serial.println(motionstat, HEX);
     if (motionstat & (1<<5)) {
@@ -110,7 +110,7 @@ void loop() {
 
 
   sensors_event_t event; 
-  arcada.accel.getEvent(&event);
+  arcada.accel->getEvent(&event);
   
   // Display the results (acceleration is measured in m/s^2) 
   Serial.print("Accel: \t X: "); Serial.print(event.acceleration.x);
