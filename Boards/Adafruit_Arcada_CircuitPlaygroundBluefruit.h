@@ -25,17 +25,18 @@
 
 class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
 public:
-  Adafruit_CPlay_LIS3DH accel = Adafruit_CPlay_LIS3DH(&Wire1);
+  Adafruit_CPlay_LIS3DH *accel = NULL;
 
   Adafruit_Arcada(void) { _has_accel = true; };
 
   bool variantBegin(void) {
     CircuitPlayground.begin();
+    accel = new Adafruit_CPlay_LIS3DH(&Wire1);
 
-    if (!accel.begin(0x18) && !accel.begin(0x19)) {
+    if (!accel->begin(0x18) && !accel->begin(0x19)) {
       return false; // couldn't find accelerometer
     }
-    accel.setRange(LIS3DH_RANGE_4_G); // 2, 4, 8 or 16 G!
+    accel->setRange(LIS3DH_RANGE_4_G); // 2, 4, 8 or 16 G!
 
     return true;
   }
