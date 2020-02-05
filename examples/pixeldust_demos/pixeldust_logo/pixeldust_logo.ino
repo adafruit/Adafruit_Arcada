@@ -118,7 +118,7 @@ void setup() {
 
 void loop() {
   uint32_t t = millis();
-  arcada.accel.getEvent(&event);
+  arcada.accel->getEvent(&event);
   double xx, yy, zz;
   xx = event.acceleration.x;
   yy = event.acceleration.y;

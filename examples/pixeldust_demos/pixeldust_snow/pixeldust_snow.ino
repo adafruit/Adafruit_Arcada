@@ -48,7 +48,7 @@ void setup() {
   pixeldust->randomize(); // Initialize random snowflake positions
 
   // get the first accelerometer reading
-  arcada.accel.getEvent(&event);
+  arcada.accel->getEvent(&event);
 }
 
 void loop() {
@@ -69,7 +69,7 @@ void loop() {
 
   // we dont want to read the accel while DMA occurs, because it seems to be :(
   // so read it now, and we'll use it later
-  arcada.accel.getEvent(&event);
+  arcada.accel->getEvent(&event);
 
   // Erase canvas and draw new snowflake positions
   memset(framebuffer, 0x00, width*height*2);  // clear the frame buffer
