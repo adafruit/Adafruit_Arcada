@@ -1,6 +1,6 @@
 #if defined(ARDUINO_NRF52840_CLUE)
-#include <Adafruit_ST7789.h>
 #include <Adafruit_LSM6DS33.h>
+#include <Adafruit_ST7789.h>
 
 #define ARCADA_TFT_SPI SPI1
 #define ARCADA_TFT_CS 31  // Display CS Arduino pin number
@@ -22,7 +22,7 @@
 
 class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
 public:
-  Adafruit_Arcada(void){ _has_accel = true; };
+  Adafruit_Arcada(void) { _has_accel = true; };
   Adafruit_LSM6DS33 lsm6ds = Adafruit_LSM6DS33();
   Adafruit_Sensor *accel;
 

@@ -55,7 +55,6 @@ public:
     return true;
   }
 
-
   uint32_t variantReadButtons(void) { return 0; }
 
   void displayBegin(void) {
