@@ -41,7 +41,7 @@
 
 class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
 public:
-  Adafruit_LIS3DH accel = Adafruit_LIS3DH();
+  Adafruit_LIS3DH *accel = NULL;
   Adafruit_seesaw ss;
   Adafruit_ST7789 *display2, *_display; // we need to keep a 'copy' of the
                                         // ST7789 version of both displays
@@ -65,11 +65,12 @@ public:
     ss.digitalWrite(SS_TFTRESET_PIN, HIGH);
     delay(10);
 
-    if (!accel.begin(0x18) && !accel.begin(0x19)) {
+    accel = new Adafruit_LIS3DH();
+    if (!accel->begin(0x18) && !accel->begin(0x19)) {
       _has_accel = false; // couldn't find accelerometer, could be a pybadge LC
     } else {
       _has_accel = true;
-      accel.setRange(LIS3DH_RANGE_4_G); // 2, 4, 8 or 16 G!
+      accel->setRange(LIS3DH_RANGE_4_G); // 2, 4, 8 or 16 G!
     }
 
     return true;

@@ -67,8 +67,8 @@ void setup(void) {
     while (1);
   } 
   Serial.println("LIS3DH found!");
-  arcada.accel.setRange(LIS3DH_RANGE_4_G);   // 2, 4, 8 or 16 G!
-  arcada.accel.setClick(1, 80);
+  arcada.accel->setRange(LIS3DH_RANGE_4_G);   // 2, 4, 8 or 16 G!
+  arcada.accel->setClick(1, 80);
 
   /********** Start speaker */
   arcada.enableSpeaker(false);
@@ -82,7 +82,7 @@ uint8_t j = 0;
 void loop() {
   delay(10);
   
-  uint8_t click = arcada.accel.getClick();
+  uint8_t click = arcada.accel->getClick();
   if (click & 0x30) {
     Serial.print("Click detected (0x"); Serial.print(click, HEX); Serial.print("): ");
     if (click & 0x10) Serial.print(" single click");
@@ -93,7 +93,7 @@ void loop() {
   }
 
   sensors_event_t event; 
-  arcada.accel.getEvent(&event);
+  arcada.accel->getEvent(&event);
   
   // Display the results (acceleration is measured in m/s^2) 
   Serial.print("Accel: \t X: "); Serial.print(event.acceleration.x);
