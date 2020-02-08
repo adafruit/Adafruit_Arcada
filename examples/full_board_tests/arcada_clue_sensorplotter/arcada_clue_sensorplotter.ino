@@ -15,6 +15,7 @@ Adafruit_SHT31 sht30;
 Adafruit_APDS9960 apds9960;
 Adafruit_BMP280 bmp280;
 extern PDMClass PDM;
+#define WHITE_LED 43
 
 // Color definitions
 #define BACKGROUND_COLOR __builtin_bswap16(ARCADA_BLACK)
@@ -69,7 +70,7 @@ void setup(void) {
   if (!apds9960.begin() || !lsm6ds33.begin_I2C() || !lis3mdl.begin_I2C() || 
       !sht30.begin(0x44) || !bmp280.begin()) {
       Serial.println("Failed to find CLUE sensors!");
-      while (1) yield();
+      arcada.haltBox("Failed to init CLUE sensors");
   }
   /********** Check MIC */
   PDM.onReceive(onPDMdata);
@@ -80,6 +81,8 @@ void setup(void) {
   data_buffer.clear();
   data_buffer2.clear();
   data_buffer3.clear();
+  pinMode(WHITE_LED, OUTPUT);
+  digitalWrite(WHITE_LED, LOW);
 }
 
 uint32_t timestamp = 0;
@@ -95,12 +98,14 @@ void loop() {
     data_buffer.clear();
     data_buffer2.clear();
     data_buffer3.clear();
+    digitalWrite(WHITE_LED, LOW);
   }
   if (justReleased & ARCADA_BUTTONMASK_RIGHT) {
     sensornum++;
     data_buffer.clear();
     data_buffer2.clear();
     data_buffer3.clear();
+    digitalWrite(WHITE_LED, LOW);
   }
 
   if (sensornum == 0) {
@@ -125,14 +130,69 @@ void loop() {
                data_buffer, data_buffer2, data_buffer3);
   }
   else if (sensornum == 3) {
+    uint16_t r, g, b, c;
+    apds9960.enableColor(true);
+    //wait for color data to be ready
+    while(! apds9960.colorDataReady()) {
+      delay(5);
+    }
+    apds9960.getColorData(&r, &g, &b, &c);
+    data_buffer.push(c);
+    Serial.printf("Light: %d\n", c);
+    plotBuffer(arcada.getCanvas(),"Light",
+               data_buffer, data_buffer2, data_buffer3);
+  }
+  else if (sensornum == 4) {
+    uint16_t r, g, b, c;
+    digitalWrite(WHITE_LED, HIGH);
+    apds9960.enableColor(true);
+    //wait for color data to be ready
+    while(! apds9960.colorDataReady()) {
+      delay(5);
+    }
+    apds9960.getColorData(&r, &g, &b, &c);
+    data_buffer.push(r);
+    data_buffer2.push(g);
+    data_buffer3.push(b);
+    Serial.printf("Color: %d %d %d\n", r, g, b);
+    plotBuffer(arcada.getCanvas(),"Color (RGB)",
+               data_buffer, data_buffer2, data_buffer3);
+  }
+  else if (sensornum == 5) {
+    apds9960.enableProximity(true);
+    uint16_t p = apds9960.readProximity();
+    data_buffer.push(p);
+    Serial.printf("Proximity: %d\n", p);
+    plotBuffer(arcada.getCanvas(),"Proximity",
+               data_buffer, data_buffer2, data_buffer3);
+  }  
+  else if (sensornum == 6) {
+    uint16_t r, g, b, c;
+    apds9960.enableProximity(true);
+    uint16_t p = apds9960.readProximity();
+    if (p < 200) {
+      // turn off LED and leave
+      digitalWrite(WHITE_LED, LOW);
+    } else {
+      digitalWrite(WHITE_LED, HIGH);
+      apds9960.enableColor(true);
+      apds9960.setADCIntegrationTime(3);
+      apds9960.setADCGain(APDS9960_AGAIN_64X);
+      apds9960.getColorData(&r, &g, &b, &c);
+      data_buffer.push(c);
+      Serial.printf("Pulse: %d\n", c);
+    }
+    plotBuffer(arcada.getCanvas(),"Pulse",
+               data_buffer, data_buffer2, data_buffer3);
+  }  
+  else if (sensornum == 7) {
     uint32_t pdm_vol = getPDMwave(256);
     data_buffer.push(pdm_vol);
     Serial.print("PDM volume: "); Serial.println(pdm_vol);
     plotBuffer(arcada.getCanvas(), "Mic Volume",
                data_buffer, data_buffer2, data_buffer3);
   }  
-  
-  else if (sensornum == 4) {
+  else if (sensornum == 8) {
     sensors_event_t accel;
     lsm6ds33.getEvent(&accel, NULL, NULL);
     float x = accel.acceleration.x;
@@ -145,7 +205,7 @@ void loop() {
     plotBuffer(arcada.getCanvas(), "Accel (m/s^2)",
                data_buffer, data_buffer2, data_buffer3);
   }   
-  else if (sensornum == 5) {
+  else if (sensornum == 9) {
     sensors_event_t gyro;
     lsm6ds33.getEvent(NULL, &gyro, NULL);
     float x = gyro.gyro.x * SENSORS_RADS_TO_DPS;
@@ -158,7 +218,7 @@ void loop() {
     plotBuffer(arcada.getCanvas(), "Gyro (dps)",
                data_buffer, data_buffer2, data_buffer3);
   } 
-  else if (sensornum == 6) {
+  else if (sensornum == 10) {
     sensors_event_t mag;
     lis3mdl.getEvent(&mag);
     float x = mag.magnetic.x;
@@ -178,9 +238,7 @@ void loop() {
   }
   
   arcada.blitFrameBuffer(0, 0, false, true);
-  Serial.print("Drew in ");
-  Serial.print(millis()-timestamp);
-  Serial.println(" ms");
+  //Serial.printf("Drew in %d ms\n", millis()-timestamp);
 }
 
 /**********************************************************************************/
