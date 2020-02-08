@@ -4,12 +4,12 @@
 Adafruit_Arcada arcada;
 
 // Color definitions
-#define BACKGROUND_COLOR 0x0000
-#define BORDER_COLOR 0x001F
-#define PLOT_COLOR_1 0xFFE0
-#define TITLE_COLOR 0xFFFF
-#define TICKTEXT_COLOR 0xFFFF
-#define TICKLINE_COLOR 0x4040
+#define BACKGROUND_COLOR __builtin_bswap16(ARCADA_BLACK)
+#define BORDER_COLOR __builtin_bswap16(ARCADA_BLUE)
+#define PLOT_COLOR_1 __builtin_bswap16(ARCADA_YELLOW)
+#define TITLE_COLOR __builtin_bswap16(ARCADA_WHITE)
+#define TICKTEXT_COLOR __builtin_bswap16(ARCADA_WHITE)
+#define TICKLINE_COLOR __builtin_bswap16(ARCADA_DARKGREY)
 
 // Buffers surrounding the plot area
 #define PLOT_TOPBUFFER 20
@@ -20,8 +20,8 @@ Adafruit_Arcada arcada;
 
 // Which pin to plot
 #define ANALOG_INPUT A2
-// millisecond delay between samples
-#define DELAY_PER_SAMPLE 100
+// millisecond delay between samples (min 50 for CLUE)
+#define DELAY_PER_SAMPLE 50
 
 // Buffer for our plot data
 CircularBuffer<float, PLOT_W> data_buffer;
@@ -148,3 +148,4 @@ void printLabel(GFXcanvas16 *_canvas, uint16_t x, uint16_t y, float val) {
   _canvas->setCursor(PLOT_LEFTBUFFER-strlen(label)*6-5, y);
   _canvas->print(label);
 }
+
