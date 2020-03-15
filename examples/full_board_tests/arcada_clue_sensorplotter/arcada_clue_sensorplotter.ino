@@ -339,10 +339,10 @@ void printTicks(GFXcanvas16 *_canvas, uint8_t ticks, float minY, float maxY) {
   _canvas->setTextColor(TICKTEXT_COLOR);
   // Draw ticks
   for (int t=0; t<ticks; t++) {
-    float v = map(t, 0, ticks-1, minY, maxY);
-    uint16_t y = map(t, 0, ticks-1, ARCADA_TFT_HEIGHT - PLOT_BOTTOMBUFFER - 4, PLOT_TOPBUFFER);
+    float v = mapf(t, 0, ticks-1, minY, maxY);
+    uint16_t y = mapf(t, 0, ticks-1, ARCADA_TFT_HEIGHT - PLOT_BOTTOMBUFFER - 4, PLOT_TOPBUFFER);
     printLabel(_canvas, 0, y, v);
-    uint16_t line_y = map(t, 0, ticks-1, ARCADA_TFT_HEIGHT - PLOT_BOTTOMBUFFER, PLOT_TOPBUFFER);
+    uint16_t line_y = mapf(t, 0, ticks-1, ARCADA_TFT_HEIGHT - PLOT_BOTTOMBUFFER, PLOT_TOPBUFFER);
     _canvas->drawLine(PLOT_LEFTBUFFER, line_y, ARCADA_TFT_WIDTH, line_y, TICKLINE_COLOR);
   }
 }
