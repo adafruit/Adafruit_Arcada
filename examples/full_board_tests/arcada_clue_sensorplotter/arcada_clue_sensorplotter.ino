@@ -214,7 +214,7 @@ void loop() {
     data_buffer.push(x);
     data_buffer2.push(y);
     data_buffer3.push(z);
-    Serial.printf("Accel.: %f %f %f\n", x, y, z);
+    Serial.printf("Gyro: %f %f %f\n", x, y, z);
     plotBuffer(arcada.getCanvas(), "Gyro (dps)",
                data_buffer, data_buffer2, data_buffer3);
   } 
@@ -227,7 +227,7 @@ void loop() {
     data_buffer.push(x);
     data_buffer2.push(y);
     data_buffer3.push(z);
-    Serial.printf("Accel.: %f %f %f\n", x, y, z);
+    Serial.printf("Mag: %f %f %f\n", x, y, z);
     plotBuffer(arcada.getCanvas(), "Mag (uT)",
                data_buffer, data_buffer2, data_buffer3);
   } 
