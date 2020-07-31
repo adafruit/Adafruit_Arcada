@@ -36,7 +36,7 @@ extern PDMClass PDM;
 
 // millisecond delay between samples
 #define DELAY_PER_SAMPLE 50
-void plotBuffer(GFXcanvas16 *_canvas, char *title, 
+void plotBuffer(GFXcanvas16 *_canvas, const char *title, 
                 CircularBuffer<float, PLOT_W> &buffer1, 
                 CircularBuffer<float, PLOT_W> &buffer2, 
                 CircularBuffer<float, PLOT_W> &buffer3);
@@ -244,7 +244,7 @@ void loop() {
 /**********************************************************************************/
 
 
-void plotBuffer(GFXcanvas16 *_canvas, char *title, 
+void plotBuffer(GFXcanvas16 *_canvas, const char *title, 
                 CircularBuffer<float, PLOT_W> &buffer1, 
                 CircularBuffer<float, PLOT_W> &buffer2, 
                 CircularBuffer<float, PLOT_W> &buffer3) {
