@@ -515,6 +515,7 @@ bool Adafruit_Arcada_SPITFT::chooseFile(const char *path,
 
     // Check for selection or movement
     if (justPressed) {
+      repeatTimestamp = millis();
       if (justPressed & ARCADA_BUTTONMASK_DOWN) {
         selected_line++;
         if (selected_line >= line) {
