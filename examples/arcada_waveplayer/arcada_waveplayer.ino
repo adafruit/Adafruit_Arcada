@@ -10,7 +10,6 @@ volatile bool      playing = false;
 
 // Crude error handler. Prints message to Serial Monitor, blinks LED.
 void fatal(const char *message, uint16_t blinkDelay) {
-  Serial.begin(9600);
   Serial.println(message);
   for(bool ledState = HIGH;; ledState = !ledState) {
     digitalWrite(LED_BUILTIN, ledState);
@@ -19,12 +18,11 @@ void fatal(const char *message, uint16_t blinkDelay) {
 }
 
 void setup(void) {
-  if(!arcada.arcadaBegin())     fatal("Arcada init fail!", 100);
-  if(!arcada.filesysBeginMSD()) fatal("No filesystem found!", 250);
-
   Serial.begin(9600);
   while(!Serial) yield();
-  delay(100);
+  arcada.arcadaBegin();
+  arcada.filesysBeginMSD();
+  
   Serial.print("Arcada wave player demo. Place wav's in ");
   Serial.print(wavPath);
   Serial.println(" on filesystem");
