@@ -1,10 +1,3 @@
-    //
-    //  pitches.h
-    //
-    //
-    //  Created by Devin Namaky on 3/22/21.
-    //
-
 #ifndef pitches_h
 #define pitches_h
 

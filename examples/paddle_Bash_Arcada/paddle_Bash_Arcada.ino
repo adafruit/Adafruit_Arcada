@@ -1,9 +1,19 @@
-// paddle_Bash_Arcada by Devin Namaky 2021
-// for Adafruit Pygamer using Adafruit Arcada library, using the native Arduino tones library for sound
-// sourceCode, readme and sketch GPL copyright info: https://github.com/DrNebin/paddle_Bash_Arcada
-// (If you received this sketch as part of a Github library fork distribution, then additional library attribution and copyright info for Arcada as per the included fork readme.)
-// This sketch is intended to show how to use Arcada to write a simple pong-like game on the pygamer. The sketch is good for a beginner because it is short. It helps learn a basic game loop, a switch case for game states, and the use of structs for data.
-// Lastly, it shows how to use native Arduino tones in a non-blocking way for gaming that is wrapped into a class called Sound.
+/*
+    paddle_Bash_Arcada by Devin Namaky 2021
+    for Adafruit Pygamer using Adafruit Arcada library
+    using the native Arduino tones library for sound
+    sourceCode, readme and sketch GPL copyright info:
+    https://github.com/DrNebin/paddle_Bash_Arcada
+    (If you received this sketch as part of a Github library fork
+    distribution, then additional library attribution and copyright info
+    for Arcada as per the included fork readme.)
+    This sketch is intended to show how to use Arcada to write a simple
+    pong-like game on the pygamer. The sketch is good for a beginner
+    because it is short. It helps learn a basic game loop, a switch case
+    for game states, and the use of structs for data.
+    Lastly, it shows how to use native Arduino tones in a non-blocking way
+    for gaming that is wrapped into a class called Sound.
+*/
 
 #include "sound.h"
 #include "pitches.h"
@@ -59,7 +69,7 @@ enum GameState {                // this enumeration stores the current game stat
     gameOver
 } gameState;
 
-    //------------------------------SETUP---------------------//
+    // SETUP
 void setup() {
     Serial.begin(9600);                         // for debugging
     arcada.arcadaBegin();                       // Initialize arcada library
@@ -72,7 +82,7 @@ void setup() {
     gameState = titleScreen;                    // start with the title screen
 }
 
-    //---------------------------VOID LOOP-----------------------//
+    // VOID LOOP
 void loop() {
     sound.updateSound();    // updates sound using sound.h
         // I tried to list these mostly showing how the enumerators flow
@@ -117,8 +127,8 @@ void loop() {
     }
 }
 
-    //---------------------------GAME FUNCTIONS-----------------------//
-void gameTitle()                                // function draws the title screen
+    // GAME FUNCTIONS
+void gameTitle()      // function draws the title screen
 {
     arcada.display->fillScreen(ARCADA_BLACK);
     arcada.display->setCursor(10, 50);
@@ -192,7 +202,7 @@ void gameDataReset()
 
 void gameLoop()
 {
-        // game loop start*************************//
+        // game loop start
     currentTime = millis();             // check the time
     timePerFrame = currentTime - lastFrameTime; // calc the time elapsed in the frame
     
@@ -201,10 +211,10 @@ void gameLoop()
         frameRate = (1.00 / (timePerFrame)) * 1000; // calc the current framrate
         lastFrameTime = currentTime;
         
-            // read and process inputs***********************//
+            // read and process inputs
         joystick.y = arcada.readJoystickY();        // read the joystick up/down
         
-            // update game data *****************************//
+            // update game data
             // calculate new ball position
         ball.movement.x = ball.speed.x * timePerFrame / 10.0;
         ball.newPosition.x = ball.position.x + ball.movement.x;

@@ -1,10 +1,3 @@
-//
-//  sound.cpp
-//  
-//
-//  Created by Devin Namaky on 3/22/21.
-//
-
 #include "sound.h"
 
 Sound::Sound() {
