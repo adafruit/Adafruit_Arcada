@@ -1,19 +1,19 @@
 /*
-    paddle_Bash_Arcada by Devin Namaky 2021
-    for Adafruit Pygamer using Adafruit Arcada library
-    using the native Arduino tones library for sound
-    sourceCode, readme and sketch GPL copyright info:
-    https://github.com/DrNebin/paddle_Bash_Arcada
-    (If you received this sketch as part of a Github library fork
-    distribution, then additional library attribution and copyright info
-    for Arcada as per the included fork readme.)
-    This sketch is intended to show how to use Arcada to write a simple
-    pong-like game on the pygamer. The sketch is good for a beginner
-    because it is short. It helps learn a basic game loop, a switch case
-    for game states, and the use of structs for data.
-    Lastly, it shows how to use native Arduino tones in a non-blocking way
-    for gaming that is wrapped into a class called Sound.
-*/
+ paddle_Bash_Arcada by Devin Namaky 2021
+ for Adafruit Pygamer using Adafruit Arcada library
+ using the native Arduino tones library for sound
+ sourceCode, readme and sketch GPL copyright info:
+ https://github.com/DrNebin/paddle_Bash_Arcada
+ (If you received this sketch as part of a Github library fork
+ distribution, then additional library attribution and copyright info
+ for Arcada as per the included fork readme.)
+ This sketch is intended to show how to use Arcada to write a simple
+ pong-like game on the pygamer. The sketch is good for a beginner
+ because it is short. It helps learn a basic game loop, a switch case
+ for game states, and the use of structs for data.
+ Lastly, it shows how to use native Arduino tones in a non-blocking way
+ for gaming that is wrapped into a class called Sound.
+ */
 
 #include "sound.h"
 #include "pitches.h"
@@ -85,7 +85,7 @@ void setup() {
     // VOID LOOP
 void loop() {
     sound.updateSound();    // updates sound using sound.h
-        // I tried to list these mostly showing how the enumerators flow
+                            // I tried to list these mostly showing how the enumerators flow
     switch (gameState) {                // this switch statement checks which game state we are in
         case titleScreen:               // and executes the correct state based on the current
             gameTitle();                // value stored in the enumeration
@@ -225,15 +225,15 @@ void gameLoop()
         if (joystick.y < -11) {
             player.movement.y = joystick.y * player.speed.y * timePerFrame / 5000.0;
             player.newPosition.y = player.position.y + player.movement.y;
-            //Serial.println(player.newPosition.y);
+                //Serial.println(player.newPosition.y);
         } else if (joystick.y > 11) {
             player.movement.y = joystick.y * player.speed.y * timePerFrame / 5000.0;
             player.newPosition.y = player.position.y + player.movement.y;
-            //Serial.println(player.newPosition.y);
+                //Serial.println(player.newPosition.y);
         } else {
             player.movement.y = 0;
             player.newPosition.y = player.position.y + player.movement.y;
-            //Serial.println(player.newPosition.y);
+                //Serial.println(player.newPosition.y);
         }
         
             // calculate new enemy position

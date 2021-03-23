@@ -20,7 +20,7 @@ void Sound::playSound(uint16_t melody[], uint8_t noteTypes[], uint8_t maxCount, 
         mMaxCount = maxCount;
         mTempo = tempo;
     }
-    //Serial.println("playSound(); executed");
+        //Serial.println("playSound(); executed");
 }
 
 void Sound::updateSound() {
@@ -28,46 +28,46 @@ void Sound::updateSound() {
     
     if (mCurrentNote <= mMaxCount) {
         if (mCurrentNote == 0) {
-            //Serial.print("mCurrentNote: "), Serial.print(mCurrentNote);
+                //Serial.print("mCurrentNote: "), Serial.print(mCurrentNote);
                 //  if note is 0, then no sound (eliminates buzzing, otherwise play the tone)
             if ((mMelodyPtr[mCurrentNote]) < 5) {
                 noTone(DAC_PIN);
                     //Serial.println("updateSound(); first note played");
                 mNoteDuration = (240000/mTempo)/mNoteTypesPtr[mCurrentNote];
-                    mCurrentNote++;
+                mCurrentNote++;
                     //Serial.print("mCurrentNote++: "), Serial.println(mCurrentNote);
-                    mLastNoteTime = millis();
+                mLastNoteTime = millis();
             } else {
                 noTone(DAC_PIN);
                 tone(DAC_PIN, mMelodyPtr[mCurrentNote]);
-                //Serial.println("updateSound(); first note played");
+                    //Serial.println("updateSound(); first note played");
                 mNoteDuration = (240000/mTempo)/mNoteTypesPtr[mCurrentNote];
                 mCurrentNote++;
-                //Serial.print("mCurrentNote++: "), Serial.println(mCurrentNote);
+                    //Serial.print("mCurrentNote++: "), Serial.println(mCurrentNote);
                 mLastNoteTime = millis();
-                }
-
+            }
+            
         } else if ((mCurrentTime - mLastNoteTime) >= mNoteDuration)
             if ((mMelodyPtr[mCurrentNote]) < 5) {
                 noTone(DAC_PIN);
                     //Serial.println("updateSound(); next note played");
                 mNoteDuration = (240000/mTempo)/mNoteTypesPtr[mCurrentNote];
-                    mCurrentNote++;
+                mCurrentNote++;
                     //Serial.print("mCurrentNote++: "), Serial.println(mCurrentNote);
-                    mLastNoteTime = millis();
+                mLastNoteTime = millis();
             } else {
                 noTone(DAC_PIN);
                 tone(DAC_PIN, mMelodyPtr[mCurrentNote]);
-                //Serial.println("updateSound(); next note played");
+                    //Serial.println("updateSound(); next note played");
                 mNoteDuration = (240000/mTempo)/mNoteTypesPtr[mCurrentNote];
                 mCurrentNote++;
-                //Serial.print("mCurrentNote++: "), Serial.println(mCurrentNote);
+                    //Serial.print("mCurrentNote++: "), Serial.println(mCurrentNote);
                 mLastNoteTime = millis();
-                }
-            
+            }
+        
     } else {
         noTone(DAC_PIN);
         mSoundPlaying = false;
     }
-    //Serial.println("updateSound(); executed");
+        //Serial.println("updateSound(); executed");
 }

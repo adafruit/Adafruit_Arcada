@@ -1,9 +1,9 @@
-//
-//  sound.h
-//  
-//  class to abstract the use of native arduino tones
-//  for gaming in adafruit arcada on the pygamer
-//
+    //
+    //  sound.h
+    //
+    //  class to abstract the use of native arduino tones
+    //  for gaming in adafruit arcada on the pygamer
+    //
 
 #ifndef sound_h
 #define sound_h
