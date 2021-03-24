@@ -91,10 +91,11 @@
 #define D8 4699
 #define DS8 4978
 
-
 uint8_t titleMelodyTempo = 140;
-uint16_t titleMelody[]  = {D5, D6, C6, B5, A5, G5, FS5, E5, G4, D5, B5, A5, FS5, G5};
-uint8_t titleMelodyNoteTypes[]  = {16, 16, 16, 4, 16, 16, 16, 4, 16, 16, 16, 4, 16, 1};
+uint16_t titleMelody[] = {D5, D6, C6, B5, A5, G5,  FS5,
+                          E5, G4, D5, B5, A5, FS5, G5};
+uint8_t titleMelodyNoteTypes[] = {16, 16, 16, 4,  16, 16, 16,
+                                  4,  16, 16, 16, 4,  16, 1};
 
 uint8_t playerWinsTempo = 200;
 uint16_t playerWinsMelody[] = {D6, 0, B6, A6, G6, D7, 0, E7, D7};
@@ -105,8 +106,10 @@ uint16_t bounceMelody[] = {D7};
 uint8_t bounceNoteTypes[] = {32};
 
 uint8_t enemyWinsTempo = 180;
-uint16_t enemyWinsMelody[] = {D7, B6, AS6, F6, B6, AS6, F6, D6, AS6, F6, D6, B5, F6, D6, B5, F5};
-uint8_t enemyWinsNoteTypes[] = {16, 16, 16, 4, 16, 16, 16, 4, 16, 16, 16, 4, 16, 16, 16, 2};
+uint16_t enemyWinsMelody[] = {D7,  B6, AS6, F6, B6, AS6, F6, D6,
+                              AS6, F6, D6,  B5, F6, D6,  B5, F5};
+uint8_t enemyWinsNoteTypes[] = {16, 16, 16, 4, 16, 16, 16, 4,
+                                16, 16, 16, 4, 16, 16, 16, 2};
 
 uint8_t playerScoresTempo = 140;
 uint16_t playerScoresMelody[] = {G6, B6, D7};

@@ -9,15 +9,16 @@ public:
   Sound();
   ~Sound();
   bool isPlaying();
-  void playSound(uint16_t melody[], uint8_t noteTypes[], uint8_t maxCount, uint8_t tempo, bool blocking);
+  void playSound(uint16_t melody[], uint8_t noteTypes[], uint8_t maxCount,
+                 uint8_t tempo, bool blocking);
   void updateSound();
-  
+
 private:
   bool mSoundPlaying = false;
   unsigned long mCurrentTime;
   unsigned long mLastNoteTime;
-  uint16_t* mMelodyPtr = nullptr;
-  uint8_t* mNoteTypesPtr = nullptr;
+  uint16_t *mMelodyPtr = nullptr;
+  uint8_t *mNoteTypesPtr = nullptr;
   uint16_t mNoteDuration;
   uint8_t mCurrentNote, mMaxCount, mTempo;
 };
