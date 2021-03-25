@@ -2,17 +2,13 @@
  paddle_Bash_Arcada by Devin Namaky 2021
  for Adafruit Pygamer using Adafruit Arcada library
  using the native Arduino tones library for sound
- sourceCode, readme and sketch GPL copyright info:
- https://github.com/DrNebin/paddle_Bash_Arcada
- (If you received this sketch as part of a Github library fork
- distribution, then additional library attribution and copyright info
- for Arcada as per the included fork readme.)
- This sketch is intended to show how to use Arcada to write a simple
- pong-like game on the pygamer. The sketch is good for a beginner
- because it is short. It helps learn a basic game loop, a switch case
- for game states, and the use of structs for data.
- Lastly, it shows how to use native Arduino tones in a non-blocking way
- for gaming that is wrapped into a class called Sound.
+ info: https://github.com/DrNebin/paddle_Bash_Arcada
+ (If you received this sketch as part of Adafruit_Arcada, then attribution and
+ copyright info for Arcada as per their readme.) This sketch is intended to show
+ how to use Arcada to write a simple pong-like game for the pygamer. It uses
+ basic game loop, a switch case for game state, and the use of structs for data.
+ Lastly, it shows how to use native Arduino tones in a non-blocking way for
+ gaming using a call back timer, and is wrapped into a class called Sound.
  */
 
 #include "pitches.h"
@@ -27,7 +23,7 @@
 
 Adafruit_Arcada arcada; // create arcada object so we can control the display,
                         // inputs, sound, etc.
-Sound sound;
+Sound sound;            // instantiate the sound class
 
 // other variables
 String scorer;                          // stores the name of the last scorer
@@ -76,6 +72,11 @@ enum GameState { // this enumeration stores the current game state
   gameOver
 } gameState;
 
+void soundCallBack() { // sets up function to be used in non-blocking sound
+                       // callback
+  sound.updateSound(); // uses sound class function
+}
+
 // SETUP
 void setup() {
   Serial.begin(9600);                       // for debugging
@@ -87,13 +88,15 @@ void setup() {
   screenWidth = arcada.display->width();    // grab the screen dimensions
   screenHeight = arcada.display->height();
   gameState = titleScreen; // start with the title screen
+  arcada.timerCallback(
+      1000,
+      soundCallBack); // sets up arcada callback to update sounds continuously
 }
 
 // VOID LOOP
 void loop() {
-  sound.updateSound(); // updates sound using sound.h
-                       // I tried to list these mostly showing how the
-                       // enumerators flow
+  // I tried to list these mostly showing how the
+  // enumerators flow
   switch (
       gameState) {  // this switch statement checks which game state we are in
   case titleScreen: // and executes the correct state based on the current
@@ -162,7 +165,6 @@ void gameTitle() // function draws the title screen
                   (sizeof(titleMelodyNoteTypes) / sizeof(uint8_t)),
                   titleMelodyTempo, false);
   while (sound.isPlaying()) {
-    sound.updateSound();
   }
   arcada.display->print("press any button");
   while (!arcada.readButtons()) {
@@ -368,7 +370,6 @@ void showScore() // function that shows someone scored
   arcada.display->setCursor(28, 80);
   arcada.display->setTextSize(1);
   while (sound.isPlaying()) {
-    sound.updateSound();
   }
   arcada.display->print("press 'A' to serve");
   delay(500);
@@ -400,7 +401,6 @@ void endGame() // runs someone reaches the max score
   arcada.display->setCursor(25, 80);
   arcada.display->setTextSize(1);
   while (sound.isPlaying()) {
-    sound.updateSound();
   }
   arcada.display->print("press 'A' to end");
   delay(500);
