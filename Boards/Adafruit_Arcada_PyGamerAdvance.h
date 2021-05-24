@@ -38,6 +38,9 @@
 
 #define ARCADA_USE_JSON
 
+#define ARCADA_CALLBACKTIMER 4
+#define ARCADA_CALLBACKTIMER_HANDLER TC4_Handler
+
 #include "arcadatype.h"
 
 class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
