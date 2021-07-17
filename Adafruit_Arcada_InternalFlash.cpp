@@ -62,8 +62,9 @@ uint32_t Adafruit_Arcada_SPITFT::availableFlash(void) {
 */
 /**************************************************************************/
 static inline void wait_ready(void) {
-  while (!NVMCTRL->STATUS.bit.READY)
-    ;
+  do {
+    yield();
+  } while (!NVMCTRL->STATUS.bit.READY);
 }
 #endif
 
@@ -87,50 +88,51 @@ uint8_t *Adafruit_Arcada_SPITFT::writeDataToFlash(uint8_t *ramAddress,
     return NULL;
   }
 
-  uint16_t saveCache = NVMCTRL->CTRLA.reg; // Cache in Rev a silicon
-  NVMCTRL->CTRLA.bit.CACHEDIS0 = true;     // isn't reliable when
-  NVMCTRL->CTRLA.bit.CACHEDIS1 = true;     // writing to NVM.
+  // Check if data's already there...if so, most of the work can be skipped.
+  if (memcmp(ramAddress, flashAddress, len)) {
 
-  // Set manual write mode - only needed once, not in loop
-  NVMCTRL->CTRLA.bit.WMODE = NVMCTRL_CTRLA_WMODE_MAN;
+    // Not there, must be stored...
+    uint16_t saveNVMconfig = NVMCTRL->CTRLA.reg; // Save NVM config
+    NVMCTRL->CTRLA.bit.CACHEDIS0 = 1;            // Disable AHB caches,
+    NVMCTRL->CTRLA.bit.CACHEDIS1 = 1;            // unreliable in Rev A silicon
+    NVMCTRL->CTRLA.bit.WMODE = NVMCTRL_CTRLA_WMODE_MAN; // Manual write mode
 
-  // Clear page buffer, only needed once, quadword write also clears it
-  NVMCTRL->CTRLB.reg = NVMCTRL_CTRLB_CMDEX_KEY | NVMCTRL_CTRLB_CMD_PBC;
+    // Clear page buffer, only needed once, quadword write also clears it
+    NVMCTRL->CTRLB.reg = NVMCTRL_CTRLB_CMDEX_KEY | NVMCTRL_CTRLB_CMD_PBC;
 
-  for (uint8_t tries = 0;;) { // Repeat write sequence until success or limit
+    for (uint8_t tries = 0;;) { // Repeat write until success or limit reached
 
-    uint8_t *src = (uint8_t *)ramAddress;     // Maintain passed-in pointers,
-    uint32_t *dst = (uint32_t *)flashAddress; // modify these instead.
-    int32_t bytesThisPass, bytesToGo = len;
+      uint8_t *src = (uint8_t *)ramAddress;     // Maintain passed-in pointers,
+      uint32_t *dst = (uint32_t *)flashAddress; // modify these instead.
+      int32_t bytesThisPass, bytesToGo = len;
 
-    Serial.print("Storing");
-    wait_ready(); // Wait for any NVM write op in progress
+      Serial.print("Storing..");
+      wait_ready(); // Wait for any NVM write op in progress
 
-    while (bytesToGo > 0) {
-      yield();
-      // Because dst (via flashAddress) is always quadword-aligned at this
-      // point, and flash blocks are known to be a quadword-multiple size,
-      // this comparison is reasonable for checking for start of block...
-      if (!((uint32_t)dst % FLASH_BLOCK_SIZE)) { // At block boundary
-        // If ANY changed data within the entire block, it must be erased
-        bytesThisPass = min(FLASH_BLOCK_SIZE, bytesToGo);
-        if (memcmp(src, dst, bytesThisPass)) { // >0 if different
-          Serial.write('-');                   // minus = erasing
-          wait_ready();
-          NVMCTRL->ADDR.reg = (uint32_t)dst; // Destination address in flash
-          NVMCTRL->CTRLB.reg = NVMCTRL_CTRLB_CMDEX_KEY | NVMCTRL_CTRLB_CMD_EB;
-        } else {              // Skip entire block
-          Serial.print(">>"); // >> = skipping, already stored
-          bytesToGo -= bytesThisPass;
-          src += FLASH_BLOCK_SIZE; // Advance to next block
-          dst += FLASH_BLOCK_SIZE / 4;
-          continue;
+      while (bytesToGo > 0) {
+        yield();
+        // Because dst (via flashAddress) is always quadword-aligned at this
+        // point, and flash blocks are known to be a quadword-multiple size,
+        // this comparison is reasonable for checking for start of block...
+        if (!((uint32_t)dst % FLASH_BLOCK_SIZE)) { // At block boundary
+          // If ANY changed data within the entire block, it must be erased
+          bytesThisPass = min(FLASH_BLOCK_SIZE, bytesToGo);
+          if (memcmp(src, dst, bytesThisPass)) { // >0 if different
+            Serial.write('-');                   // minus = erasing
+            wait_ready();
+            NVMCTRL->ADDR.reg = (uint32_t)dst; // Destination address in flash
+            NVMCTRL->CTRLB.reg = NVMCTRL_CTRLB_CMDEX_KEY | NVMCTRL_CTRLB_CMD_EB;
+          } else {             // Block hasn't changed, skip it (keep old data)
+            Serial.print(">"); // >> = skipping, already stored
+            bytesToGo -= bytesThisPass;
+            src += FLASH_BLOCK_SIZE; // Advance to next block
+            dst += FLASH_BLOCK_SIZE / 4;
+            continue;
+          }
         }
-      }
 
-      // Examine next quadword, write only if needed (reduce flash wear)
-      bytesThisPass = min(16, bytesToGo);
-      if (memcmp(src, dst, bytesThisPass)) { // >0 if different
+        // Write next quadword (16 bytes) to flash
+        bytesThisPass = min(16, bytesToGo);
         if (!((uint32_t)dst & 2047))
           Serial.write('.'); // One . per 2KB
         // src might not be 32-bit aligned and must be read byte-at-a-time.
@@ -143,47 +145,52 @@ uint8_t *Adafruit_Arcada_SPITFT::writeDataToFlash(uint8_t *ramAddress,
         wait_ready();
         NVMCTRL->ADDR.reg = (uint32_t)dst;
         NVMCTRL->CTRLB.reg = NVMCTRL_CTRLB_CMDEX_KEY | NVMCTRL_CTRLB_CMD_WQW;
-      }
-      bytesToGo -= bytesThisPass;
-      src += 16; // Advance to next quadword
-      dst += 4;
-    }
 
-    wait_ready(); // Wait for last write to finish
+        bytesToGo -= bytesThisPass;
+        src += 16; // Advance to next quadword
+        dst += 4;
+      } // end bytesToGo write loop
 
-    Serial.print("verify...");
-    Serial.flush();
-    if (memcmp(ramAddress, flashAddress, len)) { // nonzero if mismatch
-      if (++tries >= 4) {
-        Serial.println("...proceeding anyway");
-        break; // Give up, run with the data we have
-      }
-      // If we didn't start at a block boundary...
-      if (uint32_t q = (uint32_t)flashAddress % FLASH_BLOCK_SIZE) {
-        // Get index of first changed byte
-        uint32_t n;
-        for (n = 0;
-             (ramAddress[n] == flashAddress[n]) && (n <= FLASH_BLOCK_SIZE); n++)
-          ;
-        // ...and if first mismatched byte is within the region before
-        // the first block boundary...
-        q = FLASH_BLOCK_SIZE - q; // Bytes in partial 1st block
-        if (n < q) {
-          // ...then flashAddress MUST be advanced to the next block
-          // boundary before we retry, reason being that we CAN'T erase
-          // the initial partial block (it may be preceded by other data).
-          flashAddress = &flashAddress[q];
+      wait_ready(); // Wait for last write to finish
+
+      Serial.print("verify...");
+
+      if (memcmp(ramAddress, flashAddress, len)) { // If mismatch...
+        if (++tries >= 4) {
+          Serial.println("proceeding anyway");
+          break; // Give up, run with the data we have
         }
+        // If the write didn't start at a block boundary...
+        if (uint32_t q = (uint32_t)flashAddress % FLASH_BLOCK_SIZE) {
+          q = FLASH_BLOCK_SIZE - q; // Remaining bytes within first block
+          // Does the mismatch start within the first partial block?
+          if (memcmp(ramAddress, flashAddress, min(len, q))) {
+            // ...then flashAddress MUST be advanced to the next block start
+            // before retrying, reason being that we CAN'T erase the initial
+            // partial block (it may be preceded by other data).
+            Serial.print("next block...");
+            flashAddress = &flashAddress[q];
+            // And if flashAddress changes (could be 1 byte to 8K), that means
+            // we need to re-test whether the data to write will fit in the
+            // remaining space, else code might get clobbered (whether at end
+            // or if it wraps around).
+            if (len > availableFlash()) {
+              Serial.println("won't fit.");
+              break;
+            }
+          }
+        }
+        Serial.println("retrying...");
+      } else {
+        Serial.println("OK");
+        break;
       }
-      Serial.println("...retrying...");
-      Serial.flush();
-    } else {
-      Serial.println("OK");
-      break;
     }
-  }
 
-  NVMCTRL->CTRLA.reg = saveCache; // Restore NVM cache settings
+    NVMCTRL->CTRLA.reg = saveNVMconfig; // Restore NVM cache settings
+  } else {
+    Serial.println("Already in flash");
+  }
 
   // Return value will be start of newly-written data in flash
   uint8_t *returnVal = flashAddress;
@@ -223,12 +230,10 @@ uint8_t *Adafruit_Arcada_SPITFT::writeFileToFlash(const char *filename) {
 
   uint8_t blockBuf[FLASH_BLOCK_SIZE];
 
-  uint16_t saveCache = NVMCTRL->CTRLA.reg; // Cache in Rev a silicon
-  NVMCTRL->CTRLA.bit.CACHEDIS0 = true;     // isn't reliable when
-  NVMCTRL->CTRLA.bit.CACHEDIS1 = true;     // writing to NVM.
-
-  // Set manual write mode - only needed once, not in loop
-  NVMCTRL->CTRLA.bit.WMODE = NVMCTRL_CTRLA_WMODE_MAN;
+  uint16_t saveNVMconfig = NVMCTRL->CTRLA.reg; // Save NVM config
+  NVMCTRL->CTRLA.bit.CACHEDIS0 = 1;            // Disable AHB caches,
+  NVMCTRL->CTRLA.bit.CACHEDIS1 = 1;            // unreliable in Rev A silicon
+  NVMCTRL->CTRLA.bit.WMODE = NVMCTRL_CTRLA_WMODE_MAN; // Manual write mode
 
   // Clear page buffer, only needed once, quadword write also clears it
   NVMCTRL->CTRLB.reg = NVMCTRL_CTRLB_CMDEX_KEY | NVMCTRL_CTRLB_CMD_PBC;
@@ -347,7 +352,7 @@ uint8_t *Adafruit_Arcada_SPITFT::writeFileToFlash(const char *filename) {
     dst += bytesThisPass / 4;
   }
 
-  NVMCTRL->CTRLA.reg = saveCache; // Restore NVM cache settings
+  NVMCTRL->CTRLA.reg = saveNVMconfig; // Restore NVM cache settings
 
   // Return value will be start of newly-written data in flash
   uint8_t *returnVal = flashAddress;
