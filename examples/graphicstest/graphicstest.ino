@@ -4,7 +4,9 @@ Adafruit_Arcada arcada;
 float p = 3.1415926;
 
 void setup(void) {
-  Serial.begin(9600);
+  Serial.begin(115200);
+  while (!Serial) delay(10);
+
   Serial.print("Hello! Arcada TFT Test");
 
   // Start TFT and fill black

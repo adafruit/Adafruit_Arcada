@@ -53,7 +53,9 @@ wavStatus Adafruit_Arcada_SPITFT::WavLoad(File f, uint32_t *samplerate) {
   }
   _wav_file = f;
 
+#if !defined(ESP32)
   analogWriteResolution(WAV_DAC_BITS); // See notes above
+#endif
 
   if (!player) {
     player =

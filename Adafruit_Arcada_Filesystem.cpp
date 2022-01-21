@@ -19,16 +19,21 @@ SdFat Arcada_SD_FileSys;
 #endif
 
 #if defined(PIN_QSPI_SCK)
+#define ARCADA_HAS_FLASHMEM
 Adafruit_FlashTransport_QSPI flashTransport(PIN_QSPI_SCK, PIN_QSPI_CS,
                                             PIN_QSPI_IO0, PIN_QSPI_IO1,
                                             PIN_QSPI_IO2, PIN_QSPI_IO3);
 #elif defined(ARCADA_SPIFLASH_CS)
+#define ARCADA_HAS_FLASHMEM
 Adafruit_FlashTransport_SPI flashTransport(ARCADA_SPIFLASH_CS,
                                            &ARCADA_SPIFLASH_SPI);
 #endif
 
+#if defined(ARCADA_HAS_FLASHMEM)
 Adafruit_SPIFlash Arcada_QSPI_Flash(&flashTransport);
+#endif
 FatFileSystem Arcada_QSPI_FileSys;
+
 
 /**************************************************************************/
 /*!
@@ -63,6 +68,7 @@ Adafruit_Arcada_SPITFT::filesysBegin(Arcada_FilesystemType desiredFilesys) {
     }
   }
 
+#if defined(ARCADA_HAS_FLASHMEM)
   if (desiredFilesys == ARCADA_FILESYS_QSPI ||
       desiredFilesys == ARCADA_FILESYS_SD_AND_QSPI) {
     if (Arcada_QSPI_Flash.begin()) {
@@ -86,6 +92,7 @@ Adafruit_Arcada_SPITFT::filesysBegin(Arcada_FilesystemType desiredFilesys) {
       QSPI_imagereader = new Adafruit_ImageReader(Arcada_QSPI_FileSys);
     }
   }
+#endif
 
   Serial.println("Mounted filesystem(s)!");
   return _filesys_type;

@@ -207,7 +207,7 @@ uint8_t Adafruit_Arcada_SPITFT::menu(const char **menu_strings,
   for (int i = 0; i < menu_num; i++) {
     // Serial.printf("#%d '%s' -> %d\n", i, menu_strings[i],
     // strlen(menu_strings[i]));
-    max_len = max(max_len, strlen(menu_strings[i]));
+    max_len = max(max_len, (uint16_t)strlen(menu_strings[i]));
   }
 
   uint16_t boxWidth = (max_len + 4) * charWidth;

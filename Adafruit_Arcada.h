@@ -27,6 +27,7 @@ class Adafruit_Arcada_SPITFT;
 #include "Boards/Adafruit_Arcada_PyGamerAdvance.h"
 #include "Boards/Adafruit_Arcada_PyPortal.h"
 #include "Boards/Adafruit_Arcada_PyPortalTitano.h"
+#include "Boards/Adafruit_Arcada_QTPy_GamerBFF.h"
 
 #ifndef ARCADA_SD_CS
 #define ARCADA_SD_CS -1
