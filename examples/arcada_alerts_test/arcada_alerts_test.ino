@@ -5,7 +5,7 @@ Adafruit_Arcada arcada;
 
 void setup() {
   Serial.begin(115200);
- // while (!Serial);
+ // while (!Serial) delay(10);
   
   Serial.println("Hello! Arcada Alerts test");
   if (!arcada.arcadaBegin()) {

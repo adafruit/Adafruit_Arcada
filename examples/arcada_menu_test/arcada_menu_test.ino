@@ -6,6 +6,7 @@ Adafruit_Arcada arcada;
 const char *selection[NUM_SELECTIONS] = {"Apples", "Bananas", "Pears"};
 
 void setup() {
+  Serial.begin(115200);
   //while (!Serial) delay(10);
 
   Serial.println("Hello! Arcada Menu test");
