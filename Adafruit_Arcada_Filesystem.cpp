@@ -34,7 +34,6 @@ Adafruit_SPIFlash Arcada_QSPI_Flash(&flashTransport);
 #endif
 FatFileSystem Arcada_QSPI_FileSys;
 
-
 /**************************************************************************/
 /*!
     @brief  Initialize the filesystem, either SD or QSPI
