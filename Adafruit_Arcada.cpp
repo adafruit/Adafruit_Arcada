@@ -316,11 +316,23 @@ bool Adafruit_Arcada_SPITFT::timerCallback(float freq, void (*callback)()) {
   zerotimer.setCallback(true, TC_CALLBACK_CC_CHANNEL0, callback);
   zerotimer.enable(true);
   return true;
+
 #elif defined(NRF52_SERIES)
   SysTick_Config(F_CPU / freq);
   nrf52_callback = callback;
   return true;
+
+#elif defined(ESP32)
+  const uint8_t divider = 80; // 1 MHz timer ticker
+  _callback_timer = timerBegin(ARCADA_CALLBACKTIMER, divider,
+                               true); // number, divider, count up
+  timerAttachInterrupt(_callback_timer, callback, false);
+  timerAlarmWrite(_callback_timer, 1000000.0 / freq,
+                  true); // timer, count, repeat
+  timerAlarmEnable(_callback_timer);
+  return true;
 #else
+#warning "Callback function not supported on this platform!"
   return false;
 #endif
 }
@@ -347,7 +359,7 @@ float Adafruit_Arcada_SPITFT::getTimerCallbackFreq(void) {
 */
 /**************************************************************************/
 arcada_callback_t Adafruit_Arcada_SPITFT::getTimerCallback(void) {
-#if defined(__SAMD51__)
+#if defined(__SAMD51__) || defined(ESP32)
   return _callback_func;
 #else
   return NULL;
@@ -362,6 +374,8 @@ arcada_callback_t Adafruit_Arcada_SPITFT::getTimerCallback(void) {
 void Adafruit_Arcada_SPITFT::timerStop(void) {
 #if defined(__SAMD51__)
   zerotimer.enable(false);
+#elif defined(ESP32)
+  timerAlarmDisable(_callback_timer);
 #endif
 }
 

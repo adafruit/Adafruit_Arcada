@@ -248,6 +248,10 @@ private:
   float _callback_freq = 0;
   arcada_callback_t _callback_func = NULL;
 
+#if defined(ESP32)
+  hw_timer_t *_callback_timer = NULL;
+#endif
+
   // Pins
   int8_t _sd_cs, _speaker_en, _neopixel_pin, _backlight_pin, _touch_xp,
       _touch_yp, _touch_xm, _touch_ym,

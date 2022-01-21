@@ -27,6 +27,8 @@
   #define ARCADA_SPIFLASH_SPI SPI1
   #define ARCADA_CALLBACKTIMER 4
   #define ARCADA_CALLBACKTIMER_HANDLER TC4_Handler
+#elif defined(ESP32)
+  #define ARCADA_CALLBACKTIMER 0
 #endif
 
 #define ARCADA_SD_CS A6
