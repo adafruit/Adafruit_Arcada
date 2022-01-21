@@ -323,6 +323,11 @@ bool Adafruit_Arcada_SPITFT::timerCallback(float freq, void (*callback)()) {
   return true;
 
 #elif defined(ESP32)
+  if (_callback_timer) {
+    timerStop();
+    timerDetachInterrupt(_callback_timer);
+    timerEnd(_callback_timer);
+  }
   const uint8_t divider = 80; // 1 MHz timer ticker
   _callback_timer = timerBegin(ARCADA_CALLBACKTIMER, divider,
                                true); // number, divider, count up

@@ -17,7 +17,7 @@
 
 #define ARCADA_NEOPIXEL_PIN PIN_NEOPIXEL
 #define ARCADA_NEOPIXEL_NUM 1
-#define ARCADA_AUDIO_OUT A0
+#define ARCADA_AUDIO_OUT DAC2
 
 //#define ARCADA_LIGHT_SENSOR A1
 //#define ARCADA_BATTERY_SENSOR A6
@@ -49,6 +49,7 @@
 #define AW_BUTTON_LEFT   14
 #define AW_BUTTON_SELECT 2
 #define AW_BUTTON_START  4
+#define AW_SPEAKER_ENABLE 15
 
 #undef ENABLE_EXTENDED_TRANSFER_CLASS
 
@@ -89,6 +90,9 @@ public:
     aw.pinMode(AW_BUTTON_B, INPUT);
     aw.pinMode(AW_BUTTON_SELECT, INPUT);
     aw.pinMode(AW_BUTTON_START, INPUT);
+
+    aw.pinMode(AW_SPEAKER_ENABLE, OUTPUT);
+    aw.digitalWrite(AW_SPEAKER_ENABLE, LOW);
     return true;
   }
 
@@ -109,6 +113,10 @@ public:
     Serial.printf("Setting aw led %d\n\r", brightness);
     aw.digitalWrite(AW_TFT_BACKLIGHT, brightness);  
     return Adafruit_Arcada_SPITFT::setBacklight(brightness, saveToDisk);
+  }
+
+  void enableSpeaker(bool on) {
+    aw.digitalWrite(AW_SPEAKER_ENABLE, on);
   }
 
   uint32_t variantReadButtons(void) {

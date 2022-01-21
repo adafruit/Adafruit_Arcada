@@ -3,6 +3,9 @@
 #if defined(__SAMD51__)
 #define WAV_DAC_BITS 12
 #define WAV_BUFFER_SIZE 4096
+#elif defined(ESP32)
+#define WAV_DAC_BITS 8
+#define WAV_BUFFER_SIZE 4096
 #else
 #define WAV_DAC_BITS 10
 #define WAV_BUFFER_SIZE 2048
@@ -55,6 +58,13 @@ wavStatus Adafruit_Arcada_SPITFT::WavLoad(File f, uint32_t *samplerate) {
 
 #if !defined(ESP32)
   analogWriteResolution(WAV_DAC_BITS); // See notes above
+#endif
+
+#if WAV_STEREO_OUT
+  pinMode(ARCADA_LEFT_AUDIO_PIN, OUTPUT);
+  pinMode(ARCADA_RIGHT_AUDIO_PIN, OUTPUT);
+#else
+  pinMode(ARCADA_AUDIO_OUT, OUTPUT);
 #endif
 
   if (!player) {
@@ -117,11 +127,21 @@ wavStatus Adafruit_Arcada_SPITFT::WavPlayNextSample(void) {
   wavStatus status = player->nextSample(&sample);
 
   if ((status == WAV_OK) || (status == WAV_LOAD)) {
+
 #if WAV_STEREO_OUT
+#if defined(ESP32)
+    dacWrite(ARCADA_LEFT_AUDIO_PIN, sample.channel0);
+    dacWrite(ARCADA_RIGHT_AUDIO_PIN, sample.channel1);
+#else
     analogWrite(ARCADA_LEFT_AUDIO_PIN, sample.channel0);
     analogWrite(ARCADA_RIGHT_AUDIO_PIN, sample.channel1);
+#endif
+#else
+#if defined(ESP32)
+    dacWrite(ARCADA_AUDIO_OUT, sample.channel0);
 #else
     analogWrite(ARCADA_AUDIO_OUT, sample.channel0);
+#endif
 #endif
     _wav_playing = true;
 
@@ -139,7 +159,11 @@ wavStatus Adafruit_Arcada_SPITFT::WavPlayNextSample(void) {
     analogWrite(ARCADA_LEFT_AUDIO_PIN, SPEAKER_IDLE);
     analogWrite(ARCADA_RIGHT_AUDIO_PIN, SPEAKER_IDLE);
 #else
+#if defined(ESP32)
+    dacWrite(ARCADA_AUDIO_OUT, SPEAKER_IDLE);
+#else
     analogWrite(ARCADA_AUDIO_OUT, SPEAKER_IDLE);
+#endif
 #endif
     _wav_playing = false;
   } // else WAV_ERR_STALL, do nothing

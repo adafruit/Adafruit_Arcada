@@ -10,7 +10,7 @@ volatile bool      playing = false;
 
 // Crude error handler. Prints message to Serial Monitor, blinks LED.
 void fatal(const char *message, uint16_t blinkDelay) {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println(message);
   for(bool ledState = HIGH;; ledState = !ledState) {
     digitalWrite(LED_BUILTIN, ledState);
@@ -22,7 +22,7 @@ void setup(void) {
   if(!arcada.arcadaBegin())     fatal("Arcada init fail!", 100);
   if(!arcada.filesysBeginMSD()) fatal("No filesystem found!", 250);
 
-  Serial.begin(9600);
+  Serial.begin(115200);
   while(!Serial) yield();
   delay(100);
   Serial.print("Arcada wave player demo. Place wav's in ");
@@ -76,7 +76,7 @@ void loop(void) {
 }
 
 // Single-sample-playing callback function for timerCallback() above.
-void wavOutCallback(void) {
+void ARDUINO_ISR_ATTR wavOutCallback(void) {
   wavStatus status = arcada.WavPlayNextSample();
   if (status == WAV_EOF) {
     // End of WAV file reached, stop timer, stop audio
