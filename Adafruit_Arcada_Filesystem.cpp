@@ -55,11 +55,12 @@ Adafruit_Arcada_SPITFT::filesysBegin(Arcada_FilesystemType desiredFilesys) {
     if (desiredFilesys == ARCADA_FILESYS_SD ||
         desiredFilesys == ARCADA_FILESYS_SD_AND_QSPI) {
       Serial.println("Trying SD Card filesystem");
-      if (Arcada_SD_FileSys.begin(ARCADA_SD_CS)) {
+      if (Arcada_SD_FileSys.begin(ARCADA_SD_CS, SD_SCK_MHZ(12))) {
         Serial.println("SD card found");
         SD_imagereader = new Adafruit_ImageReader(Arcada_SD_FileSys);
         _filesys_type = ARCADA_FILESYS_SD;
       }
+      Serial.println("SD card not found");
     }
 
     if (_filesys_type == desiredFilesys) {
@@ -90,11 +91,11 @@ Adafruit_Arcada_SPITFT::filesysBegin(Arcada_FilesystemType desiredFilesys) {
         _filesys_type = ARCADA_FILESYS_QSPI;
       }
       QSPI_imagereader = new Adafruit_ImageReader(Arcada_QSPI_FileSys);
+      Serial.println("Mounted QSPI filesystem");
     }
   }
 #endif
 
-  Serial.println("Mounted filesystem(s)!");
   return _filesys_type;
 }
 
