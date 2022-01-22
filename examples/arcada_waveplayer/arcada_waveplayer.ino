@@ -76,7 +76,11 @@ void loop(void) {
 }
 
 // Single-sample-playing callback function for timerCallback() above.
-void ARDUINO_ISR_ATTR wavOutCallback(void) {
+void 
+#ifdef ESP32
+  ARDUINO_ISR_ATTR
+#endif
+wavOutCallback(void) {
   wavStatus status = arcada.WavPlayNextSample();
   if (status == WAV_EOF) {
     // End of WAV file reached, stop timer, stop audio
