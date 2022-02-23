@@ -124,7 +124,7 @@ void loop() {
     }
   } else {
     // no accel, check both SEL/START pressed at once
-    if (arcada.readButtons() & ARCADA_BUTTONMASK_START  & ARCADA_BUTTONMASK_SELECT) {
+    if ((arcada.readButtons() & (ARCADA_BUTTONMASK_START | ARCADA_BUTTONMASK_SELECT)) == (ARCADA_BUTTONMASK_START | ARCADA_BUTTONMASK_SELECT)) {
       playsound = true;
     }
   }
