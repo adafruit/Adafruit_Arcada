@@ -312,7 +312,7 @@ File Adafruit_Arcada_SPITFT::open(const char *path, uint32_t flags) {
 File Adafruit_Arcada_SPITFT::openFileByIndex(const char *path, uint16_t index,
                                              uint32_t flags,
                                              const char *extensionFilter) {
-  (void) flags;
+  (void)flags;
 
   if (!path) { // use CWD!
     path = _cwd_path;
