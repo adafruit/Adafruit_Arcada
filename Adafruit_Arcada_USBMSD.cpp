@@ -35,9 +35,10 @@ void sd_msc_flush_cb(void);
 /**************************************************************************/
 bool Adafruit_Arcada_SPITFT::filesysBeginMSD(
     Arcada_FilesystemType desiredFilesys) {
-  Arcada_FilesystemType found = filesysBegin(desiredFilesys);
+  (void) desiredFilesys;
 
 #if defined(USE_TINYUSB)
+  Arcada_FilesystemType found = filesysBegin(desiredFilesys);
 
   if (found == ARCADA_FILESYS_NONE) {
     return false;
@@ -125,6 +126,7 @@ bool Adafruit_Arcada_SPITFT::filesysBeginMSD(
 */
 /**************************************************************************/
 bool Adafruit_Arcada_SPITFT::recentUSB(uint32_t timeout) {
+  (void) timeout;
 
 #if defined(USE_TINYUSB)
   uint32_t curr_time = millis();

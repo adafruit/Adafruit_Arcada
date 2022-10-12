@@ -77,6 +77,7 @@ public:
   }
 
   void begin(uint32_t freq) {
+    (void) freq;
     _display->init(240, 240);
     display2->init(240, 240);
   }

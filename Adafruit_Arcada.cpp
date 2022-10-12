@@ -321,6 +321,8 @@ bool Adafruit_Arcada_SPITFT::timerCallback(float freq, void (*callback)()) {
   nrf52_callback = callback;
   return true;
 #else
+  (void) freq;
+  (void) callback;
   return false;
 #endif
 }

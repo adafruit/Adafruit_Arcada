@@ -44,7 +44,7 @@ uint16_t DELAY_PER_SAMPLE = 50;
 uint16_t samplerates[NUM_SAMPLERATES] = {50, 100, 250, 500, 1000, 1500, 2000, 2500, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000};
 bool rate_mode = false;
 
-void plotBuffer(GFXcanvas16 *_canvas, char *title, 
+void plotBuffer(GFXcanvas16 *_canvas, const char *title,
                 CircularBuffer<float, PLOT_W> &buffer1, 
                 CircularBuffer<float, PLOT_W> &buffer2, 
                 CircularBuffer<float, PLOT_W> &buffer3);
@@ -291,16 +291,16 @@ void loop() {
   } 
   else {
     data_buffer.clear();
-    mode == MODE_TEMPPLOT;
+    mode = MODE_TEMPPLOT;
     return;
   }
   
   arcada.blitFrameBuffer(0, 0, false, true);
-  uint16_t drawtime = millis()-timestamp;
+  //uint16_t drawtime = millis()-timestamp;
   //Serial.printf("Drew in %d ms\n", drawtime);
   last_mode = mode;
 
-  bool left_held = false, right_held = false;
+  // bool left_held = false, right_held = false;
   do {
     uint8_t buttons = arcada.readButtons();
     uint8_t justPressed = arcada.justPressedButtons();
@@ -388,7 +388,7 @@ void loop() {
 /**********************************************************************************/
 
 
-void plotBuffer(GFXcanvas16 *_canvas, char *title, 
+void plotBuffer(GFXcanvas16 *_canvas, const char *title,
                 CircularBuffer<float, PLOT_W> &buffer1, 
                 CircularBuffer<float, PLOT_W> &buffer2, 
                 CircularBuffer<float, PLOT_W> &buffer3) {

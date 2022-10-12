@@ -93,6 +93,9 @@ void loop() {
   arcada.readButtons();
   uint8_t justPressed = arcada.justPressedButtons();
   uint8_t justReleased = arcada.justReleasedButtons();
+
+  (void) justPressed;
+
   if (justReleased & ARCADA_BUTTONMASK_LEFT) {
     sensornum--;
     data_buffer.clear();
