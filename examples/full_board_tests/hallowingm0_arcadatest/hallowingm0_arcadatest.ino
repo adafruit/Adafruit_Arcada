@@ -10,8 +10,6 @@ void setup(void) {
   //while (!Serial) delay(10);
   Serial.print("Hello! Hallowing M0 Arcada Test");
 
-  uint8_t i =0;
-
   // Start TFT and fill black
   if (!arcada.arcadaBegin()) {
     Serial.print("Failed to begin");

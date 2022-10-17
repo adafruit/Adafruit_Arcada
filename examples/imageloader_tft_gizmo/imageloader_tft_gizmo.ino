@@ -33,7 +33,7 @@ void setup(void) {
 
 
 void loop() {
-  char *imagefile = 0;
+  const char *imagefile = 0;
   arcada.readButtons();
   uint8_t buttons = arcada.justPressedButtons();
   Serial.print("Pressed: ");
@@ -57,7 +57,7 @@ void loop() {
   
   // Load full-screen BMP file at position (0,0) (top left).
   Serial.printf("Loading %s to screen...", imagefile);
-  ImageReturnCode stat = arcada.drawBMP(imagefile, 0, 0);
+  ImageReturnCode stat = arcada.drawBMP((char*) imagefile, 0, 0);
   if(stat == IMAGE_ERR_FILE_NOT_FOUND) {
     arcada.haltBox("File not found");
   } else if(stat == IMAGE_ERR_FORMAT) {

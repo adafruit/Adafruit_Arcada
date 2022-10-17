@@ -65,7 +65,7 @@ void loop() {
 /**********************************************************************************/
 
 
-void plotBuffer(GFXcanvas16 *_canvas, CircularBuffer<float, PLOT_W> &buffer, char *title) {
+void plotBuffer(GFXcanvas16 *_canvas, CircularBuffer<float, PLOT_W> &buffer, const char *title) {
   _canvas->fillScreen(BACKGROUND_COLOR);
   _canvas->drawLine(PLOT_LEFTBUFFER-1, PLOT_TOPBUFFER, 
                     PLOT_LEFTBUFFER-1, PLOT_H+PLOT_TOPBUFFER, BORDER_COLOR);
@@ -136,6 +136,8 @@ void printTicks(GFXcanvas16 *_canvas, uint8_t ticks, float minY, float maxY) {
 }
 
 void printLabel(GFXcanvas16 *_canvas, uint16_t x, uint16_t y, float val) {
+  (void) x;
+
   char label[20];
   if (abs(val) < 1) {
     snprintf(label, 19, "%0.2f", val);

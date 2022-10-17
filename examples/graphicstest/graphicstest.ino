@@ -110,7 +110,7 @@ void testlines(uint16_t color) {
   }
 }
 
-void testdrawtext(char *text, uint16_t color) {
+void testdrawtext(const char *text, uint16_t color) {
   arcada.display->setCursor(0, 0);
   arcada.display->setTextColor(color);
   arcada.display->setTextWrap(true);

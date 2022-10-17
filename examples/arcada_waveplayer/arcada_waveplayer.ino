@@ -5,7 +5,7 @@
 
 
 Adafruit_Arcada    arcada;
-char               *wavPath  = "/wavs";
+const char         *wavPath  = "/wavs";
 volatile bool      playing = false;
 
 // Crude error handler. Prints message to Serial Monitor, blinks LED.

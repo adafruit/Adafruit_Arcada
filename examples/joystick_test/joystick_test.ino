@@ -24,6 +24,10 @@ void loop()
   uint8_t justPressed = arcada.justPressedButtons();
   uint8_t justReleased = arcada.justReleasedButtons();
 
+  // suppress unused warnings
+  (void) justPressed;
+  (void) justReleased;
+
   uint8_t buttons = arcada.readButtons();
   
   Serial.print("Pressed: ");

@@ -9,7 +9,7 @@ Adafruit_Arcada arcada;
 extern Adafruit_SPIFlash Arcada_QSPI_Flash;
 Adafruit_ADT7410 tempsensor = Adafruit_ADT7410();
 
-char *esp32_firmware = "/NINAW102.bin";
+const char *esp32_firmware = "/NINAW102.bin";
 uint8_t esp32_md5[] = {0x5E, 0x04, 0xC0, 0x5C, 0xD7, 0x71, 0xe6, 0x7F, 0x76, 0xA3, 0xD9, 0xe2, 0x71, 0x5a, 0x59, 0xCE  };
 
 Adafruit_GFX_Button coin = Adafruit_GFX_Button();
@@ -114,7 +114,7 @@ void setup() {
     arcada.display->println("OK!");
   }
  
-  coin.initButton(arcada.display, 160, 200, 100, 50, ARCADA_WHITE, ARCADA_YELLOW, ARCADA_BLACK, "Sound", 2);
+  coin.initButton(arcada.display, 160, 200, 100, 50, ARCADA_WHITE, ARCADA_YELLOW, ARCADA_BLACK, (char*) "Sound", 2);
   coin.drawButton();
 
   analogWriteResolution(12);
@@ -191,7 +191,8 @@ void loop() {
 
 void play_tune(const uint8_t *audio, uint32_t audio_length) {
   uint32_t t;
-  uint32_t prior, usec = 1000000L / SAMPLE_RATE;
+  uint32_t prior = 0;
+  uint32_t usec = 1000000L / SAMPLE_RATE;
   analogWriteResolution(8);
   for (uint32_t i=0; i<audio_length; i++) {
     while((t = micros()) - prior < usec);
@@ -206,7 +207,7 @@ static const int MAX_PAYLOAD_SIZE = 1024;
 uint32_t firmsize;
 static uint8_t payload[MAX_PAYLOAD_SIZE];
 
-boolean write_esp32(char *filename, uint8_t *md5) {
+boolean write_esp32(const char *filename, uint8_t *md5) {
   File myFile = arcada.open(filename, FILE_READ);
   if (!myFile) {
     Serial.println("Failed to open firmware file");

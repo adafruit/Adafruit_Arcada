@@ -13,8 +13,6 @@ void setup() {
   //while (!Serial) delay(10);
   Serial.print("Hello! Arcada Callback Test");
 
-  uint8_t i =0;
-
   // Start TFT and fill black
   if (!arcada.arcadaBegin()) {
     Serial.print("Failed to begin");
