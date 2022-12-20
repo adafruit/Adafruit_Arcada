@@ -18,14 +18,14 @@ void setup(void) {
     Serial.print("Failed to begin");
     while (1);
   }
-  
+
   // Start TFT and fill black
   if (!arcada.arcadaBegin()) {
     Serial.print("Failed to begin");
     while (1);
   }
   arcada.displayBegin();
-  
+
   // Turn on backlight
   arcada.setBacklight(255);
 
@@ -47,7 +47,7 @@ void setup(void) {
     arcada.display->setTextColor(ARCADA_RED);
     arcada.display->println("QSPI Flash FAIL");
   }
-  
+
   uint16_t jedec = Arcada_QSPI_Flash.getJEDECID();
   Serial.print("JEDEC: "); Serial.println(jedec, HEX);
   arcada.display->print("QSPI ");
@@ -60,15 +60,28 @@ void setup(void) {
   arcada.display->setTextColor(ARCADA_GREEN);
   arcada.display->print("JEDEC: 0x"); arcada.display->println(jedec, HEX);
 
-  /********** Check MSA301 */
+  /********** Check MSA301/MSA311 */
 
-  if (! arcada.accel->begin()) {
-    Serial.println("Couldnt start MSA301");
+  bool accel_found = false;
+
+  // MSA301 @ 0x26 on older revs
+  if (arcada.accel->begin()) {
+    arcada.display->println("MSA301 OK");
+    accel_found = true;
+  }
+  // MSA311 @ 0x62 on newer revs
+  if (!accel_found) {
+    if (arcada.accel->begin(0x62)) {
+      arcada.display->println("MSA311 OK");
+      accel_found = true;
+    }
+  }
+  if (!accel_found) {
+    Serial.println("Couldnt start MSA301/311");
     arcada.display->setTextColor(ARCADA_RED);
-    arcada.display->println("MSA301 FAIL");
+    arcada.display->println("MSA301/311 FAIL");
     while (1);
   }
-  arcada.display->println("MSA301 OK");
   Serial.println("MSA found!");
   arcada.accel->setPowerMode(MSA301_NORMALMODE);
   arcada.accel->setDataRate(MSA301_DATARATE_1000_HZ);
@@ -109,13 +122,13 @@ void loop() {
   }
 
 
-  sensors_event_t event; 
+  sensors_event_t event;
   arcada.accel->getEvent(&event);
-  
-  // Display the results (acceleration is measured in m/s^2) 
+
+  // Display the results (acceleration is measured in m/s^2)
   Serial.print("Accel: \t X: "); Serial.print(event.acceleration.x);
-  Serial.print(" \tY: "); Serial.print(event.acceleration.y); 
-  Serial.print(" \tZ: "); Serial.print(event.acceleration.z); 
+  Serial.print(" \tY: "); Serial.print(event.acceleration.y);
+  Serial.print(" \tZ: "); Serial.print(event.acceleration.z);
   Serial.println(" m/s^2 ");
   arcada.display->fillRect(0, 40, 240, 20, ARCADA_BLACK);
   arcada.display->setCursor(0, 40);
@@ -152,7 +165,7 @@ void loop() {
   arcada.display->fillRect(0, 140, 240, 32, ARCADA_BLACK);
   arcada.display->setCursor(0, 140);
   arcada.display->setTextColor(ARCADA_WHITE);
-  Serial.print("I2C: "); 
+  Serial.print("I2C: ");
   arcada.display->print("I2C: ");
   Wire.begin();
   for (int a=0x10; a<=0x7F; a++) {
@@ -163,7 +176,7 @@ void loop() {
     }
   }
 
-  Serial.printf("Drawing %d NeoPixels", arcada.pixels.numPixels());  
+  Serial.printf("Drawing %d NeoPixels", arcada.pixels.numPixels());
   for(int32_t i=0; i< arcada.pixels.numPixels(); i++) {
      arcada.pixels.setPixelColor(i, Wheel(((i * 256 / arcada.pixels.numPixels()) + j*5) & 255));
   }
@@ -197,7 +210,7 @@ void loop() {
 void play_tune(const uint8_t *audio, uint32_t audio_length) {
   uint32_t t;
   uint32_t prior, usec = 1000000L / SAMPLE_RATE;
-  
+
   for (uint32_t i=0; i<audio_length; i++) {
     while((t = micros()) - prior < usec);
     analogWrite(A0, (uint16_t)audio[i] / 8);

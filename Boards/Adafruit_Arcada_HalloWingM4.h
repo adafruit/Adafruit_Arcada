@@ -36,8 +36,10 @@ public:
 
   bool variantBegin(void) {
     accel = new Adafruit_MSA301();
-    if (!accel->begin()) {
-      return false; // couldn't find accelerometer
+    if (!accel->begin()) {       // MSA301 @ 0x26
+      if (!accel->begin(0x62)) { // MSA311 @ 0x62
+        return false;            // couldn't find accelerometer
+      }
     }
     accel->setPowerMode(MSA301_NORMALMODE);
     accel->setDataRate(MSA301_DATARATE_1000_HZ);
