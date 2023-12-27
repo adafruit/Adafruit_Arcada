@@ -1,5 +1,6 @@
 #if defined(ARDUINO_NRF52840_CLUE)
 #include <Adafruit_LSM6DS33.h>
+#include <Adafruit_LSM6DS3TRC.h>
 #include <Adafruit_ST7789.h>
 
 #define ARCADA_TFT_SPI SPI1
@@ -23,17 +24,24 @@
 class Adafruit_Arcada : public Adafruit_Arcada_SPITFT {
 public:
   Adafruit_Arcada(void) { _has_accel = true; };
-  Adafruit_LSM6DS33 lsm6ds = Adafruit_LSM6DS33();
+  Adafruit_LSM6DS33 lsm6ds33 = Adafruit_LSM6DS33();
+  Adafruit_LSM6DS3TRC lsm6ds3trc = Adafruit_LSM6DS3TRC();
   Adafruit_Sensor *accel;
 
   bool variantBegin(void) {
     pinMode(5, INPUT_PULLUP);
     pinMode(11, INPUT_PULLUP);
 
-    if (!lsm6ds.begin_I2C()) {
+    if (lsm6ds33.begin_I2C()) {
+      // Serial.println("Found LSM6DS33");
+      accel = lsm6ds33.getAccelerometerSensor();
+    } else if (lsm6ds3trc.begin_I2C()) {
+      // Serial.println("Found LSM6DS3-TRC");
+      accel = lsm6ds3trc.getAccelerometerSensor();
+    } else {
+      // Serial.println("LSM6DS not found");
       return false; // couldn't find accelerometer
     }
-    accel = lsm6ds.getAccelerometerSensor();
     accel->printSensorDetails();
 
     return true;

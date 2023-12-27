@@ -2,10 +2,14 @@
 #ifndef ARCADATYPE
 #define ARCADATYPE
 
+#include "Adafruit_Arcada_Def.h"
+#include <Adafruit_GFX.h>
 #include <Adafruit_ImageReader.h> // Image-reading functions
+#include <Adafruit_NeoPixel.h>
 #include <Adafruit_SPIFlash.h>
 #include <Adafruit_WavePlayer.h>
 #include <SdFat.h>
+#include <TouchScreen.h>
 
 #if defined(USE_TINYUSB)
 #include "Adafruit_TinyUSB.h"
