@@ -2,6 +2,7 @@
 #include <Adafruit_SPIFlash.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_LSM6DS33.h>
+#include <Adafruit_LSM6DS3TRC.h>
 #include <Adafruit_LIS3MDL.h>
 #include <Adafruit_SHT31.h>
 #include <Adafruit_APDS9960.h>
@@ -11,7 +12,11 @@
 #define WHITE_LED 43
 
 Adafruit_Arcada arcada;
+
 Adafruit_LSM6DS33 lsm6ds33;
+Adafruit_LSM6DS3TRC lsm6ds3trc;
+bool use_lsm6ds33 = false, use_lsm6ds3trc = false;
+
 Adafruit_LIS3MDL lis3mdl;
 Adafruit_SHT31 sht30;
 Adafruit_APDS9960 apds9960;
@@ -114,15 +119,21 @@ void setup() {
   }
   arcada.display->print("APDS9960 ");
 
-  /********** Check LSM6DS33 */
-  if (!lsm6ds33.begin_I2C()) {
-    Serial.println("No LSM6DS33 found");
+  /********** Check LSM6DS3 or LSM6DS3TR-C */
+  if (lsm6ds33.begin_I2C()) {
+    use_lsm6ds33 = true;
+  } else if (lsm6ds3trc.begin_I2C()) {
+    use_lsm6ds3trc = true;
+  }
+    
+  if (!use_lsm6ds3trc && !use_lsm6ds33) {
+    Serial.println("No LSM6DS3x found");
     arcada.display->setTextColor(ARCADA_RED);
   } else {
-    Serial.println("**LSM6DS33 OK!");
+    Serial.println("LSM6DS3x OK!");
     arcada.display->setTextColor(ARCADA_GREEN);
   }
-  arcada.display->println("LSM6DS33 ");
+  arcada.display->println("LSM6DS3x ");
   
   /********** Check LIS3MDL */
   if (!lis3mdl.begin_I2C()) {
@@ -190,7 +201,11 @@ void loop() {
   arcada.display->println("         ");
 
   sensors_event_t accel, gyro, mag, temp;
-  lsm6ds33.getEvent(&accel, &gyro, &temp);
+  if (use_lsm6ds33) {
+    lsm6ds33.getEvent(&accel, &gyro, &temp);
+  } else if (use_lsm6ds3trc) {
+    lsm6ds3trc.getEvent(&accel, &gyro, &temp);
+  }
   lis3mdl.getEvent(&mag);
   arcada.display->print("Accel:");
   arcada.display->print(accel.acceleration.x, 1);

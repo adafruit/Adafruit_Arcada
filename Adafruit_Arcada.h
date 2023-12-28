@@ -43,6 +43,9 @@ class Adafruit_Arcada_SPITFT;
 #ifndef ARCADA_TFT_LITE
 #define ARCADA_TFT_LITE -1
 #endif
+#ifndef ARCADA_TFT_RST
+#define ARCADA_TFT_RST -1
+#endif
 #ifndef ARCADA_LIGHT_SENSOR
 #define ARCADA_LIGHT_SENSOR -1
 #endif

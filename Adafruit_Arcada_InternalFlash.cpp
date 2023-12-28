@@ -50,7 +50,7 @@ uint32_t Adafruit_Arcada_SPITFT::availableFlash(void) {
     }
   }
   return FLASH_SIZE - (uint32_t)flashAddress;
-#else  // !__SAMD51__
+#else // !__SAMD51__
   return 0; // unsupported chip
 #endif // __SAMD51__
 }
@@ -198,7 +198,7 @@ uint8_t *Adafruit_Arcada_SPITFT::writeDataToFlash(uint8_t *ramAddress,
   // No need to align to next boundary, done at top of next call
   flashAddress += len;
   return returnVal;
-#else  // !__SAMD51__
+#else // !__SAMD51__
   return 0; // unsupported chip
 #endif // __SAMD51__
 }
