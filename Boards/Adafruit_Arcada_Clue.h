@@ -33,13 +33,13 @@ public:
     pinMode(11, INPUT_PULLUP);
 
     if (lsm6ds33.begin_I2C()) {
-      //Serial.println("Found LSM6DS33");
+      // Serial.println("Found LSM6DS33");
       accel = lsm6ds33.getAccelerometerSensor();
     } else if (lsm6ds3trc.begin_I2C()) {
-      //Serial.println("Found LSM6DS3-TRC");
+      // Serial.println("Found LSM6DS3-TRC");
       accel = lsm6ds3trc.getAccelerometerSensor();
     } else {
-      //Serial.println("LSM6DS not found");
+      // Serial.println("LSM6DS not found");
       return false; // couldn't find accelerometer
     }
     accel->printSensorDetails();
