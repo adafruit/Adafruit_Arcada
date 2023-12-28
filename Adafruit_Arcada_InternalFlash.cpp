@@ -1,4 +1,5 @@
 #include <Adafruit_Arcada.h>
+// clang-format off 
 
 #if defined(__SAMD51__)
 
