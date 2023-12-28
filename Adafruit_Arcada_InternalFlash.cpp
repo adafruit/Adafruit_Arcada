@@ -1,5 +1,5 @@
 #include <Adafruit_Arcada.h>
-// clang-format off 
+// clang-format off
 
 #if defined(__SAMD51__)
 
@@ -365,3 +365,4 @@ uint8_t *Adafruit_Arcada_SPITFT::writeFileToFlash(const char *filename) {
   return 0; // unsupported chip
 #endif
 }
+// clang-format on
