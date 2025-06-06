@@ -21,7 +21,7 @@
 
 #include "ESP32BootROM.h"
 
-//#define DEBUG 1
+// #define DEBUG 1
 
 ESP32BootROMClass::ESP32BootROMClass(HardwareSerial &serial, int gpio0Pin,
                                      int resetnPin)

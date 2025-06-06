@@ -6,12 +6,11 @@ jobs:
   clang_and_doxy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+    - name: Run pre-commit
+      uses: pre-commit/action@v3.0.1
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
          repository: adafruit/ci-arduino
          path: ci
@@ -19,8 +18,8 @@ jobs:
     - name: pre-install
       run: bash ci/actions_install.sh
 
-    - name: clang
-      run: python3 ci/run-clang-format.py -e "ci/*" -e "bin/*" -r . 
+#    - name: clang
+#      run: python3 ci/run-clang-format.py -e "ci/*" -e "bin/*" -r .
 
     - name: doxygen
       env:

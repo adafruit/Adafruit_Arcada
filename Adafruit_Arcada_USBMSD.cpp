@@ -1,6 +1,6 @@
 #include <Adafruit_Arcada.h>
 
-//#define ARCADA_MSD_DEBUG
+// #define ARCADA_MSD_DEBUG
 
 static uint32_t last_access_ms;
 
@@ -65,7 +65,7 @@ bool Adafruit_Arcada_SPITFT::filesysBeginMSD(
     usb_msc.setUnitReady(false);
     usb_msc.begin();
 
-    uint32_t block_count = Arcada_SD_FileSys.card()->cardSize();
+    uint32_t block_count = Arcada_SD_FileSys.card()->sectorCount();
 #ifdef ARCADA_MSD_DEBUG
     Serial.print("MSD for SD Card - Volume size (MB):  ");
     Serial.println((block_count / 2) / 1024);
