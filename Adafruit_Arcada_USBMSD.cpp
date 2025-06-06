@@ -1,6 +1,6 @@
 #include <Adafruit_Arcada.h>
 
-//#define ARCADA_MSD_DEBUG
+// #define ARCADA_MSD_DEBUG
 
 static uint32_t last_access_ms;
 
